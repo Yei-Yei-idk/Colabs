@@ -6,10 +6,12 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\Auth\RegistrarseController;
 use App\Http\Controllers\Auth\IniciarSesionController;
+use App\Http\Controllers\Auth\RecuperarContrasenaController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EspaciosController;
 use App\Http\Controllers\Admin\ReservasController;
 use App\Http\Controllers\BackupController;
+use Illuminate\Http\Request;
 
 // ===================== RUTAS =====================
 
@@ -26,13 +28,41 @@ Route::post('/registrarse', [RegistrarseController::class, 'guardar'])->name('re
 Route::get('/login', [IniciarSesionController::class, 'mostrarFormulario'])->name('login');
 Route::post('/login', [IniciarSesionController::class, 'autenticar'])->name('login.autenticar');
 
-Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'es.cliente'])->group(function () {
+// Recuperación de contraseña (solo para usuarios no autenticados)
+Route::middleware('guest')->group(function () {
+    Route::get('/recuperar-contrasena', function () {
+        return view('auth.recuperar-contrasena');
+    })->name('password.request');
+    Route::post('/recuperar-contrasena', [RecuperarContrasenaController::class, 'forgotPassword'])->name('password.email');
+    Route::get('/restablecer-contrasena', [RecuperarContrasenaController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/restablecer-contrasena', [RecuperarContrasenaController::class, 'resetPassword'])->name('password.update');
+});
+
+// ===================== RUTAS DE VERIFICACIÓN DE CORREO =====================
+Route::get('/email/verify/{id}/{token}', [App\Http\Controllers\Auth\VerificacionController::class, 'verify'])->name('verification.verify');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', [App\Http\Controllers\Auth\VerificacionController::class, 'notice'])->name('verification.notice');
+    Route::post('/email/verification-notification', [App\Http\Controllers\Auth\VerificacionController::class, 'send'])->name('verification.send');
+    Route::get('/email/cambiar-correo', [App\Http\Controllers\Auth\VerificacionController::class, 'formCambiarCorreo'])->name('verification.form-cambiar-correo');
+    Route::post('/email/cambiar-correo', [App\Http\Controllers\Auth\VerificacionController::class, 'cambiarCorreo'])->name('verification.cambiar-correo');
+});
+
+Route::middleware(['auth', 'es.cliente'])->group(function () {
+    Route::get('/cliente/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
+    Route::post('/cliente/perfil', [ClienteController::class, 'actualizarPerfil'])->name('cliente.perfil.actualizar');
+});
+
+Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'verified', 'es.cliente'])->group(function () {
     Route::get('/', [ClienteController::class, 'index'])->name('index');
     Route::get('/buscar', [ClienteController::class, 'buscarEspacios'])->name('buscar_espacios');
     Route::get('/reservas', [ClienteController::class, 'misReservas'])->name('mis_reservas');
+<<<<<<< HEAD
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('perfil');
     Route::get('/ayuda', [ClienteController::class, 'ayuda'])->name('ayuda');
     Route::post('/perfil', [ClienteController::class, 'actualizarPerfil'])->name('perfil.actualizar');
+=======
+>>>>>>> caf4d99b470e6ddcc1b3bad4fdaf22cad3c0a500
     Route::get('/reserva/{id}', [ClienteController::class, 'detallesReserva'])->name('detalles_reserva');
     Route::post('/reserva/cancelar', [ClienteController::class, 'cancelarReserva'])->name('cancelar_reserva');
     Route::post('/calificar', [ClienteController::class, 'calificarEspacio'])->name('calificar');
@@ -42,7 +72,7 @@ Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'es.cliente'])->
     Route::post('/confirmar-reserva', [ClienteController::class, 'confirmarReserva'])->name('confirmar_reserva');
 });
 
-Route::post('/logout', function (\Illuminate\Http\Request $request) {
+Route::post('/logout', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();

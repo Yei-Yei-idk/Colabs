@@ -32,6 +32,7 @@ class IniciarSesionController extends Controller
 
         $loginInput = $request->input('user');
         $password   = $request->input('contra');
+        $remember   = $request->boolean('remember'); // Recolecta el valor del checkbox
 
         // Buscar usuario por cédula (user_id) o por correo (user_correo)
         $usuario = User::where('user_id', $loginInput)
@@ -49,13 +50,19 @@ class IniciarSesionController extends Controller
         if (! Auth::attempt([
             'user_correo' => $usuario->user_correo,
             'password'    => $password,
-        ], false)) {
+        ], $remember)) {
             return back()
                 ->withInput($request->only('user'))
                 ->withErrors(['user' => 'Usuario o contraseña incorrectos']);
         }
 
         $request->session()->regenerate();
+
+        if (! $usuario->hasVerifiedEmail()) {
+            return redirect()
+                ->route('verification.notice')
+                ->with('error', 'Tu cuenta existe, pero aun no ha sido verificada. Usa el boton de reenviar para recibir un nuevo enlace.');
+        }
 
         // Redirección según rol, similar a tu lógica original
         switch ($usuario->rol_id) {
@@ -76,4 +83,3 @@ class IniciarSesionController extends Controller
             ->withErrors(['user' => '⚠️ Rol no reconocido']);
     }
 }
-

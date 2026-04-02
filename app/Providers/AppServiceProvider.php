@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Reserva;
+use App\Observers\ReservaObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Reserva::observe(ReservaObserver::class);
+        
+        \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            return (new \Illuminate\Notifications\Messages\MailMessage)
+                ->subject('Verifica tu correo - ' . config('app.name'))
+                ->view('emails.verificar-correo', ['url' => $url, 'user' => $notifiable]);
+        });
+
         \Illuminate\Support\Facades\View::composer('layouts.cliente', function ($view) {
             $user_id = 1; // Temporal (será auth()->id() luego)
             

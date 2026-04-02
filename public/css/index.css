@@ -336,6 +336,21 @@ footer a:hover { text-decoration: underline; }
   padding-left: 18px;
 }
 
+.auth-registrarse .exito {
+  background: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.auth-registrarse .instrucciones {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
 .auth-registrarse .mi-input {
   height: 42px;
   width: 100%;
@@ -380,6 +395,20 @@ footer a:hover { text-decoration: underline; }
   text-align: left;
 }
 
+.auth-registrarse p a {
+  color: #111827; /* Casi negro */
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(250, 204, 21, 0.4); /* Subrayado amarillo */
+  padding-bottom: 2px;
+  transition: all 0.25s ease;
+}
+
+.auth-registrarse p a:hover {
+  color: #eab308; /* Amarillo más intenso */
+  border-bottom-color: #eab308;
+}
+
 .auth-registrarse .btn-login {
   width: 100%;
   height: 42px;
@@ -416,6 +445,27 @@ footer a:hover { text-decoration: underline; }
     margin-top: 18px;
     padding: 18px 16px 16px;
   }
+}
+
+/* ─────────────── AUTH FORM UTILS ─────────────── */
+.auth-remember-wrapper {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.auth-label-checkbox {
+    font-size: 14px;
+    color: #4b5563;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-label-checkbox input[type="checkbox"] {
+    width: auto !important;
+    height: auto !important;
 }
 
 /* ─────────────── AUTH: REGISTRARSE ─────────────── */
@@ -467,6 +517,21 @@ footer a:hover { text-decoration: underline; }
   padding-left: 18px;
 }
 
+.auth-registrarse .exito {
+  background: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.auth-registrarse .instrucciones {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
 .auth-registrarse .mi-input {
   height: 42px;
   width: 100%;
@@ -509,6 +574,20 @@ footer a:hover { text-decoration: underline; }
   color: #4b5563;
   margin: 8px 0 16px;
   text-align: left;
+}
+
+.auth-registrarse p a {
+  color: #111827; /* Casi negro */
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(250, 204, 21, 0.4); /* Subrayado amarillo */
+  padding-bottom: 2px;
+  transition: all 0.25s ease;
+}
+
+.auth-registrarse p a:hover {
+  color: #eab308; /* Amarillo más intenso */
+  border-bottom-color: #eab308;
 }
 
 .auth-registrarse .btn-login {

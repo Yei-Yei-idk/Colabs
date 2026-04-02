@@ -18,10 +18,10 @@
 
     @stack('styles')
 </head>
-<body>
+<body data-session-status="{{ session('status') ?? '' }}">
 
     {{-- ===== HEADER ===== --}}
-  <header>
+    <header>
         <nav>
             {{-- Izquierda: logo + menú --}}
             <div class="nav-left">
@@ -45,10 +45,23 @@
                         <a href="{{ route('registrarse.mostrar') }}" class="btn-sesion registrarse">Registrarse</a>
                         <a href="{{ route('login') }}" class="btn-sesion iniciar">Iniciar sesión</a>
                     @else
+                        @php
+                            $isUnverified = !auth()->user()->hasVerifiedEmail();
+                            $estaEnPantallaVerificacion = request()->routeIs('verification.notice');
+                        @endphp
+
                         @if(in_array(auth()->user()->rol_id, [1, 2]))
-                            <a href="{{ route('admin.dashboard') }}" class="btn-sesion iniciar">Ir a tu panel</a>
+                            <a href="{{ $isUnverified ? ($estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice')) : route('admin.dashboard') }}" 
+                               class="btn-sesion iniciar"
+                               @if($isUnverified && $estaEnPantallaVerificacion) onclick="snack('Ya estás en la pantalla para reenviar el correo.')" @endif>
+                                {{ $isUnverified ? 'Verificar cuenta' : 'Ir a tu panel' }}
+                            </a>
                         @else
-                            <a href="{{ route('cliente.index') }}" class="btn-sesion iniciar">Ir a tu panel</a>
+                            <a href="{{ $isUnverified ? ($estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice')) : route('cliente.index') }}" 
+                               class="btn-sesion iniciar"
+                               @if($isUnverified && $estaEnPantallaVerificacion) onclick="snack('Ya estás en la pantalla para reenviar el correo.')" @endif>
+                                {{ $isUnverified ? 'Verificar cuenta' : 'Ir a tu panel' }}
+                            </a>
                         @endif
                     @endguest
                 </div>
@@ -69,21 +82,7 @@
     {{-- Snackbar Global --}}
     <div id="snackbar"></div>
 
-    <script>
-        function snack(msg) {
-            let bar = document.getElementById("snackbar");
-            if (!bar) return;
-            bar.innerHTML = msg;
-            bar.classList.add("show");
-            setTimeout(() => {
-                bar.classList.remove("show");
-            }, 3500);
-        }
-
-        @if (session('status'))
-            snack("{{ session('status') }}");
-        @endif
-    </script>
+    <script src="{{ asset('js/global.js') }}"></script>
 
     @stack('scripts')
 </body>
