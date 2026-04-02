@@ -122,24 +122,39 @@ class VerificacionController extends Controller
     public function verify(Request $request, $id, $token)
     {
         $user = User::find($id);
+        $usuarioAutenticado = $request->user();
 
         if (!$user) {
             abort(404);
         }
 
         if ($user->hasVerifiedEmail()) {
-            $dest = ($user->rol_id == 1 || $user->rol_id == 2) ? 'admin.dashboard' : 'cliente.index';
-            return redirect()->route($dest)->with('status', 'Tu correo ya estaba verificado.');
+            if ($usuarioAutenticado && (string) $usuarioAutenticado->getKey() === (string) $user->getKey()) {
+                $destino = ($user->rol_id == 1 || $user->rol_id == 2) ? 'admin.dashboard' : 'cliente.index';
+                return redirect()->route($destino)->with('status', 'Tu correo ya estaba verificado.');
+            }
+
+            return redirect()->route('login')->with('status', 'Tu correo ya estaba verificado. Ya puedes iniciar sesion.');
         }
 
         // Comparación estricta de tokens
-        if (!$user->verification_token || $user->verification_token !== $token) {
-            return redirect()->route('verification.notice')->with('error', 'El enlace es inválido o ha caducado. Por favor, solicita uno nuevo.');
+        if (!$user->verification_token || !hash_equals($user->verification_token, $token)) {
+            $mensaje = 'El enlace de verificacion no es valido. Inicia sesion para solicitar un nuevo correo.';
+            if ($usuarioAutenticado) {
+                return redirect()->route('verification.notice')->with('error', $mensaje);
+            }
+
+            return redirect()->route('login')->with('status', $mensaje);
         }
 
         // Validar Caducidad (24h)
         if ($user->verification_token_expires_at && now()->gt($user->verification_token_expires_at)) {
-            return redirect()->route('verification.notice')->with('error', 'El enlace ha caducado. Por seguridad, los enlaces solo duran 1 hora. Por favor, solicita uno nuevo.');
+            $mensaje = 'El enlace de verificacion ya vencio. Inicia sesion para reenviar uno nuevo.';
+            if ($usuarioAutenticado) {
+                return redirect()->route('verification.notice')->with('error', $mensaje);
+            }
+
+            return redirect()->route('login')->with('status', $mensaje);
         }
 
         // Marcar correo como verificado
@@ -149,6 +164,10 @@ class VerificacionController extends Controller
         $user->save();
 
         Session::forget('reenvios_verificacion'); // Restablecer intentos
+
+        if (!$usuarioAutenticado || (string) $usuarioAutenticado->getKey() !== (string) $user->getKey()) {
+            return redirect()->route('login')->with('status', 'Correo verificado con exito. Ya puedes iniciar sesion.');
+        }
 
         $dest = ($user->rol_id == 1 || $user->rol_id == 2) ? 'admin.dashboard' : 'cliente.index';
         return redirect()->route($dest)->with('status', '¡Correo verificado con éxito! Bienvenido a Colabs.');

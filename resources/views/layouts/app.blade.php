@@ -47,19 +47,20 @@
                     @else
                         @php
                             $isUnverified = !auth()->user()->hasVerifiedEmail();
+                            $estaEnPantallaVerificacion = request()->routeIs('verification.notice');
                         @endphp
 
                         @if(in_array(auth()->user()->rol_id, [1, 2]))
-                            <a href="{{ $isUnverified ? 'javascript:void(0)' : route('admin.dashboard') }}" 
-                               class="btn-sesion iniciar" 
-                               @if($isUnverified) onclick="snack('🔒 Primero completa el proceso de verificación.')" @endif>
-                                Ir a tu panel
+                            <a href="{{ $isUnverified ? ($estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice')) : route('admin.dashboard') }}" 
+                               class="btn-sesion iniciar"
+                               @if($isUnverified && $estaEnPantallaVerificacion) onclick="snack('Ya estás en la pantalla para reenviar el correo.')" @endif>
+                                {{ $isUnverified ? 'Verificar cuenta' : 'Ir a tu panel' }}
                             </a>
                         @else
-                            <a href="{{ $isUnverified ? 'javascript:void(0)' : route('cliente.index') }}" 
+                            <a href="{{ $isUnverified ? ($estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice')) : route('cliente.index') }}" 
                                class="btn-sesion iniciar"
-                               @if($isUnverified) onclick="snack('🔒 Primero completa el proceso de verificación.')" @endif>
-                                Ir a tu panel
+                               @if($isUnverified && $estaEnPantallaVerificacion) onclick="snack('Ya estás en la pantalla para reenviar el correo.')" @endif>
+                                {{ $isUnverified ? 'Verificar cuenta' : 'Ir a tu panel' }}
                             </a>
                         @endif
                     @endguest

@@ -58,6 +58,12 @@ class IniciarSesionController extends Controller
 
         $request->session()->regenerate();
 
+        if (! $usuario->hasVerifiedEmail()) {
+            return redirect()
+                ->route('verification.notice')
+                ->with('error', 'Tu cuenta existe, pero aun no ha sido verificada. Usa el boton de reenviar para recibir un nuevo enlace.');
+        }
+
         // Redirección según rol, similar a tu lógica original
         switch ($usuario->rol_id) {
             case 3:
@@ -77,4 +83,3 @@ class IniciarSesionController extends Controller
             ->withErrors(['user' => '⚠️ Rol no reconocido']);
     }
 }
-

@@ -39,9 +39,10 @@ Route::middleware('guest')->group(function () {
 });
 
 // ===================== RUTAS DE VERIFICACIÓN DE CORREO =====================
+Route::get('/email/verify/{id}/{token}', [App\Http\Controllers\Auth\VerificacionController::class, 'verify'])->name('verification.verify');
+
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [App\Http\Controllers\Auth\VerificacionController::class, 'notice'])->name('verification.notice');
-    Route::get('/email/verify/{id}/{token}', [App\Http\Controllers\Auth\VerificacionController::class, 'verify'])->name('verification.verify');
     Route::post('/email/verification-notification', [App\Http\Controllers\Auth\VerificacionController::class, 'send'])->name('verification.send');
     Route::get('/email/cambiar-correo', [App\Http\Controllers\Auth\VerificacionController::class, 'formCambiarCorreo'])->name('verification.form-cambiar-correo');
     Route::post('/email/cambiar-correo', [App\Http\Controllers\Auth\VerificacionController::class, 'cambiarCorreo'])->name('verification.cambiar-correo');

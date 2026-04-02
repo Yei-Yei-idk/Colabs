@@ -89,4 +89,3 @@
 @push('scripts')
     <script src="{{ asset('js/auth/verificacion.js') }}"></script>
 @endpush
-

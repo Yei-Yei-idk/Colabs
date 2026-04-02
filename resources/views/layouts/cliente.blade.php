@@ -179,7 +179,7 @@
             }, 3500);
         }
 
-        let sessionStatus = "{{ session('status') ?? session('success') ?? session('error') }}";
+        let sessionStatus = @json(session('status') ?? session('success') ?? session('error'));
         if (sessionStatus) {
             snack(sessionStatus);
         }

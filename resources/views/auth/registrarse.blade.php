@@ -18,7 +18,7 @@
             </div>
         @endif
 
-        <form action="{{ route('registrarse.guardar') }}" method="post">
+        <form action="{{ route('registrarse.guardar', [], false) }}" method="post" id="form-registrarse">
             @csrf
 
             <input
@@ -79,9 +79,26 @@
             >
             <p>Al crear la cuenta aceptas nuestros términos y condiciones.</p>
 
-            <button type="submit" name="crear" class="btn-login" style="cursor:pointer;">Crear</button>
+            <button type="submit" name="crear" id="btn-crear-cuenta" class="btn-login" style="cursor:pointer;">Crear</button>
         </form>
     </div>
     </section>
-@endsection
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formulario = document.getElementById('form-registrarse');
+            const botonCrear = document.getElementById('btn-crear-cuenta');
+
+            if (!formulario || !botonCrear) {
+                return;
+            }
+
+            formulario.addEventListener('submit', function () {
+                botonCrear.disabled = true;
+                botonCrear.textContent = 'Creando cuenta...';
+                botonCrear.style.opacity = '0.7';
+                botonCrear.style.cursor = 'not-allowed';
+            });
+        });
+    </script>
+@endsection
