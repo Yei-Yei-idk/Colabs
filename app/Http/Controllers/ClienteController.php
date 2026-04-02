@@ -427,4 +427,12 @@ class ClienteController extends Controller
 
         return redirect()->route('cliente.mis_reservas')->with('success', '¡Reserva creada exitosamente! Está pendiente de aprobación.');
     }
+
+    /**
+     * Muestra el manual de ayuda y soporte para el cliente.
+     */
+    public function ayuda()
+    {
+        return view('cliente.ayuda');
+    }
 }

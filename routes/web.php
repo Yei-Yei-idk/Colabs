@@ -31,6 +31,7 @@ Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'es.cliente'])->
     Route::get('/buscar', [ClienteController::class, 'buscarEspacios'])->name('buscar_espacios');
     Route::get('/reservas', [ClienteController::class, 'misReservas'])->name('mis_reservas');
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('perfil');
+    Route::get('/ayuda', [ClienteController::class, 'ayuda'])->name('ayuda');
     Route::post('/perfil', [ClienteController::class, 'actualizarPerfil'])->name('perfil.actualizar');
     Route::get('/reserva/{id}', [ClienteController::class, 'detallesReserva'])->name('detalles_reserva');
     Route::post('/reserva/cancelar', [ClienteController::class, 'cancelarReserva'])->name('cancelar_reserva');

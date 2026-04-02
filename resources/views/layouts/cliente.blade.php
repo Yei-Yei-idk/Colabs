@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/cliente/cliente.css') }}">
+    @yield('styles')
 </head>
 <body>
 
@@ -89,7 +90,7 @@
         <ul class="dropdown-menu" name="menuPerfil" id="menuPerfil" hidden>
           <li><a href="{{ route('cliente.perfil') }}">Mi perfil</a></li>
           <li><a href="{{ route('cliente.mis_reservas') }}">Mis reservas</a></li>
-          <li><a href="#">Ayuda y soporte</a></li>
+          <li><a href="{{ route('cliente.ayuda') }}">Ayuda y soporte</a></li>
           <li class="cerrar"><a class="pointer" onclick="openLogoutPopup()">Cerrar sesión</a></li>
         </ul>
       </div>
