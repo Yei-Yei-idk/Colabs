@@ -20,7 +20,7 @@ class Calificacion extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id', 'user_id');
+        return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
 
     public function espacio()

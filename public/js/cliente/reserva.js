@@ -139,13 +139,30 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Verifica disponibilidad mediante fetch a Laravel
      */
+    function obtenerTokenCsrfActual() {
+        const tokenMeta = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (tokenMeta) return tokenMeta;
+
+        const cookie = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('XSRF-TOKEN='));
+        if (cookie) {
+            return decodeURIComponent(cookie.split('=')[1]);
+        }
+
+        return csrfToken;
+    }
+
     async function verificarBloqueHorario(fecha, hInicio, hFin) {
         try {
+            const tokenActual = obtenerTokenCsrfActual();
             const response = await fetch(verificarUrl, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
+                    'X-CSRF-TOKEN': tokenActual,
+                    'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
@@ -155,14 +172,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     hora_fin: hFin
                 })
             });
-            const data = await response.json();
+
+            if (!response.ok) {
+                if (response.status === 419 || response.status === 401 || response.status === 403) {
+                    return {
+                        disponible: null,
+                        estado: 'SesionExpirada',
+                        mensaje: 'Tu sesion expiro. Recarga la pagina para continuar.'
+                    };
+                }
+
+                return {
+                    disponible: null,
+                    estado: 'ErrorServidor',
+                    mensaje: 'No fue posible validar la disponibilidad. Intentalo de nuevo.'
+                };
+            }
+
+            const data = await response.json().catch(() => ({}));
+
+            if (typeof data.disponible !== 'boolean') {
+                return {
+                    disponible: null,
+                    estado: 'RespuestaInvalida',
+                    mensaje: data.message || 'No se pudo validar la disponibilidad.'
+                };
+            }
+
             return {
                 disponible: data.disponible,
-                estado: data.estado || 'Libre'
+                estado: data.estado || 'Libre',
+                mensaje: data.mensaje || ''
             };
         } catch (error) {
             console.error('Error al verificar disponibilidad:', error);
-            return false;
+            return {
+                disponible: null,
+                estado: 'ErrorConexion',
+                mensaje: 'Error de conexion al verificar disponibilidad.'
+            };
         }
     }
 
@@ -227,12 +275,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function mostrarResultados(resultados) {
+        const hayErroresTecnicos = resultados.some(r => r.disponible === null);
         const todoOK = resultados.every(r => r.disponible);
         const conEspera = resultados.some(r => r.estado === 'Pendiente');
         const algunoOK = resultados.some(r => r.disponible);
         let html = '<div id="availabilityContent">';
 
-        if (todoOK && !conEspera) {
+        if (hayErroresTecnicos) {
+            const primerError = resultados.find(r => r.disponible === null);
+            html += `<div class="status-box status-warning" style="background:#fff3cd; color:#856404; border:1px solid #ffeeba;">
+                        ⚠️ <strong>Aviso:</strong> ${primerError?.mensaje || 'No se pudo validar la disponibilidad. Recarga la pagina.'}
+                     </div>`;
+        } else if (todoOK && !conEspera) {
             html += '<div class="status-box status-success">✅ <strong>¡Excelente!</strong> Todo el horario está disponible</div>';
         } else if (todoOK && conEspera) {
             html += '<div class="status-box status-warning" style="background:#fff3cd; color:#856404; border: 1px solid #ffeeba;">⚠️ <strong>Atención:</strong> Hay solicitudes anteriores en espera para algunos bloques. Tu reserva no es prioridad y podría ser rechazada.</div>';
@@ -246,6 +300,14 @@ document.addEventListener('DOMContentLoaded', () => {
         html += '<div class="block-container">';
 
         resultados.forEach(r => {
+            if (r.disponible === null) {
+                html += `<div class="block-item border-pendiente" style="background:#fff3cd;">
+                            <span class="block-time">${formatearHora(r.inicio)} - ${formatearHora(r.fin)}</span>
+                            <span class="block-status badge-pendiente">⚠️ Revisar</span>
+                         </div>`;
+                return;
+            }
+
             let statusClass = r.disponible ? 'aceptada' : 'rechazada';
             let statusText = r.disponible ? 'Disponible' : 'Ocupado';
             let icon = r.disponible ? '✅' : '❌';
@@ -271,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         html += '</div></div>';
 
-        if (!todoOK) {
+        if (!todoOK && !hayErroresTecnicos) {
             html += '<div id="alternativesContainer" class="mt-20"></div>';
         }
 
@@ -281,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showBookingSections(todoOK);
         if (todoOK) calcularPrecio();
 
-        if (!todoOK) {
+        if (!todoOK && !hayErroresTecnicos) {
             cargarAlternativas(fechaInput.value, selectInicio.value, selectFin.value);
         }
     }

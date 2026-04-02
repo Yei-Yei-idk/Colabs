@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Colabs')</title>
     
     <link rel="icon" href="{{ asset('ASSETS/logo.png') }}" type="image/png">
@@ -85,7 +86,15 @@
       <!-- Perfil -->
       <div class="perfil-dropdown">
         <button class="perfil-btn" onclick="document.getElementById('menuPerfil').classList.toggle('show')">
-          <div class="review-avatar {{ auth()->user()->avatar_color }}" style="margin-right: 15px; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; font-size: 1.05rem; flex-shrink: 0;">{{ auth()->user()->avatar_initial }}</div>
+          @if(!empty(auth()->user()->google_id) && !empty(auth()->user()->avatar))
+            <img
+              src="{{ auth()->user()->avatar }}"
+              alt="Avatar de Google"
+              style="margin-right: 15px; width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #4285F4;"
+            >
+          @else
+            <div class="review-avatar {{ auth()->user()->avatar_color }}" style="margin-right: 15px; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; font-size: 1.05rem; flex-shrink: 0;">{{ auth()->user()->avatar_initial }}</div>
+          @endif
           <!-- Obteniendo datos del usuario autenticado en Laravel -->
           <span>{{ auth()->user()->first_name }}</span>
         </button>
@@ -111,11 +120,7 @@
     <div class="popup-buttons">
       <button class="cancelar-btn" onclick="closeLogoutPopup()">Cancelar</button>
       
-      <!-- En Laravel el logout debe ser por POST por seguridad. Esto lo envía -->
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          @csrf
-      </form>
-      <button class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar sesión</button>
+      <button class="logout-btn" onclick="window.location.href='{{ route('logout') }}'">Cerrar sesión</button>
     </div>
   </div>
 </div>

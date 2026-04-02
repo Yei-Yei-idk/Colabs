@@ -17,8 +17,9 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable, MustVerifyEmailTrait;
 
     protected $table = 'usuarios';
-    protected $primaryKey = 'user_id';
-    public $incrementing = false;
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
+    public $incrementing = true;
     public $timestamps = false;
 
     /**
@@ -27,11 +28,16 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'user_id',
+        'numero_documento',
         'user_nombre',
         'user_correo',
+        'google_id',
+        'avatar',
         'user_telefono',
         'user_contrasena',
+        'email_verified_at',
+        'verification_token',
+        'verification_token_expires_at',
         'rol_id',
     ];
 
@@ -113,7 +119,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAvatarColorAttribute()
     {
         $colors = ['purple', 'green', 'orange', 'blue'];
-        $lastDigit = (int) substr((string) $this->user_id, -1);
+        $base = (string) ($this->numero_documento ?: $this->id);
+        $lastDigit = (int) substr($base, -1);
         return $colors[$lastDigit % 4];
     }
 

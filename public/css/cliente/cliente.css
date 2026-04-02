@@ -1425,7 +1425,12 @@ nav img {
   display: flex;
   flex-direction: column;
   background: #fff;
+  overflow-y: auto;
 }
+
+.dash-main-content::-webkit-scrollbar { width: 8px; }
+.dash-main-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dash-main-content::-webkit-scrollbar-track { background: transparent; }
 
 .dash-form { height: auto; display: flex; flex-direction: column; }
 

@@ -23,46 +23,64 @@
     {{-- ===== HEADER ===== --}}
     <header>
         <nav>
-            {{-- Izquierda: logo + menú --}}
+            {{-- Izquierda: logo + menu --}}
             <div class="nav-left">
                 <a href="{{ route('inicio') }}" class="logo">
                     <img src="{{ asset('ASSETS/logo.png') }}" alt="Colabs">
                 </a>
             </div>
 
-            {{-- Menú centrado --}}
+            {{-- Menu centrado --}}
             <ul class="menu">
                 <li><a href="{{ route('inicio') }}" class="{{ request()->routeIs('inicio') ? 'active' : '' }}">Inicio</a></li>
                 <li><a href="{{ route('nosotros') }}" class="{{ request()->routeIs('nosotros') ? 'active' : '' }}">Nosotros</a></li>
-                <li><a href="{{ route('ubicacion') }}" class="{{ request()->routeIs('ubicacion') ? 'active' : '' }}">Encuéntranos</a></li>
+                <li><a href="{{ route('ubicacion') }}" class="{{ request()->routeIs('ubicacion') ? 'active' : '' }}">Encuentranos</a></li>
                 <li><a href="{{ route('servicios') }}" class="{{ request()->routeIs('servicios') ? 'active' : '' }}">Servicios</a></li>
             </ul>
  
-            {{-- Derecha: botones de sesión --}}
+            {{-- Derecha: botones de sesion --}}
             <div class="nav-right">
                 <div class="botones-sesion">
                     @guest
                         <a href="{{ route('registrarse.mostrar') }}" class="btn-sesion registrarse">Registrarse</a>
-                        <a href="{{ route('login') }}" class="btn-sesion iniciar">Iniciar sesión</a>
+                        <a href="{{ route('login') }}" class="btn-sesion iniciar">Iniciar sesion</a>
                     @else
                         @php
-                            $isUnverified = !auth()->user()->hasVerifiedEmail();
+                            $usuarioAutenticado = auth()->user();
+                            $cuentaNoVerificada = !$usuarioAutenticado->hasVerifiedEmail();
                             $estaEnPantallaVerificacion = request()->routeIs('verification.notice');
+                            $debeCompletarPerfilGoogle = !empty($usuarioAutenticado->google_id)
+                                && ((int) ($usuarioAutenticado->user_telefono ?? 0) <= 0 || empty($usuarioAutenticado->numero_documento));
+                            $estaEnPantallaCompletarPerfil = request()->routeIs('google.perfil.completar');
+
+                            $rutaPanel = in_array($usuarioAutenticado->rol_id, [1, 2])
+                                ? route('admin.dashboard')
+                                : route('cliente.index');
+
+                            $rutaBotonPanel = $rutaPanel;
+                            $textoBotonPanel = 'Ir a tu panel';
+                            $mensajeBotonPanel = null;
+
+                            if ($cuentaNoVerificada) {
+                                $rutaBotonPanel = $estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice');
+                                $textoBotonPanel = 'Verificar cuenta';
+                                if ($estaEnPantallaVerificacion) {
+                                    $mensajeBotonPanel = 'Ya estas en la pantalla para reenviar el correo.';
+                                }
+                            } elseif ($debeCompletarPerfilGoogle) {
+                                $rutaBotonPanel = $estaEnPantallaCompletarPerfil ? 'javascript:void(0)' : route('google.perfil.completar');
+                                $textoBotonPanel = 'Completar perfil';
+                                if ($estaEnPantallaCompletarPerfil) {
+                                    $mensajeBotonPanel = 'Ya estas completando tu perfil.';
+                                }
+                            }
                         @endphp
 
-                        @if(in_array(auth()->user()->rol_id, [1, 2]))
-                            <a href="{{ $isUnverified ? ($estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice')) : route('admin.dashboard') }}" 
-                               class="btn-sesion iniciar"
-                               @if($isUnverified && $estaEnPantallaVerificacion) onclick="snack('Ya estás en la pantalla para reenviar el correo.')" @endif>
-                                {{ $isUnverified ? 'Verificar cuenta' : 'Ir a tu panel' }}
-                            </a>
-                        @else
-                            <a href="{{ $isUnverified ? ($estaEnPantallaVerificacion ? 'javascript:void(0)' : route('verification.notice')) : route('cliente.index') }}" 
-                               class="btn-sesion iniciar"
-                               @if($isUnverified && $estaEnPantallaVerificacion) onclick="snack('Ya estás en la pantalla para reenviar el correo.')" @endif>
-                                {{ $isUnverified ? 'Verificar cuenta' : 'Ir a tu panel' }}
-                            </a>
-                        @endif
+                        <a href="{{ $rutaBotonPanel }}"
+                           class="btn-sesion iniciar"
+                           @if($mensajeBotonPanel) onclick="snack('{{ $mensajeBotonPanel }}')" @endif>
+                            {{ $textoBotonPanel }}
+                        </a>
                     @endguest
                 </div>
             </div>

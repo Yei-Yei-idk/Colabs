@@ -75,9 +75,6 @@
         <header class="header">
             <div class="left">@yield('page-title', 'Dashboard')</div>
             <div class="right">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-                    @csrf
-                </form>
                 <button class="new-btn" onclick="document.getElementById('logout-modal').style.display='flex'">
                     Cerrar Sesión
                 </button>
@@ -105,7 +102,7 @@
                     Cancelar
                 </button>
                 <button
-                    onclick="document.getElementById('logout-form').submit()"
+                    onclick="window.location.href='{{ route('logout') }}'"
                     style="padding:.6rem 1.4rem; border-radius:8px; border:none; background:#ef4444; color:#fff; font-size:.95rem; cursor:pointer; font-weight:600; transition:background .2s;"
                     onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#ef4444'">
                     Sí, cerrar sesión

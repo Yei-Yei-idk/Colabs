@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class IniciarSesionController extends Controller
 {
     /**
-     * Muestra el formulario de inicio de sesión.
+     * Muestra el formulario de inicio de sesion.
      */
     public function mostrarFormulario()
     {
@@ -18,68 +18,62 @@ class IniciarSesionController extends Controller
     }
 
     /**
-     * Procesa el inicio de sesión del usuario.
+     * Procesa el inicio de sesion del usuario.
      */
     public function autenticar(Request $request)
     {
         $request->validate([
-            'user'   => ['required', 'string'],
+            'user' => ['required', 'string'],
             'contra' => ['required', 'string'],
         ], [
-            'user.required'   => 'El documento o correo es obligatorio.',
-            'contra.required' => 'La contraseña es obligatoria.',
+            'user.required' => 'El correo o numero de documento es obligatorio.',
+            'contra.required' => 'La contrasena es obligatoria.',
         ]);
 
         $loginInput = $request->input('user');
-        $password   = $request->input('contra');
-        $remember   = $request->boolean('remember'); // Recolecta el valor del checkbox
+        $password = $request->input('contra');
+        $remember = $request->boolean('remember');
 
-        // Buscar usuario por cédula (user_id) o por correo (user_correo)
-        $usuario = User::where('user_id', $loginInput)
+        $usuario = User::where('numero_documento', $loginInput)
             ->orWhere('user_correo', $loginInput)
             ->first();
 
-        if (! $usuario) {
+        if (!$usuario) {
             return back()
                 ->withInput($request->only('user'))
-                ->withErrors(['user' => 'Usuario no encontrado']);
+                ->withErrors(['user' => 'Las credenciales proporcionadas no son validas.']);
         }
 
-        // Intentar autenticar usando el correo del usuario y la contraseña proporcionada.
-        // El modelo User ya define 'user_contrasena' como campo de contraseña (getAuthPasswordName).
-        if (! Auth::attempt([
+        if (!Auth::attempt([
             'user_correo' => $usuario->user_correo,
-            'password'    => $password,
+            'password' => $password,
         ], $remember)) {
             return back()
                 ->withInput($request->only('user'))
-                ->withErrors(['user' => 'Usuario o contraseña incorrectos']);
+                ->withErrors(['user' => 'Las credenciales proporcionadas no son validas.']);
         }
 
         $request->session()->regenerate();
 
-        if (! $usuario->hasVerifiedEmail()) {
+        if (!$usuario->hasVerifiedEmail()) {
             return redirect()
                 ->route('verification.notice')
                 ->with('error', 'Tu cuenta existe, pero aun no ha sido verificada. Usa el boton de reenviar para recibir un nuevo enlace.');
         }
 
-        // Redirección según rol, similar a tu lógica original
-        switch ($usuario->rol_id) {
+        switch ((int) $usuario->rol_id) {
             case 3:
-                // Cliente
-                return redirect()->route('cliente.index')->with('status', '👋 ¡Bienvenido/a ' . $usuario->user_nombre . '!');
+                return redirect()->route('cliente.index')->with('status', 'Bienvenido/a ' . $usuario->user_nombre . '.');
 
             case 1:
             case 2:
-                // Administrador / Super usuario
-                return redirect()->route('admin.dashboard')->with('status', '👋 ¡Bienvenido al panel de control!');
+                return redirect()->route('admin.dashboard')->with('status', 'Bienvenido al panel de control.');
         }
 
         Auth::logout();
 
         return back()
             ->withInput($request->only('user'))
-            ->withErrors(['user' => '⚠️ Rol no reconocido']);
+            ->withErrors(['user' => 'No fue posible identificar tu rol de acceso.']);
     }
 }

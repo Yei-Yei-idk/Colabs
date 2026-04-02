@@ -231,7 +231,7 @@ class VerificacionController extends Controller
         ]);
 
         // Actualizar correo y resetear verificación usando update
-        User::where('user_id', $user->user_id)->update([
+        User::where('id', $user->id)->update([
             'user_correo' => $request->correo_nuevo,
             'email_verified_at' => null,
             'verification_token' => Str::random(60),

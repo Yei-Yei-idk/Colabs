@@ -615,6 +615,107 @@ footer a:hover { text-decoration: underline; }
   box-shadow: 0 8px 18px rgba(250,204,21,.3);
 }
 
+.auth-registrarse .auth-separador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 14px;
+}
+
+.auth-registrarse .auth-separador::before,
+.auth-registrarse .auth-separador::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #d1d5db;
+}
+
+.auth-registrarse .auth-separador span {
+  color: #6b7280;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-transform: lowercase;
+}
+
+.auth-registrarse .btn-google-auth {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
+}
+
+.auth-registrarse .btn-google-auth:hover {
+  transform: translateY(-1px);
+  border-color: #9ca3af;
+  background: #f9fafb;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+.auth-registrarse .btn-google-auth:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+}
+
+.auth-registrarse .btn-google-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.auth-registrarse .campo-bloqueado-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+
+.auth-registrarse .campo-bloqueado-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.auth-registrarse .campo-bloqueado-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b7280;
+  background: #e5e7eb;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 4px 10px;
+  line-height: 1;
+}
+
+.auth-registrarse .mi-input.mi-input-bloqueado {
+  background: #f3f4f6;
+  border: 1px dashed #cbd5e1;
+  color: #4b5563;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.auth-registrarse .campo-bloqueado-ayuda {
+  margin-top: 8px;
+  margin-bottom: 18px;
+  color: #6b7280;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
 #snackbar {
   visibility: hidden;
   min-width: 260px;

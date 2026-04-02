@@ -1,117 +1,138 @@
 @extends('layouts.cliente')
 
-@section('title', 'Dashboard de Perfil — Co-Labs')
+@section('title', 'Dashboard de Perfil - Co-Labs')
 
 @section('content')
+@php
+    $esCuentaGoogle = !empty($usuario->google_id);
+@endphp
+
 <section id="perfil-dashboard" class="zero-scroll-container animate-fade-in">
-    
-    <!-- ═══ DASHBOARD MAESTRO ═══ -->
     <div class="dash-perfil-wrapper">
-        
-        <!-- BARRA IZQUIERDA: Identidad y Estado -->
         <div class="dash-sidebar">
             <div class="user-id-card">
-                <div class="avatar-dash {{ $usuario->avatar_color ?? 'blue' }}">
-                    {{ $usuario->avatar_initial ?? 'U' }}
+                <div
+                    class="avatar-dash {{ $esCuentaGoogle ? '' : ($usuario->avatar_color ?? 'blue') }}"
+                    @if($esCuentaGoogle && !empty($usuario->avatar))
+                        style="background-image: url('{{ $usuario->avatar }}'); background-size: cover; background-position: center; color: transparent;"
+                    @endif
+                >
+                    @if(!$esCuentaGoogle || empty($usuario->avatar))
+                        {{ $usuario->avatar_initial ?? 'U' }}
+                    @endif
                     <span class="badge-status-dot {{ $usuario->email_verified_at ? 'verified' : 'pending' }}"></span>
                 </div>
                 <h2>{{ $usuario->user_nombre }}</h2>
-                <div class="id-tag">Miembro de Co•Labs</div>
-                
+                <div class="id-tag">Miembro de Co-Labs</div>
+
+                @if($esCuentaGoogle)
+                    <div class="security-note" style="margin-top: 16px; border-left-color: #4285F4;">
+                        Cuenta vinculada con Google.
+                    </div>
+                @endif
+
                 @if(!$usuario->email_verified_at)
                     <div class="alert-verification-warning">
-                        <span>⚠️ Cuenta no verificada</span>
-                        <p>Por favor confirma tu correo o corrígelo en el formulario.</p>
+                        <span>Cuenta no verificada</span>
+                        <p>Por favor confirma tu correo o corrige tu direccion en el formulario.</p>
                     </div>
                 @endif
             </div>
 
             <div class="dash-stats">
                 <div class="stat-bubble">
-                    <span class="count">{{ count($usuario->reservas ?? []) }}</span>
+                    <span class="count">{{ $totalReservas }}</span>
                     <span class="label">Reservas</span>
                 </div>
                 <div class="stat-bubble">
-                    <span class="count">★</span>
-                    <span class="label">Activo</span>
+                    <span class="count">{{ $usuario->email_verified_at ? 'Si' : 'No' }}</span>
+                    <span class="label">Verificada</span>
                 </div>
             </div>
         </div>
 
-        <!-- CONTENIDO PRINCIPAL: Información Expandida (Sin Scroll) -->
         <div class="dash-main-content">
-            
             @if(session('success'))
                 <div class="dash-alert success animate-slide-in">
-                    <span class="icon">✅</span> {{ session('success') }}
+                    <span class="icon">Listo:</span> {{ session('success') }}
                 </div>
             @endif
 
             <form id="formPerfil" method="POST" action="{{ route('cliente.perfil.actualizar') }}" class="dash-form">
                 @csrf
-                
+
                 <div class="dash-sections-grid">
-                    
-                    <!-- Bloque: Contacto -->
                     <div class="dash-card-section">
                         <div class="section-title">
-                            <span class="icon">👤</span>
+                            <span class="icon">Perfil</span>
                             <h3>Datos de Contacto</h3>
                         </div>
-                        
+
                         <div class="form-row-dash">
                             <div class="field-dash">
-                                <label for="nombre">Nombre Completo</label>
+                                <label for="nombre">Nombre completo</label>
                                 <input type="text" id="nombre" name="nombre" value="{{ $usuario->user_nombre }}" required>
                             </div>
                         </div>
-                        
+
                         <div class="form-row-dash multi-col">
                             <div class="field-dash">
-                                <label for="email">Correo Electrónico</label>
+                                <label for="numero_documento">Numero de documento</label>
+                                <input type="text" id="numero_documento" name="numero_documento" value="{{ $usuario->numero_documento }}" inputmode="numeric" required>
+                            </div>
+                            <div class="field-dash">
+                                <label for="email">Correo electronico</label>
                                 <input type="email" id="email" name="email" value="{{ $usuario->user_correo }}" required>
                             </div>
                             <div class="field-dash">
-                                <label for="telefono">Teléfono</label>
+                                <label for="telefono">Telefono</label>
                                 <input type="tel" id="telefono" name="telefono" value="{{ $usuario->user_telefono }}" required>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Bloque: Seguridad -->
-                    <div class="dash-card-section security">
-                        <div class="section-title">
-                            <span class="icon">🔒</span>
-                            <h3>Seguridad</h3>
-                        </div>
-                        
-                        <div class="form-row-dash multi-col">
-                            <div class="field-dash">
-                                <label for="password">Contraseña Actual</label>
-                                <input type="password" id="password" name="password" placeholder="••••••••">
+                    @if($esCuentaGoogle)
+                        <div class="dash-card-section security">
+                            <div class="section-title">
+                                <span class="icon">Seguridad</span>
+                                <h3>Cuenta de Google</h3>
                             </div>
-                            <div class="field-dash">
-                                <label for="newpassword">Nueva Contraseña</label>
-                                <input type="password" id="newpassword" name="newpassword" placeholder="••••••••">
+                            <div class="security-note" style="border-left-color: #4285F4;">
+                                Esta cuenta se autentica con Google. El cambio de contrasena se gestiona desde tu cuenta de Google.
                             </div>
                         </div>
-                        <div class="security-note">
-                            Cambia tu contraseña periódicamente para mantener tu cuenta segura.
-                        </div>
-                    </div>
+                    @else
+                        <div class="dash-card-section security">
+                            <div class="section-title">
+                                <span class="icon">Seguridad</span>
+                                <h3>Contrasena</h3>
+                            </div>
 
+                            <div class="form-row-dash multi-col">
+                                <div class="field-dash">
+                                    <label for="password">Contrasena actual</label>
+                                    <input type="password" id="password" name="password" placeholder="********">
+                                </div>
+                                <div class="field-dash">
+                                    <label for="newpassword">Nueva contrasena</label>
+                                    <input type="password" id="newpassword" name="newpassword" placeholder="********">
+                                </div>
+                            </div>
+                            <div class="security-note">
+                                Cambia tu contrasena periodicamente para mantener tu cuenta segura.
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
-                <!-- Footer de Acciones (Fijo abajo en el dash) -->
                 <div class="dash-form-actions">
                     <button type="submit" class="btn-save-dash btn-guardar">
-                        Guardar Cambios del Perfil
+                        Guardar cambios del perfil
                     </button>
                 </div>
             </form>
         </div>
     </div>
-
 </section>
 @endsection
 

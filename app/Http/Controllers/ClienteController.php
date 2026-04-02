@@ -86,59 +86,59 @@ class ClienteController extends Controller
         if (!$usuario->email_verified_at) {
             return redirect()->route('verification.notice');
         }
-        
-        return view('cliente.perfil', compact('usuario'));
+
+        $totalReservas = Reserva::where('user_id', (int) $usuario->id)->count();
+
+        return view('cliente.perfil', compact('usuario', 'totalReservas'));
     }
 
     public function actualizarPerfil(Request $request)
     {
         $user_id = Auth::id();
+        $user = \App\Models\User::findOrFail($user_id);
+        $esCuentaGoogle = !empty($user->google_id);
 
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:usuarios,user_correo,' . $user_id . ',user_id',
+            'numero_documento' => 'required|string|min:6|regex:/^[0-9]+$/|unique:usuarios,numero_documento,' . $user_id . ',id',
+            'email' => 'required|email|max:100|unique:usuarios,user_correo,' . $user_id . ',id',
             'telefono' => 'required|string|max:15',
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
+            'numero_documento.required' => 'El numero de documento es obligatorio.',
+            'numero_documento.min' => 'El numero de documento debe tener al menos 6 caracteres.',
+            'numero_documento.regex' => 'El numero de documento solo puede contener numeros.',
+            'numero_documento.unique' => 'Este numero de documento ya esta registrado.',
             'email.required' => 'El correo es obligatorio.',
-            'email.email' => 'El formato del correo es inválido.',
-            'email.unique' => 'El correo electrónico ya está en uso por otro usuario.',
-            'telefono.required' => 'El teléfono es obligatorio.'
+            'email.email' => 'El formato del correo es invalido.',
+            'email.unique' => 'El correo electronico ya esta en uso por otro usuario.',
+            'telefono.required' => 'El telefono es obligatorio.'
         ]);
 
-        $updateData = [
-            'user_nombre' => $request->nombre,
-            'user_correo' => $request->email,
-            'user_telefono' => $request->telefono,
-        ];
-
-        if ($request->filled('password')) {
-            // Aquí iría la validación de la auth y bcrypt para la nueva contraseña.
-            // Para el alcance temporal, simplemente la actualizamos:
-            $updateData['user_contrasena'] = bcrypt($request->newpassword);
+        if ($esCuentaGoogle && ($request->filled('password') || $request->filled('newpassword'))) {
+            return redirect()
+                ->route('cliente.perfil')
+                ->with('error', 'Esta cuenta esta vinculada con Google. El cambio de contrasena se realiza desde Google.');
         }
 
-        $user = \App\Models\User::findOrFail($user_id);
         $oldEmail = $user->user_correo;
 
         $user->user_nombre = $request->nombre;
+        $user->numero_documento = $request->numero_documento;
         $user->user_correo = $request->email;
         $user->user_telefono = $request->telefono;
 
-        if ($request->filled('password') && $request->filled('newpassword')) {
-            // Se asume que el campo 'newpassword' es el que contiene la nueva clave
+        if (!$esCuentaGoogle && $request->filled('password') && $request->filled('newpassword')) {
             $user->user_contrasena = bcrypt($request->newpassword);
         }
 
         $user->save();
 
-        // Si el correo cambió, el evento 'booted' en User.php ya puso email_verified_at en null.
-        // Ahora disparamos la notificación de verificación si no está verificado.
         if ($user->user_correo !== $oldEmail) {
             $user->sendEmailVerificationNotification();
-            $msg = '✅ Perfil actualizado. Se ha enviado un nuevo correo de verificación a su nueva dirección.';
+            $msg = 'Perfil actualizado. Se envio un nuevo correo de verificacion a tu nueva direccion.';
         } else {
-            $msg = '✅ Perfil actualizado correctamente';
+            $msg = 'Perfil actualizado correctamente.';
         }
 
         return redirect()->route('cliente.perfil')->with('success', $msg);
@@ -236,8 +236,8 @@ class ClienteController extends Controller
 
         // Obtener calificaciones con nombre del usuario
         $calificaciones = Calificacion::where('espacio_id', $id)
-            ->join('usuarios', 'calificaciones.user_id', '=', 'usuarios.user_id')
-            ->select('calificaciones.calif_txt', 'calificaciones.calif_id', 'calificaciones.calif_puntuacion', 'usuarios.user_nombre', 'usuarios.user_id')
+            ->join('usuarios', 'calificaciones.user_id', '=', 'usuarios.id')
+            ->select('calificaciones.calif_txt', 'calificaciones.calif_id', 'calificaciones.calif_puntuacion', 'usuarios.user_nombre', DB::raw('usuarios.id as user_id'))
             ->orderBy('calificaciones.calif_id', 'DESC')
             ->get()
             ->toArray();
@@ -308,7 +308,7 @@ class ClienteController extends Controller
             ->first();
 
         if ($conflicto) {
-            $esPropia = $conflicto->user_id === Auth::id();
+            $esPropia = (int) $conflicto->user_id === (int) Auth::id();
 
             if ($conflicto->rsva_estado === 'Aceptada') {
                 return response()->json([
@@ -451,7 +451,7 @@ class ClienteController extends Controller
         if ($conflicto) {
             if ($conflicto->rsva_estado === 'Aceptada') {
                 return back()->with('error', '⚠️ Lo sentimos, alguien más acaba de reservar este espacio en ese horario.');
-            } elseif ($conflicto->user_id === Auth::id() && $conflicto->rsva_estado === 'Pendiente') {
+            } elseif ((int) $conflicto->user_id === (int) Auth::id() && $conflicto->rsva_estado === 'Pendiente') {
                 return back()->with('error', '⚠️ Ya tienes una solicitud en espera para este horario.');
             }
         }
@@ -479,3 +479,4 @@ class ClienteController extends Controller
         return view('cliente.ayuda');
     }
 }
+
