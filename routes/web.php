@@ -54,11 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/cambiar-correo', [App\Http\Controllers\Auth\VerificacionController::class, 'cambiarCorreo'])->name('verification.cambiar-correo');
 });
 
-Route::middleware(['auth', 'es.cliente', 'perfil.google.completo'])->group(function () {
-    Route::get('/cliente/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
-    Route::post('/cliente/perfil', [ClienteController::class, 'actualizarPerfil'])->name('cliente.perfil.actualizar');
-});
-
 Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'verified', 'es.cliente', 'perfil.google.completo'])->group(function () {
     Route::get('/', [ClienteController::class, 'index'])->name('index');
     Route::get('/buscar', [ClienteController::class, 'buscarEspacios'])->name('buscar_espacios');

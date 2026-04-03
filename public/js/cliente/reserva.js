@@ -266,7 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return {
                     ...bloque,
                     disponible: res.disponible,
-                    estado: res.estado
+                    estado: res.estado,
+                    mensaje: res.mensaje || ''
                 };
             })
         );
@@ -357,11 +358,14 @@ document.addEventListener('DOMContentLoaded', () => {
         modalBody.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="spinner-border text-primary" role="status"></div><p class="mt-3 text-muted">Buscando alternativas disponibles...</p></div>';
 
         try {
+            const tokenActual = obtenerTokenCsrfActual();
             const response = await fetch(alternativasUrl, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
+                    'X-CSRF-TOKEN': tokenActual,
+                    'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
@@ -372,7 +376,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
             
-            const data = await response.json();
+            if (!response.ok) {
+                if (response.status === 419 || response.status === 401 || response.status === 403) {
+                    altContainer.innerHTML = '';
+                    modalBody.innerHTML = '<div class="text-center text-danger p-4"><p>Tu sesion expiro. Recarga la pagina para continuar.</p></div>';
+                    return;
+                }
+
+                altContainer.innerHTML = '';
+                modalBody.innerHTML = '<div class="text-center text-danger p-4"><p>No fue posible cargar alternativas en este momento.</p></div>';
+                return;
+            }
+
+            const data = await response.json().catch(() => ({}));
             
             if (data.success && data.alternativas.length > 0) {
                 // Alerta con botón para abrir el pop-up
@@ -533,12 +549,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.confirmBooking = () => {
+        const tokenActual = obtenerTokenCsrfActual();
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = confirmarUrl;
 
         const campos = {
-            '_token': csrfToken,
+            '_token': tokenActual,
             'espacio_id': espacioId,
             'fecha': fechaInput.value,
             'hora_inicio': selectInicio.value,

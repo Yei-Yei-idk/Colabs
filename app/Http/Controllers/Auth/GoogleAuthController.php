@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BienvenidaCuentaCreadaMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -74,19 +77,23 @@ class GoogleAuthController extends Controller
 
         if ($this->necesitaCompletarPerfilGoogle($usuario)) {
             $mensaje = $esNuevoUsuario
-                ? 'Tu cuenta con Google fue creada. Completa tu perfil para continuar.'
-                : 'Completa tu perfil para continuar.';
+                ? 'Bienvenido a Colabs. Tu cuenta con Google fue creada correctamente. Completa tu perfil para continuar.'
+                : 'Tu cuenta ya existia. Completa los datos faltantes de tu perfil para continuar.';
 
             return redirect()->route('google.perfil.completar')->with('status', $mensaje);
         }
 
         if ((int) $usuario->rol_id === 1 || (int) $usuario->rol_id === 2) {
             return redirect()->route('admin.dashboard')
-                ->with('status', $esNuevoUsuario ? 'Cuenta de Google creada correctamente.' : 'Ingreso con Google completado correctamente.');
+                ->with('status', $esNuevoUsuario
+                    ? 'Bienvenido. Tu cuenta de Google fue creada correctamente.'
+                    : 'Tu cuenta ya estaba vinculada con Google. Iniciaste sesion correctamente.');
         }
 
         return redirect()->route('cliente.index')
-            ->with('status', $esNuevoUsuario ? 'Cuenta de Google creada correctamente. Bienvenido.' : 'Ingreso con Google completado correctamente. Bienvenido.');
+            ->with('status', $esNuevoUsuario
+                ? 'Bienvenido a Colabs. Tu cuenta de Google fue creada correctamente.'
+                : 'Tu cuenta ya estaba vinculada con Google. Iniciaste sesion correctamente.');
     }
 
     public function mostrarCompletarPerfil()
@@ -165,6 +172,16 @@ class GoogleAuthController extends Controller
         $usuario->user_nombre = trim($datos['user_nombre']);
         $usuario->user_telefono = (int) $datos['user_telefono'];
         $usuario->save();
+
+        try {
+            Mail::to($usuario->user_correo)->send(new BienvenidaCuentaCreadaMail($usuario));
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo enviar el correo de bienvenida al completar perfil Google.', [
+                'usuario_id' => $usuario->id,
+                'correo' => $usuario->user_correo,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return $this->redirigirAlPanel($usuario)
             ->with('status', 'Perfil completado correctamente. Bienvenido a Colabs.');

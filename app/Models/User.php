@@ -134,6 +134,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return explode(' ', trim($this->user_nombre))[0];
     }
 
+    public function reservas()
+    {
+        return $this->hasMany(\App\Models\Reserva::class, 'user_id', 'id');
+    }
+
+    public function calificaciones()
+    {
+        return $this->hasMany(\App\Models\Calificacion::class, 'user_id', 'id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *

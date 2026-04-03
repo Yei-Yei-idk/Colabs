@@ -44,12 +44,10 @@
         <div class="notificaciones-menu" id="notificacionesMenu">
           
           @php
-              $notificaciones = auth()->check() ? \App\Models\Reserva::with('espacio')
-                  ->where('user_id', auth()->id())
-                  ->orderBy('reserva_id', 'desc')
-                  ->take(5)
-                  ->get() : [];
-              $notificacionesStr = implode('|', collect($notificaciones)->map(function($r) { return $r->reserva_id . '-' . $r->rsva_estado; })->toArray());
+              $notificaciones = $notificaciones ?? collect();
+              $notificacionesStr = collect($notificaciones)
+                  ->map(function ($r) { return $r->reserva_id . '-' . $r->rsva_estado; })
+                  ->implode('|');
           @endphp
           @forelse($notificaciones as $reserva)
               @php /** @var \App\Models\Reserva $reserva */ @endphp
@@ -120,10 +118,13 @@
     <div class="popup-buttons">
       <button class="cancelar-btn" onclick="closeLogoutPopup()">Cancelar</button>
       
-      <button class="logout-btn" onclick="window.location.href='{{ route('logout') }}'">Cerrar sesión</button>
+      <button class="logout-btn" onclick="document.getElementById('logout-form-cliente').submit()">Cerrar sesión</button>
     </div>
   </div>
 </div>
+<form id="logout-form-cliente" action="{{ route('logout') }}" method="POST" style="display:none;">
+  @csrf
+</form>
 
 <main>
     @yield('content')
@@ -219,3 +220,4 @@
     @yield('scripts')
 </body>
 </html>
+

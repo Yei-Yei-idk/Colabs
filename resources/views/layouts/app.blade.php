@@ -18,7 +18,7 @@
 
     @stack('styles')
 </head>
-<body data-session-status="{{ session('status') ?? '' }}">
+<body data-session-status="{{ session('status') ?? session('success') ?? session('error') ?? '' }}">
 
     {{-- ===== HEADER ===== --}}
     <header>

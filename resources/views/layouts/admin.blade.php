@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Panel Admin') - Co•labs</title>
 
     <link rel="icon" href="{{ asset('ASSETS/logo.png') }}" type="image/png">
@@ -18,7 +19,7 @@
     @yield('styles')
 </head>
 
-<body>
+<body data-session-status="{{ session('status') ?? session('success') ?? session('error') ?? '' }}">
 
     {{-- ===================== SIDEBAR ===================== --}}
     <aside class="sidebar">
@@ -102,7 +103,7 @@
                     Cancelar
                 </button>
                 <button
-                    onclick="window.location.href='{{ route('logout') }}'"
+                    onclick="document.getElementById('logout-form-admin').submit()"
                     style="padding:.6rem 1.4rem; border-radius:8px; border:none; background:#ef4444; color:#fff; font-size:.95rem; cursor:pointer; font-weight:600; transition:background .2s;"
                     onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#ef4444'">
                     Sí, cerrar sesión
@@ -110,6 +111,10 @@
             </div>
         </div>
     </div>
+
+    <form id="logout-form-admin" action="{{ route('logout') }}" method="POST" style="display:none;">
+        @csrf
+    </form>
 
     <style>
         @keyframes fadeInUp {
@@ -128,6 +133,27 @@
             backdrop-filter: blur(3px);
         }
     </style>
+
+    <div id="snackbar"></div>
+
+    <script>
+        function snack(msg) {
+            const bar = document.getElementById('snackbar');
+            if (!bar || !msg) return;
+            bar.innerHTML = msg;
+            bar.classList.add('show');
+            setTimeout(() => {
+                bar.classList.remove('show');
+            }, 3500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusMsg = document.body.getAttribute('data-session-status');
+            if (statusMsg) {
+                snack(statusMsg);
+            }
+        });
+    </script>
 
     @yield('scripts')
 
@@ -165,3 +191,4 @@
 </body>
 
 </html>
+
