@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\BienvenidaCuentaCreadaMail;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class RegistrarseController extends Controller
 {
@@ -62,16 +59,6 @@ class RegistrarseController extends Controller
             'user_contrasena' => $validated['user_contrasena'],
             'rol_id' => 3,
         ]);
-
-        try {
-            Mail::to($usuario->user_correo)->send(new BienvenidaCuentaCreadaMail($usuario));
-        } catch (\Throwable $e) {
-            Log::warning('No se pudo enviar el correo de bienvenida de registro.', [
-                'usuario_id' => $usuario->id,
-                'correo' => $usuario->user_correo,
-                'error' => $e->getMessage(),
-            ]);
-        }
 
         Auth::login($usuario);
 

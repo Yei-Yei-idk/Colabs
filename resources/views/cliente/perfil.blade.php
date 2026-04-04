@@ -78,11 +78,11 @@
                         <div class="form-row-dash multi-col">
                             <div class="field-dash">
                                 <label for="numero_documento">Numero de documento</label>
-                                <input type="text" id="numero_documento" name="numero_documento" value="{{ $usuario->numero_documento }}" inputmode="numeric" required>
+                                <input type="text" id="numero_documento" name="numero_documento" value="{{ $usuario->numero_documento }}" inputmode="numeric" disabled>
                             </div>
                             <div class="field-dash">
                                 <label for="email">Correo electronico</label>
-                                <input type="email" id="email" name="email" value="{{ $usuario->user_correo }}" required>
+                                <input type="email" id="email" name="email" value="{{ $usuario->user_correo }}" @if($esCuentaGoogle) disabled @endif required>
                             </div>
                             <div class="field-dash">
                                 <label for="telefono">Telefono</label>
@@ -98,28 +98,28 @@
                                 <h3>Cuenta de Google</h3>
                             </div>
                             <div class="security-note" style="border-left-color: #4285F4;">
-                                Esta cuenta se autentica con Google. El cambio de contrasena se gestiona desde tu cuenta de Google.
+                                Esta cuenta se autentica con Google. El cambio de contraseña se gestiona desde tu cuenta de Google.
                             </div>
                         </div>
                     @else
                         <div class="dash-card-section security">
                             <div class="section-title">
                                 <span class="icon">Seguridad</span>
-                                <h3>Contrasena</h3>
+                                <h3>Contraseña</h3>
                             </div>
 
                             <div class="form-row-dash multi-col">
                                 <div class="field-dash">
-                                    <label for="password">Contrasena actual</label>
+                                    <label for="password">Contraseña actual</label>
                                     <input type="password" id="password" name="password" placeholder="********">
                                 </div>
                                 <div class="field-dash">
-                                    <label for="newpassword">Nueva contrasena</label>
+                                    <label for="newpassword">Nueva contraseña</label>
                                     <input type="password" id="newpassword" name="newpassword" placeholder="********">
                                 </div>
                             </div>
                             <div class="security-note">
-                                Cambia tu contrasena periodicamente para mantener tu cuenta segura.
+                                Cambia tu contraseña periodicamente para mantener tu cuenta segura.
                             </div>
                         </div>
                     @endif

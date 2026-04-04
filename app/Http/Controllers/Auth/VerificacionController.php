@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BienvenidaCuentaCreadaMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Notifications\VerifyEmailCustom;
@@ -162,6 +165,16 @@ class VerificacionController extends Controller
         $user->verification_token = null; // Destruir token por seguridad
         $user->verification_token_expires_at = null;
         $user->save();
+
+        try {
+            Mail::to($user->user_correo)->send(new BienvenidaCuentaCreadaMail($user));
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo enviar el correo de bienvenida tras verificar cuenta.', [
+                'usuario_id' => $user->id,
+                'correo' => $user->user_correo,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         Session::forget('reenvios_verificacion'); // Restablecer intentos
 
