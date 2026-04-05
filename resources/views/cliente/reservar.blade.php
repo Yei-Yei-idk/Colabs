@@ -97,7 +97,6 @@
                             <div class="date-input-container">
                                 <input type="date" id="fecha" name="fecha" class="form-input"
                                     min="{{ $hoyBogota }}" value="{{ $hoyBogota }}" required>
-                                <span class="calendar-icon">📅</span>
                             </div>
                         </div>
                         <div class="form-group">
