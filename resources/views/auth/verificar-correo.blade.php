@@ -3,7 +3,7 @@
 @section('title', 'Verifica tu correo')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/auth/verificacion.css') }}">
+    <link rel="stylesheet" href="/css/auth/verificacion.css">
 @endpush
 
 @section('content')

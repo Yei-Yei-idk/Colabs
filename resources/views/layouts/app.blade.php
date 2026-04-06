@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
     {{-- CSS principal --}}
-    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="/css/index.css">
 
     @stack('styles')
 </head>

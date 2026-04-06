@@ -4,7 +4,7 @@
 @section('page-title', 'Solicitudes de reservas')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/reservas.css') }}">
+    <link rel="stylesheet" href="/css/admin/reservas.css">
 @endsection
 
 @section('content')

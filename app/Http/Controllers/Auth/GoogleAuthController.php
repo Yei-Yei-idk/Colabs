@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class GoogleAuthController extends Controller
 {
@@ -24,7 +25,26 @@ class GoogleAuthController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
+        } catch (InvalidStateException $e) {
+            Log::warning('Google OAuth devolvio estado invalido. Se reintenta en modo stateless.', [
+                'error' => $e->getMessage(),
+            ]);
+
+            try {
+                $googleUser = Socialite::driver('google')->stateless()->user();
+            } catch (\Throwable $fallbackException) {
+                Log::error('Fallo login Google en fallback stateless.', [
+                    'error' => $fallbackException->getMessage(),
+                ]);
+
+                return redirect()->route('login')
+                    ->withErrors(['user' => 'No fue posible iniciar sesion con Google. Intentalo nuevamente.']);
+            }
         } catch (\Throwable $e) {
+            Log::error('Fallo login Google en callback.', [
+                'error' => $e->getMessage(),
+            ]);
+
             return redirect()->route('login')
                 ->withErrors(['user' => 'No fue posible iniciar sesion con Google. Intentalo nuevamente.']);
         }

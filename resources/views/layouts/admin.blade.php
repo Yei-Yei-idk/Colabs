@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     {{-- CSS del panel admin. Mueve super.css a public/css/admin/admin.css --}}
-    <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
+    <link rel="stylesheet" href="/css/admin/admin.css">
 
     @yield('styles')
 </head>

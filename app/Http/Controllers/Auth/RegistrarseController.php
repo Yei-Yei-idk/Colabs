@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RegistrarseController extends Controller
 {
@@ -62,7 +62,19 @@ class RegistrarseController extends Controller
 
         Auth::login($usuario);
 
-        event(new Registered($usuario));
+        // El envio del correo de verificacion se maneja desde verification.notice
+        // para evitar que un fallo SMTP bloquee el registro.
+        try {
+            // Conservamos el punto de extension por si existen listeners de negocio
+            // distintos al correo.
+            event(new \Illuminate\Auth\Events\Registered($usuario));
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo despachar el evento Registered tras crear cuenta.', [
+                'usuario_id' => $usuario->id,
+                'correo' => $usuario->user_correo,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()
             ->route('verification.notice')

@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Models\Reserva;
 use App\Observers\ReservaObserver;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Reserva::observe(ReservaObserver::class);
 
         \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
@@ -29,8 +36,8 @@ class AppServiceProvider extends ServiceProvider
                 ->view('emails.verificar-correo', ['url' => $url, 'user' => $notifiable]);
         });
 
-        \Illuminate\Support\Facades\View::composer('layouts.cliente', function ($view) {
-            $userId = auth()->id();
+        View::composer('layouts.cliente', function ($view) {
+            $userId = Auth::id();
 
             if (!$userId) {
                 $view->with('notificaciones', collect());

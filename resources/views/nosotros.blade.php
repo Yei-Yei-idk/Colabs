@@ -3,7 +3,7 @@
 @section('title', 'Nosotros - Colabs')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/nosotros.css') }}">
+<link rel="stylesheet" href="/css/nosotros.css">
 @endpush
 
 @section('content')

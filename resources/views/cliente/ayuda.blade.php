@@ -3,7 +3,7 @@
 @section('title', 'Ayuda y Soporte - COLABS')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
+    <link rel="stylesheet" href="/css/ayuda.css">
 @endsection
 
 @section('content')
