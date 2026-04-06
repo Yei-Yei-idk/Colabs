@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Espacio;
 use App\Models\Reserva;
 use App\Models\Calificacion;
@@ -121,6 +122,24 @@ class ClienteController extends Controller
                 ->with('error', 'Esta cuenta esta vinculada con Google. El cambio de contrasena se realiza desde Google.');
         }
 
+        if (!$esCuentaGoogle && ($request->filled('password') || $request->filled('newpassword'))) {
+            $request->validate([
+                'password' => 'required|string',
+                'newpassword' => 'required|string|min:8|different:password',
+            ], [
+                'password.required' => 'La contrasena actual es obligatoria para cambiar la contrasena.',
+                'newpassword.required' => 'La nueva contrasena es obligatoria.',
+                'newpassword.min' => 'La nueva contrasena debe tener al menos 8 caracteres.',
+                'newpassword.different' => 'La nueva contrasena debe ser diferente a la actual.',
+            ]);
+
+            if (!Hash::check($request->password, $user->user_contrasena)) {
+                return redirect()
+                    ->route('cliente.perfil')
+                    ->with('error', 'La contrasena actual no es correcta.');
+            }
+        }
+
         $oldEmail = $user->user_correo;
 
         $user->user_nombre = $request->nombre;
@@ -129,7 +148,7 @@ class ClienteController extends Controller
         $user->user_telefono = $request->telefono;
 
         if (!$esCuentaGoogle && $request->filled('password') && $request->filled('newpassword')) {
-            $user->user_contrasena = bcrypt($request->newpassword);
+            $user->user_contrasena = Hash::make($request->newpassword);
         }
 
         $user->save();
@@ -479,4 +498,3 @@ class ClienteController extends Controller
         return view('cliente.ayuda');
     }
 }
-

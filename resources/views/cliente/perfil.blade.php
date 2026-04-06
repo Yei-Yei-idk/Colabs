@@ -52,12 +52,6 @@
         </div>
 
         <div class="dash-main-content">
-            @if(session('success'))
-                <div class="dash-alert success animate-slide-in">
-                    <span class="icon">Listo:</span> {{ session('success') }}
-                </div>
-            @endif
-
             <form id="formPerfil" method="POST" action="{{ route('cliente.perfil.actualizar') }}" class="dash-form">
                 @csrf
 
@@ -78,11 +72,11 @@
                         <div class="form-row-dash multi-col">
                             <div class="field-dash">
                                 <label for="numero_documento">Numero de documento</label>
-                                <input type="text" id="numero_documento" name="numero_documento" value="{{ $usuario->numero_documento }}" inputmode="numeric" disabled>
+                                <input type="text" id="numero_documento" name="numero_documento" value="{{ $usuario->numero_documento }}" inputmode="numeric" readonly>
                             </div>
                             <div class="field-dash">
                                 <label for="email">Correo electronico</label>
-                                <input type="email" id="email" name="email" value="{{ $usuario->user_correo }}" @if($esCuentaGoogle) disabled @endif required>
+                                <input type="email" id="email" name="email" value="{{ $usuario->user_correo }}" @if($esCuentaGoogle) readonly @endif required>
                             </div>
                             <div class="field-dash">
                                 <label for="telefono">Telefono</label>

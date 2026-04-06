@@ -1465,12 +1465,20 @@ nav img {
   outline: none;
 }
 
-.field-dash input:disabled {
+.field-dash input:disabled,
+.field-dash input[readonly] {
   background: #f8fafc;
   border-color: #f1f5f9;
   color: #64748b;
   cursor: default;
   opacity: 0.8;
+}
+
+.field-dash input[readonly]:focus {
+  background: #f8fafc;
+  border-color: #f1f5f9;
+  box-shadow: none;
+  outline: none;
 }
 
 .error-hint { font-size: 0.75rem; color: #f59e0b; font-weight: 700; margin-top: 4px; }
