@@ -1,51 +1,64 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Seleccionamos celdas con clases tanto en minúsculas como con la primera en mayúscula para mayor seguridad
-    const reservaCells = document.querySelectorAll('.tabla-reservas td.reservado, .tabla-reservas td.pendiente, .tabla-reservas td.Pendiente, .tabla-reservas td.Reservado');
-    let tooltip = document.getElementById('reserva-tooltip');
+    // 1. CRONÓMETRO REGRESIVO (COUNTDOWN)
+    function actualizarContadores() {
+        const badges = document.querySelectorAll('.countdown-badge');
+        const ahora = new Date();
 
-    if (!tooltip) {
-        tooltip = document.createElement('div');
-        tooltip.id = 'reserva-tooltip';
-        tooltip.className = 'reserva-tooltip';
-        document.body.appendChild(tooltip);
+        badges.forEach(badge => {
+            const fechaFinStr = badge.dataset.fin; // YYYY-MM-DD HH:MM:SS
+            if (!fechaFinStr) return;
+
+            // Arreglar compatibilidad de fecha en Safari/iOS (reemplazar guiones por slashes)
+            const f = new Date(fechaFinStr.replace(/-/g, '/'));
+            const diffMs = f - ahora;
+
+            if (diffMs <= 0) {
+                badge.textContent = "⏱ Tiempo Agotado";
+                badge.className = "countdown-badge cd-expired";
+            } else {
+                const diffMinutos = Math.floor(diffMs / 60000);
+                const hrs = Math.floor(diffMinutos / 60);
+                const mins = diffMinutos % 60;
+                
+                let text = "⏱ Quedan ";
+                if(hrs > 0) text += `${hrs}h ${mins}m`;
+                else text += `${mins}m`;
+                
+                badge.textContent = text;
+
+                // Colores
+                if (diffMinutos > 30) badge.className = "countdown-badge cd-green";
+                else if (diffMinutos > 5) badge.className = "countdown-badge cd-yellow";
+                else badge.className = "countdown-badge cd-red";
+            }
+        });
     }
 
-    reservaCells.forEach(cell => {
-        cell.addEventListener('mouseenter', () => {
-            const userName = cell.dataset.userName || 'N/A';
-            const userEmail = cell.dataset.userEmail || 'N/A';
-            const espacioNombre = cell.dataset.espacioNombre || 'N/A';
-            const reservaId = cell.dataset.reservaId || 'N/A';
-            const userPhone = cell.dataset.userPhone || 'N/A';
+    // Ejecutar contador inmediatamente y luego cada 10 segundos
+    actualizarContadores();
+    setInterval(actualizarContadores, 10000);
+
+    // 2. MODAL DE CAMBIO DE HORA
+    window.cerrarModalHora = function() {
+        document.getElementById('modal-hora').style.display = 'none';
+    }
+
+    const celdasOcupadas = document.querySelectorAll('.tabla-reservas td[data-reserva-id]');
+    celdasOcupadas.forEach(celda => {
+        // Al darle click a una celda reservada en el calendario, abre el modal
+        celda.addEventListener('click', (e) => {
+            const reservaId = celda.dataset.reservaId;
+            const horaFinRaw = celda.dataset.horaFinRaw; // HH:MM:SS
             
-            // Verificamos el estado de forma más robusta
-            const esPendiente = cell.classList.contains('pendiente') || cell.classList.contains('Pendiente');
-            const estado = esPendiente ? 'Pendiente de Aprobación' : 'Reserva Confirmada';
-
-            tooltip.innerHTML = `
-                <p><strong>Reserva ID:</strong> ${reservaId}</p>
-                <p><strong>Estado:</strong> ${estado}</p>
-                <p><strong>Espacio:</strong> ${espacioNombre}</p>
-                <p><strong>Usuario:</strong> ${userName}</p>
-                <p><strong>Email:</strong> ${userEmail}</p>
-                <p><strong>Teléfono:</strong> ${userPhone}</p>
-            `;
-
-            const rect = cell.getBoundingClientRect();
-            tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2}px`;
-            tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 10}px`;
-
-            if (parseFloat(tooltip.style.left) < 100) {
-                tooltip.style.left = `${rect.left + window.scrollX + 100}px`;
+            if(reservaId && horaFinRaw) {
+                document.getElementById('modal-reserva-id').value = reservaId;
+                // HH:MM:SS -> HH:MM para el input type="time"
+                document.getElementById('modal-hora-fin').value = horaFinRaw.substring(0, 5);
+                document.getElementById('modal-hora').style.display = 'flex';
             }
-
-            tooltip.style.visibility = 'visible';
-            tooltip.style.opacity = '1';
         });
-
-        cell.addEventListener('mouseleave', () => {
-            tooltip.style.visibility = 'hidden';
-            tooltip.style.opacity = '0';
-        });
+        
+        // Quitar el cursor pointer si esta disponible para que quede claro que solo ocupados son clickeables
+        celda.style.cursor = 'pointer';
     });
 });

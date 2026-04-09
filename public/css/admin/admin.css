@@ -1287,3 +1287,41 @@ td {
     padding: 15px;
   }
 }
+ 
+
+/* CSS del Contador y Modal integrado aquí para asegurar que cargue */
+.countdown-badge {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+.countdown-badge:hover {
+    transform: scale(1.05);
+}
+.cd-green { background-color: #10b981; }  /* > 30 min */
+.cd-yellow { background-color: #f59e0b; color: #fff;} /* < 30 min */
+.cd-red { background-color: #ef4444; }    /* < 5 min */
+.cd-expired { background-color: #6b7280; } /* Vencida */
+
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+    display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+}
+.modal-content {
+    background: white; border-radius: 12px; padding: 25px; width: 90%; max-width: 350px;
+    text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.animate-pop { animation: popIn 0.3s ease-out; }
+@keyframes popIn { from { transform: scale(0.9); opacity:0; } to { transform: scale(1); opacity:1; } }
+
+.input-hora-grande {
+    font-size: 1.5rem; padding: 10px; width: 80%; border: 2px solid #ccc; border-radius: 8px; margin: 10px 0;text-align: center;
+}
+.btn-cancel { background: #9ca3af; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;}
+.btn-save { background: #facc15; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;}
