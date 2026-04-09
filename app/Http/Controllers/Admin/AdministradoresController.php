@@ -91,7 +91,7 @@ class AdministradoresController extends Controller
     }
 
     /**
-     * Actualiza los datos de un administrador.
+     * Actualiza solo el correo de un administrador (según el código original del usuario).
      */
     public function update(Request $request, $id)
     {
@@ -102,30 +102,16 @@ class AdministradoresController extends Controller
         $usuario = User::findOrFail($id);
 
         $request->validate([
-            'cedula'   => ['required', 'numeric', 'min_digits:7', 'unique:usuarios,numero_documento,' . $id],
-            'nombre'   => ['required', 'string', 'max:255'],
             'correo'   => ['required', 'email', 'unique:usuarios,user_correo,' . $id],
-            'telefono' => ['required', 'numeric', 'digits:10'],
-            'contra'   => ['nullable', 'string', 'min:8'], // Opcional al editar
         ], [
-            'cedula.min_digits' => 'La cédula en Colombia debe tener al menos 7 dígitos.',
-            'telefono.digits'   => 'El número de teléfono en Colombia debe tener 10 dígitos.',
-            'contra.min'        => 'La contraseña debe tener al menos 8 caracteres.',
+            'correo.required' => 'El correo es obligatorio.',
+            'correo.email'    => 'El formato del correo no es válido.',
+            'correo.unique'   => 'Este correo ya está registrado.',
         ]);
 
-        $data = [
-            'numero_documento' => $request->cedula,
-            'user_nombre'      => $request->nombre,
-            'user_correo'      => $request->correo,
-            'user_telefono'    => $request->telefono,
-        ];
-
-        // Solo actualizar contraseña si se proporcionó una nueva
-        if ($request->filled('contra')) {
-            $data['user_contrasena'] = $request->contra;
-        }
-
-        $usuario->update($data);
+        $usuario->update([
+            'user_correo' => $request->correo
+        ]);
 
         return redirect()->route('admin.gestion_admin.index')
                          ->with('success', 'Administrador actualizado correctamente');
