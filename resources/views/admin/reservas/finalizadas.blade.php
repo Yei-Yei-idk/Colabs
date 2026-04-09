@@ -35,8 +35,7 @@
     @forelse ($reservas as $r)
         <article class="reserva-card">
             <div class="reserva-header">
-                <span class="reserva-id">#{{ $r->reserva_id }}</span>
-                <span class="reserva-badge badge-finalizada">{{ $r->rsva_estado }}</span>
+                <span class="reserva-badge">{{ $r->rsva_estado }}</span>
             </div>
 
             <div class="user-info">
@@ -75,7 +74,13 @@
                 </div>
                 <div class="detail-item">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    💲 {{ number_format($r->espacio->esp_precio_hora ?? 0, 0, ',', '.') }} COP
+                    @php
+                        $inicio = \Carbon\Carbon::parse($r->rsva_hora_inicio);
+                        $fin = \Carbon\Carbon::parse($r->rsva_hora_fin);
+                        $horas = $inicio->diffInMinutes($fin) / 60;
+                        $total = $horas * ($r->espacio->esp_precio_hora ?? 0);
+                    @endphp
+                    {{ number_format($total, 0, ',', '.') }} COP (Total)
                 </div>
             </div>
 
