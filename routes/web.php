@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EspaciosController;
 use App\Http\Controllers\Admin\ReservasController;
+use App\Http\Controllers\Admin\AdministradoresController;
 use App\Http\Controllers\BackupController;
 use Illuminate\Http\Request;
 
@@ -117,5 +118,8 @@ Route::prefix('admin')
         Route::post('/reservas/actualizar-hora',      [ReservasController::class, 'actualizarHora'])->name('reservas.actualizar_hora');
         Route::get('/reservas/del-dia',              [ReservasController::class, 'reservasDelDia'])->name('reservas.del_dia');
         Route::post('/reservas/sincronizar-estados', [ReservasController::class, 'sincronizarEstados'])->name('reservas.sincronizar_estados');
-        Route::get('/usuarios',             fn() => 'próximamente')->name('usuarios.index');
+        Route::get('/gestion_admin', [AdministradoresController::class, 'index'])->name('gestion_admin.index');
+        Route::get('/gestion_admin/nuevo', fn() => 'Formulario de agregar próximamente')->name('gestion_admin.create');
+        Route::get('/gestion_admin/{id}/editar', fn() => 'Formulario de editar próximamente')->name('gestion_admin.edit');
+        Route::delete('/gestion_admin/{id}', [AdministradoresController::class, 'destroy'])->name('gestion_admin.destroy');
     });
