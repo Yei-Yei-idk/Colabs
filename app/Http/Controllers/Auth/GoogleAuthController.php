@@ -9,13 +9,21 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use Laravel\Socialite\Two\GoogleProvider;
+use App\Services\MailService;
+use Throwable;
 
 class GoogleAuthController extends Controller
 {
+    protected MailService $mailService;
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     public function redirect(): RedirectResponse
     {
         return Socialite::driver('google')->redirect();
@@ -31,8 +39,10 @@ class GoogleAuthController extends Controller
             ]);
 
             try {
-                $googleUser = Socialite::driver('google')->stateless()->user();
-            } catch (\Throwable $fallbackException) {
+                /** @var GoogleProvider $driver */
+                $driver = Socialite::driver('google');
+                $googleUser = $driver->stateless()->user();
+            } catch (Throwable $fallbackException) {
                 Log::error('Fallo login Google en fallback stateless.', [
                     'error' => $fallbackException->getMessage(),
                 ]);
@@ -40,7 +50,7 @@ class GoogleAuthController extends Controller
                 return redirect()->route('login')
                     ->withErrors(['user' => 'No fue posible iniciar sesion con Google. Intentalo nuevamente.']);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('Fallo login Google en callback.', [
                 'error' => $e->getMessage(),
             ]);
@@ -148,6 +158,7 @@ class GoogleAuthController extends Controller
 
     public function guardarCompletarPerfil(Request $request): RedirectResponse
     {
+        /** @var User|null $usuario */
         $usuario = Auth::user();
 
         if (!$usuario) {
@@ -193,15 +204,7 @@ class GoogleAuthController extends Controller
         $usuario->user_telefono = (int) $datos['user_telefono'];
         $usuario->save();
 
-        try {
-            Mail::to($usuario->user_correo)->send(new BienvenidaCuentaCreadaMail($usuario));
-        } catch (\Throwable $e) {
-            Log::warning('No se pudo enviar el correo de bienvenida al completar perfil Google.', [
-                'usuario_id' => $usuario->id,
-                'correo' => $usuario->user_correo,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $this->mailService->enviarBienvenida($usuario);
 
         return $this->redirigirAlPanel($usuario)
             ->with('status', 'Perfil completado correctamente. Bienvenido a Colabs.');

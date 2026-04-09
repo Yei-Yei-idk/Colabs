@@ -5,15 +5,21 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\BienvenidaCuentaCreadaMail;
 use App\Models\User;
-use App\Notifications\VerifyEmailCustom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use App\Services\MailService;
+use Carbon\Carbon;
 
 class VerificacionController extends Controller
 {
+    protected MailService $mailService;
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     /**
      * Muestra la vista de notificacion.
      * Si es la primera vez y no tiene token, envia automaticamente el correo.
@@ -31,7 +37,7 @@ class VerificacionController extends Controller
         // Verificar limite de 30 segundos entre envios.
         $lastEmailSent = Session::get('last_email_sent_at');
         if ($lastEmailSent) {
-            if ($lastEmailSent instanceof \Carbon\Carbon) {
+            if ($lastEmailSent instanceof Carbon) {
                 $lastEmailSentMs = $lastEmailSent->getTimestampMs();
             } else {
                 $lastEmailSentMs = (int) $lastEmailSent;
@@ -51,7 +57,7 @@ class VerificacionController extends Controller
             $user->verification_token_expires_at = now()->addHour();
             $user->save();
 
-            if ($this->enviarCorreoVerificacionSeguro($user, $token)) {
+            if ($this->mailService->enviarVerificacion($user, $token)) {
                 Session::put('last_email_sent_at', now()->getTimestampMs());
                 Session::put('reenvios_verificacion', 1); // Contar como primer intento.
             } else {
@@ -79,7 +85,7 @@ class VerificacionController extends Controller
 
         $lastEmailSent = Session::get('last_email_sent_at');
         if ($lastEmailSent) {
-            if ($lastEmailSent instanceof \Carbon\Carbon) {
+            if ($lastEmailSent instanceof Carbon) {
                 $lastEmailSentMs = $lastEmailSent->getTimestampMs();
             } else {
                 $lastEmailSentMs = (int) $lastEmailSent;
@@ -103,7 +109,7 @@ class VerificacionController extends Controller
         $user->verification_token_expires_at = now()->addHour();
         $user->save();
 
-        if (!$this->enviarCorreoVerificacionSeguro($user, $token)) {
+        if (!$this->mailService->enviarVerificacion($user, $token)) {
             return back()->with('error', 'No pudimos enviar el correo de verificacion. Intenta de nuevo en un momento.');
         }
 
@@ -158,15 +164,7 @@ class VerificacionController extends Controller
         $user->verification_token_expires_at = null;
         $user->save();
 
-        try {
-            Mail::to($user->user_correo)->send(new BienvenidaCuentaCreadaMail($user));
-        } catch (\Throwable $e) {
-            Log::warning('No se pudo enviar el correo de bienvenida tras verificar cuenta.', [
-                'usuario_id' => $user->id,
-                'correo' => $user->user_correo,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $this->mailService->enviarBienvenida($user);
 
         Session::forget('reenvios_verificacion');
 
@@ -207,7 +205,7 @@ class VerificacionController extends Controller
 
         $lastEmailSent = Session::get('last_email_sent_at');
         if ($lastEmailSent) {
-            if ($lastEmailSent instanceof \Carbon\Carbon) {
+            if ($lastEmailSent instanceof Carbon) {
                 $lastEmailSentMs = $lastEmailSent->getTimestampMs();
             } else {
                 $lastEmailSentMs = (int) $lastEmailSent;
@@ -240,7 +238,7 @@ class VerificacionController extends Controller
 
         $user = $user->fresh();
 
-        if (!$this->enviarCorreoVerificacionSeguro($user, $user->verification_token)) {
+        if (!$this->mailService->enviarVerificacion($user, $user->verification_token)) {
             return back()->with('error', 'No pudimos enviar el correo de verificacion al nuevo email. Intenta nuevamente.');
         }
 
@@ -256,19 +254,4 @@ class VerificacionController extends Controller
             ->with('success', 'Se ha enviado un enlace de verificacion a tu nuevo correo. Revisa tu bandeja de entrada.');
     }
 
-    private function enviarCorreoVerificacionSeguro(User $user, string $token): bool
-    {
-        try {
-            $user->notify(new VerifyEmailCustom($token));
-            return true;
-        } catch (\Throwable $e) {
-            Log::warning('No se pudo enviar correo de verificacion.', [
-                'usuario_id' => $user->id,
-                'correo' => $user->user_correo,
-                'error' => $e->getMessage(),
-            ]);
-
-            return false;
-        }
-    }
 }

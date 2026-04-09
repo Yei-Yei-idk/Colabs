@@ -8,12 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Services\MailService;
 
 class RecuperarContrasenaController extends Controller
 {
+    protected MailService $mailService;
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     /**
      * Envía un enlace de restablecimiento de contraseña al correo del usuario.
      *
@@ -65,15 +72,7 @@ class RecuperarContrasenaController extends Controller
         // Construir el enlace de restablecimiento
         $resetUrl = url("/restablecer-contrasena?token={$token}&email=" . urlencode($email));
 
-        // Enviar correo con manejo de errores
-        try {
-            Mail::send('emails.restablecer-contrasena', ['resetUrl' => $resetUrl, 'user' => $user], function ($message) use ($user) {
-                $message->to($user->user_correo)
-                        ->subject('Restablecer contraseña - ' . config('app.name'));
-            });
-        } catch (\Exception $e) {
-            Log::error('Error enviando correo de restablecimiento: ' . $e->getMessage());
-
+        if (!$this->mailService->enviarRestablecerContrasena($user, $resetUrl)) {
             // Limpiar el token generado para que pueda reintentar
             DB::table('password_reset_tokens')->where('email', $email)->delete();
 
@@ -137,7 +136,7 @@ class RecuperarContrasenaController extends Controller
      */
     public function resetPassword(Request $request)
     {
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'token'    => ['required', 'string', 'size:64'],
             'email'    => ['required', 'email', 'max:255'],
             'password' => ['required', 'confirmed', 'min:6', 'max:100'],

@@ -4,16 +4,23 @@ namespace App\Observers;
 
 use App\Models\Reserva;
 use App\Notifications\ReservaStatusChanged;
+use App\Services\MailService;
 
 class ReservaObserver
 {
+    protected MailService $mailService;
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     /**
      * Se dispara al CREAR una reserva.
      */
     public function created(Reserva $reserva): void
     {
         if ($reserva->rsva_estado == 'Pendiente') {
-            $reserva->usuario->notify(new ReservaStatusChanged($reserva, 'Pendiente'));
+            $this->mailService->enviarNotificacionReserva($reserva, 'Pendiente');
         }
     }
 
@@ -33,7 +40,7 @@ class ReservaObserver
             $estadoNormalizado = ucfirst(strtolower($nuevoEstado));
 
             if (in_array($estadoNormalizado, $estadosNotificables)) {
-                $reserva->usuario->notify(new ReservaStatusChanged($reserva, $estadoNormalizado));
+                $this->mailService->enviarNotificacionReserva($reserva, $estadoNormalizado);
             }
         }
     }

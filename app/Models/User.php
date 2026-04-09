@@ -9,7 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Support\Str;
-use App\Notifications\VerifyEmailCustom;
+use App\Services\MailService;
+use App\Models\Reserva;
+use App\Models\Calificacion;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -105,7 +107,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $this->save();
         }
 
-        $this->notify(new VerifyEmailCustom($this->verification_token));
+        app(MailService::class)->enviarVerificacion($this, $this->verification_token);
     }
 
     /**
@@ -136,12 +138,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function reservas()
     {
-        return $this->hasMany(\App\Models\Reserva::class, 'user_id', 'id');
+        return $this->hasMany(Reserva::class, 'user_id', 'id');
     }
 
     public function calificaciones()
     {
-        return $this->hasMany(\App\Models\Calificacion::class, 'user_id', 'id');
+        return $this->hasMany(Calificacion::class, 'user_id', 'id');
     }
 
     /**
