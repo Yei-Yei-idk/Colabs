@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules\Password;
 
 class RegistrarseController extends Controller
 {
@@ -28,7 +29,14 @@ class RegistrarseController extends Controller
             'user_nombre' => ['required', 'string', 'max:255'],
             'user_correo' => ['required', 'email', 'max:255', 'unique:usuarios,user_correo'],
             'user_telefono' => ['required', 'numeric'],
-            'user_contrasena' => ['required', 'string', 'min:8'],
+            'user_contrasena' => [
+                'required', 
+                'string', 
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
             'condiciones' => ['accepted'],
         ], [
             'numero_documento.required' => 'El numero de documento es obligatorio.',
@@ -48,6 +56,9 @@ class RegistrarseController extends Controller
             'user_contrasena.required' => 'La contrasena es obligatoria.',
             'user_contrasena.string' => 'La contrasena debe ser una cadena de texto.',
             'user_contrasena.min' => 'La contrasena debe tener al menos 8 caracteres.',
+            'user_contrasena.mixedCase' => 'La contraseña debe tener al menos una letra mayúscula y una minúscula.',
+            'user_contrasena.numbers' => 'La contraseña debe tener al menos un número.',
+            'user_contrasena.symbols' => 'La contraseña debe tener al menos un carácter especial.',
             'condiciones.accepted' => 'Debes aceptar los terminos y condiciones.',
         ]);
 

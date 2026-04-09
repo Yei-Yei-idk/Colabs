@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\MailService;
+use Illuminate\Validation\Rules\Password;
 
 class AdministradoresController extends Controller
 {
@@ -49,8 +51,14 @@ class AdministradoresController extends Controller
             'cedula'   => ['required', 'numeric', 'min_digits:7', 'unique:usuarios,numero_documento'],
             'nombre'   => ['required', 'string', 'max:255'],
             'correo'   => ['required', 'email', 'unique:usuarios,user_correo'],
-            'telefono' => ['required', 'numeric', 'digits:10'],
-            'contra'   => ['required', 'string', 'min:8'],
+            'contra'   => [
+                'required', 
+                'string', 
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
         ], [
             'cedula.required' => 'La cédula es obligatoria.',
             'cedula.numeric' => 'La cédula solo puede contener números.',
@@ -61,9 +69,12 @@ class AdministradoresController extends Controller
             'telefono.digits' => 'El número de teléfono en Colombia debe tener 10 dígitos.',
             'contra.required' => 'La contraseña es obligatoria.',
             'contra.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'contra.mixedCase' => 'La contraseña debe tener al menos una letra mayúscula y una minúscula.',
+            'contra.numbers' => 'La contraseña debe tener al menos un número.',
+            'contra.symbols' => 'La contraseña debe tener al menos un carácter especial.',
         ]);
 
-        User::create([
+        $usuario = User::create([
             'numero_documento' => $request->cedula,
             'user_nombre'      => $request->nombre,
             'user_correo'      => $request->correo,
@@ -71,6 +82,9 @@ class AdministradoresController extends Controller
             'user_contrasena'  => $request->contra, // Laravel lo hashea por el cast en el modelo
             'rol_id'           => 2,
         ]);
+
+        // Enviar correo de acceso
+        app(MailService::class)->enviarCorreoNuevoAdmin($usuario, $request->contra);
 
         return redirect()->route('admin.gestion_admin.index')
                          ->with('success', 'Administrador registrado correctamente');

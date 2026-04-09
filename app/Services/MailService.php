@@ -7,6 +7,7 @@ use App\Models\Reserva;
 use App\Notifications\VerifyEmailCustom;
 use App\Mail\BienvenidaCuentaCreadaMail;
 use App\Mail\RestablecerContrasenaMail;
+use App\Mail\NuevoAdminRegistradoMail;
 use App\Notifications\ReservaStatusChanged;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -41,6 +42,24 @@ class MailService
             return true;
         } catch (\Throwable $e) {
             Log::warning('No se pudo enviar el correo de bienvenida.', [
+                'usuario_id' => $user->id,
+                'correo' => $user->user_correo,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Envia el correo de acceso a un nuevo administrador.
+     */
+    public function enviarCorreoNuevoAdmin(User $user, string $password): bool
+    {
+        try {
+            Mail::to($user->user_correo)->send(new NuevoAdminRegistradoMail($user, $password));
+            return true;
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo enviar el correo de acceso administrativo.', [
                 'usuario_id' => $user->id,
                 'correo' => $user->user_correo,
                 'error' => $e->getMessage(),

@@ -69,14 +69,38 @@
                 id="user_contrasena"
                 placeholder="Contraseña"
                 class="mi-input"
+                required
             >
-            <br><br>
+
+            <!-- Requisitos de contraseña -->
+            <div class="password-strength-meter" style="margin-top: 10px; margin-bottom: 20px; text-align: left;">
+                <div class="password-rules" style="background: rgba(243, 244, 246, 0.5); padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb;">
+                    <p style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 700; color: #374151;">La contraseña debe incluir:</p>
+                    <ul id="requirement-list" style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <li id="req-length" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                            <span class="icon">○</span> Mín. 8 caracteres
+                        </li>
+                        <li id="req-mixed" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                            <span class="icon">○</span> Mayús. y minúsc.
+                        </li>
+                        <li id="req-numbers" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                            <span class="icon">○</span> Al menos 1 número
+                        </li>
+                        <li id="req-symbols" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                            <span class="icon">○</span> Carácter especial
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <br>
 
             <input
                 type="checkbox"
                 name="condiciones"
                 id="term_cond"
                 {{ old('condiciones') ? 'checked' : '' }}
+                required
             >
             <p>Al crear la cuenta aceptas nuestros términos y condiciones.</p>
 
@@ -105,17 +129,61 @@
         document.addEventListener('DOMContentLoaded', function () {
             const formulario = document.getElementById('form-registrarse');
             const botonCrear = document.getElementById('btn-crear-cuenta');
+            const passwordInput = document.getElementById('user_contrasena');
 
-            if (!formulario || !botonCrear) {
-                return;
+            const requirements = {
+                length: { element: document.getElementById('req-length'), regex: /.{8,}/ },
+                mixed: { element: document.getElementById('req-mixed'), regex: /^(?=.*[a-z])(?=.*[A-Z]).+$/ },
+                numbers: { element: document.getElementById('req-numbers'), regex: /(?=.*[0-9])/ },
+                symbols: { element: document.getElementById('req-symbols'), regex: /(?=.*[\W_])/ }
+            };
+
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const val = passwordInput.value;
+                    let passedCount = 0;
+
+                    Object.keys(requirements).forEach(key => {
+                        const req = requirements[key];
+                        const isPassed = req.regex.test(val);
+                        
+                        if (isPassed) {
+                            req.element.style.color = '#059669';
+                            req.element.querySelector('.icon').innerText = '✓';
+                            req.element.querySelector('.icon').style.fontWeight = 'bold';
+                            passedCount++;
+                        } else {
+                            req.element.style.color = '#9ca3af';
+                            req.element.querySelector('.icon').innerText = '○';
+                            req.element.querySelector('.icon').style.fontWeight = 'normal';
+                        }
+                    });
+
+                    // Habilitar/Deshabilitar botón
+                    if (passedCount === 4) {
+                        botonCrear.disabled = false;
+                        botonCrear.style.opacity = '1';
+                    } else {
+                        botonCrear.disabled = true;
+                        botonCrear.style.opacity = '0.7';
+                    }
+                });
             }
 
-            formulario.addEventListener('submit', function () {
+            if (formulario && botonCrear) {
+                formulario.addEventListener('submit', function () {
+                    botonCrear.disabled = true;
+                    botonCrear.textContent = 'Creando cuenta...';
+                    botonCrear.style.opacity = '0.7';
+                    botonCrear.style.cursor = 'not-allowed';
+                });
+            }
+
+            // Inicializar estado del botón
+            if (botonCrear) {
                 botonCrear.disabled = true;
-                botonCrear.textContent = 'Creando cuenta...';
                 botonCrear.style.opacity = '0.7';
-                botonCrear.style.cursor = 'not-allowed';
-            });
+            }
         });
     </script>
 @endsection

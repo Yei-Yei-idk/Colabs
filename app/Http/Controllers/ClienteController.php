@@ -10,6 +10,7 @@ use App\Models\Espacio;
 use App\Models\Reserva;
 use App\Models\Calificacion;
 use App\Models\Imagen;
+use Illuminate\Validation\Rules\Password;
 // use App\Notifications\ReservaStatusChanged; (Quitado: ahora se usa el Observer)
 
 class ClienteController extends Controller
@@ -125,12 +126,23 @@ class ClienteController extends Controller
         if (!$esCuentaGoogle && ($request->filled('password') || $request->filled('newpassword'))) {
             $request->validate([
                 'password' => 'required|string',
-                'newpassword' => 'required|string|min:8|different:password',
+                'newpassword' => [
+                    'required', 
+                    'string', 
+                    'different:password',
+                    Password::min(8)
+                        ->mixedCase()
+                        ->numbers()
+                        ->symbols()
+                ],
             ], [
                 'password.required' => 'La contrasena actual es obligatoria para cambiar la contrasena.',
                 'newpassword.required' => 'La nueva contrasena es obligatoria.',
                 'newpassword.min' => 'La nueva contrasena debe tener al menos 8 caracteres.',
                 'newpassword.different' => 'La nueva contrasena debe ser diferente a la actual.',
+                'newpassword.mixedCase' => 'La contraseña debe tener al menos una letra mayúscula y una minúscula.',
+                'newpassword.numbers' => 'La contraseña debe tener al menos un número.',
+                'newpassword.symbols' => 'La contraseña debe tener al menos un carácter especial.',
             ]);
 
             if (!Hash::check($request->password, $user->user_contrasena)) {

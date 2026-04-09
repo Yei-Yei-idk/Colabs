@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Services\MailService;
+use Illuminate\Validation\Rules\Password;
 
 class RecuperarContrasenaController extends Controller
 {
@@ -139,7 +140,14 @@ class RecuperarContrasenaController extends Controller
         $validator = Validator::make($request->all(), [
             'token'    => ['required', 'string', 'size:64'],
             'email'    => ['required', 'email', 'max:255'],
-            'password' => ['required', 'confirmed', 'min:6', 'max:100'],
+            'password' => [
+                'required', 
+                'confirmed', 
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
         ], [
             'token.required'      => 'Falta el token de verificación.',
             'token.size'          => 'El token de verificación no es válido.',
@@ -147,8 +155,10 @@ class RecuperarContrasenaController extends Controller
             'email.email'         => 'Introduce un correo válido.',
             'password.required'   => 'La nueva contraseña es obligatoria.',
             'password.confirmed'  => 'Las contraseñas no coinciden.',
-            'password.min'        => 'La contraseña debe tener al menos 6 caracteres.',
-            'password.max'        => 'La contraseña no puede tener más de 100 caracteres.',
+            'password.min'        => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.mixedCase'  => 'La contraseña debe tener al menos una letra mayúscula y una minúscula.',
+            'password.numbers'    => 'La contraseña debe tener al menos un número.',
+            'password.symbols'    => 'La contraseña debe tener al menos un carácter especial.',
         ]);
 
         if ($validator->fails()) {
@@ -197,6 +207,14 @@ class RecuperarContrasenaController extends Controller
         if (! $user) {
             return redirect()->route('password.request')
                 ->withErrors(['email' => 'No encontramos un usuario con ese correo.']);
+        }
+
+        // Verificar que la nueva contraseña no sea igual a la actual
+        if (Hash::check($request->password, $user->user_contrasena)) {
+            return redirect()->route('password.reset', [
+                'token' => $request->token,
+                'email' => $request->email,
+            ])->withErrors(['password' => 'La nueva contraseña no puede ser igual a la anterior.'])->withInput();
         }
 
         // Actualizar la contraseña
