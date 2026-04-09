@@ -146,6 +146,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Calificacion::class, 'user_id', 'id');
     }
 
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'rol_id', 'rol_id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *

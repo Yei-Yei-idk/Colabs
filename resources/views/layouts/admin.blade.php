@@ -62,7 +62,7 @@
                 {{-- Solo visible para SuperAdmin (rol_id = 1) --}}
                 @if(auth()->user()->rol_id == 1)
                 <li class="{{ request()->routeIs('admin.gestion_admin*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.gestion_admin.index') }}">Gestión de adminstradores</a>
+                    <a href="{{ route('admin.gestion_admin.index') }}">Gestión administradores</a>
                 </li>
                 @endif
             </ul>

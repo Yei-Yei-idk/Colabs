@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestión de admin')
-@section('page-title', 'Gestión de admin')
+@section('title', 'Gestión administradores')
+@section('page-title', 'Gestión administradores')
 
 @section('content')
 
 <div class="usuarios-header">
     <div>
-        <h2>Gestión de admin</h2>
+        <h2>Gestión administradores</h2>
         <p>Administra las cuentas con nivel administrativo en el sistema</p>
     </div>
     <a href="{{ route('admin.gestion_admin.create') }}" class="btn-agregar-admin">Agregar administrador</a>
@@ -19,7 +19,7 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>Rol</th>
-            <th>Acciones</th>
+            <th style="text-align: center;">Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -90,24 +90,26 @@
         width: 100%;
         border-collapse: collapse;
         background: white;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Sombra más suave */
     }
 
     .us th {
         background: #f9fafb;
-        padding: 16px;
+        padding: 12px 16px; /* Padding más compacto */
         text-align: left;
         font-weight: 600;
         color: #374151;
         border-bottom: 1px solid #e5e7eb;
+        font-size: 0.9rem;
     }
 
     .us td {
-        padding: 16px;
+        padding: 12px 16px; /* Padding más compacto */
         border-bottom: 1px solid #f3f4f6;
         color: #4b5563;
+        font-size: 0.9rem;
     }
 
     .us tr:last-child td {
@@ -125,9 +127,9 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
-        font-size: 1.2rem;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
     }
 
     .accion-btn:hover {

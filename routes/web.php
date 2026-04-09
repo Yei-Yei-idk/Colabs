@@ -119,7 +119,9 @@ Route::prefix('admin')
         Route::get('/reservas/del-dia',              [ReservasController::class, 'reservasDelDia'])->name('reservas.del_dia');
         Route::post('/reservas/sincronizar-estados', [ReservasController::class, 'sincronizarEstados'])->name('reservas.sincronizar_estados');
         Route::get('/gestion_admin', [AdministradoresController::class, 'index'])->name('gestion_admin.index');
-        Route::get('/gestion_admin/nuevo', fn() => 'Formulario de agregar próximamente')->name('gestion_admin.create');
-        Route::get('/gestion_admin/{id}/editar', fn() => 'Formulario de editar próximamente')->name('gestion_admin.edit');
+        Route::get('/gestion_admin/nuevo', [AdministradoresController::class, 'create'])->name('gestion_admin.create');
+        Route::post('/gestion_admin/nuevo', [AdministradoresController::class, 'store'])->name('gestion_admin.store');
+        Route::get('/gestion_admin/{id}/editar', [AdministradoresController::class, 'edit'])->name('gestion_admin.edit');
+        Route::put('/gestion_admin/{id}', [AdministradoresController::class, 'update'])->name('gestion_admin.update');
         Route::delete('/gestion_admin/{id}', [AdministradoresController::class, 'destroy'])->name('gestion_admin.destroy');
     });

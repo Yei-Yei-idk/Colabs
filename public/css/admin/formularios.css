@@ -1,0 +1,108 @@
+/* public/css/admin/formularios.css */
+
+.auth-registrarse .formulario {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid rgba(226,232,240,.9);
+    color: #111827;
+    margin: 20px auto;
+    max-width: 500px;
+    animation: slideInForm 0.45s ease forwards;
+}
+
+.auth-registrarse h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.auth-registrarse .instrucciones {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+}
+
+.auth-registrarse .mi-input {
+    height: 46px;
+    width: 100%;
+    margin-top: 16px;
+    border-radius: 999px;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    color: #111827;
+    padding: 0 20px;
+    font-size: .95rem;
+    outline: none;
+    transition: all .2s ease;
+}
+
+.auth-registrarse .mi-input:focus {
+    border-color: #facc15;
+    box-shadow: 0 0 0 1px rgba(250,204,21,.35);
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+.auth-registrarse .btn-login {
+    height: 46px;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #facc15, #eab308);
+    border-radius: 999px;
+    border: none;
+    color: #000;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(250,204,21,.3);
+    transition: all .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.auth-registrarse .btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(250,204,21,.4);
+    filter: brightness(1.05);
+}
+
+.auth-registrarse .btn-cancel {
+    background: #e5e7eb;
+    color: #1e293b;
+    box-shadow: none;
+}
+
+.auth-registrarse .btn-cancel:hover {
+    background: #d1d5db;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.auth-registrarse .errores {
+    background: rgba(248,113,113,.08);
+    border: 1px solid rgba(248,113,113,.5);
+    color: #b91c1c;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: .85rem;
+    margin: 12px 0;
+}
+
+.auth-registrarse .errores ul {
+    list-style: disc inside !important; /* Forzamos el punto y que esté dentro del cuadro */
+    padding: 0;
+    margin: 5px 0;
+}
+
+.auth-registrarse .errores li {
+    margin-bottom: 4px;
+}
+
+@keyframes slideInForm { 
+    from { opacity: 0; transform: translateY(20px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
