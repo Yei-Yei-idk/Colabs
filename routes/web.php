@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EspaciosController;
 use App\Http\Controllers\Admin\ReservasController;
 use App\Http\Controllers\Admin\AdministradoresController;
-use App\Http\Controllers\BackupController;
+use App\Http\Controllers\Admin\BackupController;
 use Illuminate\Http\Request;
 
 // ===================== RUTAS =====================
@@ -105,10 +105,9 @@ Route::prefix('admin')
         Route::post('/espacios/{id}/toggle', [EspaciosController::class, 'toggleStatus'])->name('espacios.toggle');
 
         //copia de seguridad
-        Route::get('/copias', [BackupController::class, 'menu'])
-            ->name('copias');
-        Route::post('/backup/create', [BackupController::class, 'create'])
-            ->name('backup.create');
+        Route::get('/copias', [BackupController::class, 'menu'])->name('copias');
+        Route::post('/backup/create', [BackupController::class, 'backup'])->name('backup.create');
+        Route::post('/backup/restore', [BackupController::class, 'restore'])->name('backup.restore');
 
         // Los siguientes controladores se irán creando en las próximas migraciones:
         Route::get('/reservas',             [ReservasController::class, 'index'])->name('reservas.index');

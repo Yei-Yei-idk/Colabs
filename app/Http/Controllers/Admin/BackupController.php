@@ -3,51 +3,65 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 
 class BackupController extends Controller
 {
     public function backup()
     {
-        $filename = 'backup_'.date('Y-m-d_H-i-s').'.sql';
+        $filename = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
         $path = storage_path('app/backups/' . $filename);
 
-        //crear carpeta si no existe
+        // Crear carpeta si no existe
         if (!file_exists(dirname($path))) {
             mkdir(dirname($path), 0755, true);
         }
 
-        $command = "mysqldump --user=" . env('DB_USERNAME') . 
-        " --pasword=" . env('DB_PASSWORD') . 
-        " --host=" . env('DB_HOST') . "" . 
-        env('DB_DATABASE') . " > $path";
+        $password = env('DB_PASSWORD');
+        $passwordFlag = !empty($password) ? " --password=\"$password\"" : "";
 
-        system($command);
+        $command = "\"C:\\xampp\\mysql\\bin\\mysqldump.exe\" --user=\"" . env('DB_USERNAME') . "\"" . 
+        $passwordFlag . 
+        " --host=\"" . env('DB_HOST') . "\" " . 
+        env('DB_DATABASE') . " > \"$path\" 2>&1";
 
-        return response()->download($path);
+        exec($command, $output, $returnVar);
+
+        if ($returnVar !== 0 || !file_exists($path)) {
+            return back()->with('error', 'Error al crear la copia de seguridad. Asegúrate de que MySQL/MariaDB esté activo y las credenciales sean correctas.');
+        }
+
+        return response()->download($path)->deleteFileAfterSend(true);
     }
 
-    public function restore(request $request) 
+    public function restore(Request $request) 
     {
         $request->validate([
-            'backup' => 'required|file|mimes:sql'
+            'backup' => 'required|file|mimes:sql,txt'
+        ], [
+            'backup.required' => 'Debes seleccionar un archivo SQL.',
+            'backup.file' => 'El archivo no es válido.',
+            'backup.mimes' => 'El archivo debe tener extensión .sql o .txt.'
         ]);
 
         $file = $request->file('backup');
+        $fullPath = $file->getPathname();
 
-        $path = $file->storeAs('backups', $file->getClientOriginalName());
+        $password = env('DB_PASSWORD');
+        $passwordFlag = !empty($password) ? " --password=\"$password\"" : "";
 
-        $fullPath = storage_path('app/' . $path);
+        $command = "\"C:\\xampp\\mysql\\bin\\mysql.exe\" --user=\"" . env('DB_USERNAME') . "\"" . 
+        $passwordFlag . 
+        " --host=\"" . env("DB_HOST") . "\" " . 
+        env('DB_DATABASE') . " < \"$fullPath\" 2>&1";
 
-        $command = "mysql --user=" . env('DB_USERNAME') . 
-        " --password=" . env('DB_PASSWORD') . 
-        " --host=" . env("DB_HOST") . "" . 
-        env('DB_DATABASE') . " < $fullPath";
+        exec($command, $output, $returnVar);
 
-        system($command);
+        if ($returnVar !== 0) {
+            return back()->with('error', 'Error al restaurar la base de datos. Comprueba el formato de tu archivo SQL.');
+        }
 
-        return back()->with('success','Base de datos restaurada correctamente');
+        return back()->with('success', 'Base de datos restaurada correctamente');
     }
 
     public function menu() {
