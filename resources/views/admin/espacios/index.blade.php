@@ -14,16 +14,8 @@
         <div class="card">{{ $total_espacios_inactivos }} <small>Inactivos</small></div>
     </div>
 
-    {{-- FILTROS Y BOTÓN NUEVO --}}
-    <div class="filters">
-        <select>
-            <option>Todos</option>
-        </select>
-        <select>
-            <option>Tipo espacio</option>
-        </select>
-        <input type="text" placeholder="Buscar...">
-        
+    {{-- BOTÓN NUEVO --}}
+    <div class="filters" style="justify-content: flex-end;">
         @if(auth()->user()->rol_id == 1)
             <a href="{{ route('admin.espacios.create') }}" class="new-btn" style="text-decoration: none;">Nuevo espacio</a>
         @endif
