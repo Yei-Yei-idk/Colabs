@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {value:"14:00",label:"02:00 PM"},{value:"15:00",label:"03:00 PM"},
         {value:"16:00",label:"04:00 PM"},{value:"17:00",label:"05:00 PM"},
         {value:"18:00",label:"06:00 PM"},{value:"19:00",label:"07:00 PM"},
-        {value:"20:00",label:"08:00 PM"},{value:"21:00",label:"09:00 PM"},
+        {value:"20:00",label:"08:00 PM"},
     ];
 
     function obtenerFechaHoraServidorBogota() {
@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const valorAnterior = selectInicio.value;
         selectInicio.innerHTML = '<option value="">Seleccionar hora</option>';
 
-        // Excluir 21:00 como hora de inicio, ya que la hora máxima de fin es 21:00
-        const horasParaInicio = horasDisponibles.filter(h => h.value !== "21:00");
+        // Excluir 20:00 como hora de inicio, ya que la hora máxima de fin es 20:00
+        const horasParaInicio = horasDisponibles.filter(h => h.value !== "20:00");
         horasParaInicio.forEach(hora => {
             const option = document.createElement('option');
             option.value = hora.value;
