@@ -33,8 +33,6 @@
                 value="{{ old('numero_documento', $datos['numero_documento'] ?? '') }}"
                 required
             >
-            <br>
-
             <input
                 type="text"
                 name="user_nombre"
@@ -43,8 +41,6 @@
                 value="{{ old('user_nombre', $datos['user_nombre'] ?? $usuario->user_nombre) }}"
                 required
             >
-            <br>
-
             <input
                 type="tel"
                 name="user_telefono"
@@ -54,7 +50,6 @@
                 value="{{ old('user_telefono', $datos['user_telefono'] ?? '') }}"
                 required
             >
-            <br>
 
             <div class="campo-bloqueado-encabezado">
                 <label for="correo_google" class="campo-bloqueado-label">Correo vinculado con Google</label>

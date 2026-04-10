@@ -4,15 +4,12 @@
 
 @section('content')
 <section id="buscar" class="section active">
-    <!-- Este `<center>` en un futuro lo optimizaremos con CSS, lo mantengo temporal para que no pierdas estructura visual -->
-    <center>
-        <h2>Buscar Espacios</h2>
-    </center>
+    <h2 class="mis-reservas-header mt-20 mb-20 animate-fade-up">Buscar Espacios</h2>
 
     <div class="buscar-container">
         <!-- ✅ FORMULARIO DE FILTROS -->
-        <form method="GET" action="{{ route('cliente.buscar_espacios') }}" class="form-filtros">
-            <aside class="sidebar">
+        <aside class="sidebar animate-fade-up" style="animation-delay: 0.2s;">
+            <form method="GET" action="{{ route('cliente.buscar_espacios') }}">
                 <h3>Filtrar Espacios</h3>
 
                 <!-- 🔹 FILTRO TIPO -->
@@ -51,20 +48,20 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn-filtrar btn-principal aplicar-filtros">Aplicar Filtros</button>
-            </aside>
-        </form>
+                <button type="submit" class="btn-principal aplicar-filtros" style="width: 100%; border: none; padding: 12px; border-radius: 8px;">Aplicar Filtros</button>
+            </form>
+        </aside>
 
         <!-- 🔹 LISTADO DE ESPACIOS -->
         <div class="espacios-listado">
             @forelse ($espacios as $espacio)
                 @php
-                    // Resolver la imagen a mostrar
                     $imgSrc = $espacio->imagen ? $espacio->imagen->foto : 'default.jpg';
                 @endphp
-                <div class="espacio-card">
-                    <!-- Mostrando la imagen real subida (o la de por defecto si no tiene) -->
-                    <img src="{{ asset('uploads/' . $imgSrc) }}" alt="{{ $espacio->esp_nombre }}" data-fallback="{{ asset('uploads/OF1 .jpeg') }}" onerror="this.src=this.getAttribute('data-fallback')">
+                <div class="espacio-card animate-fade-up">
+                    <img src="{{ asset('uploads/' . $imgSrc) }}" alt="{{ $espacio->esp_nombre }}" 
+                         data-fallback="{{ asset('uploads/OF1 .jpeg') }}" 
+                         onerror="this.src=this.getAttribute('data-fallback')">
                     
                     <div class="espacio-info">
                         <h3>{{ $espacio->esp_nombre }}</h3>
@@ -74,11 +71,6 @@
                     </div>
 
                     <div class="reserva-actions-column">
-                        <div class="reserva-total-box">
-                            <div class="reserva-total-label">Precio por hora:</div>
-                            <div class="reserva-total-amount">${{ number_format($espacio->esp_precio_hora, 0, ',', '.') }}</div>
-                        </div>
-
                         <a href="{{ route('cliente.reservar', $espacio->espacio_id) }}" class="btn-reservar">
                             Reservar ahora →
                         </a>

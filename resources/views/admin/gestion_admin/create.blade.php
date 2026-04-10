@@ -77,78 +77,28 @@
             >
 
             <!-- Requisitos de contraseña -->
-            <div class="password-strength-meter" style="margin-top: -16px; margin-bottom: 24px;">
-                <div class="password-rules" style="background: rgba(243, 244, 246, 0.5); padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb;">
-                    <p style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 700; color: #374151;">La contraseña debe incluir:</p>
-                    <ul id="requirement-list" style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <li id="req-length" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+            <div class="password-strength-meter">
+                <div class="password-rules">
+                    <p>La contraseña debe incluir:</p>
+                    <ul class="requirement-list">
+                        <li id="req-length" class="requirement-item">
                             <span class="icon">○</span> Mín. 8 caracteres
                         </li>
-                        <li id="req-mixed" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                        <li id="req-mixed" class="requirement-item">
                             <span class="icon">○</span> Mayús. y minúsc.
                         </li>
-                        <li id="req-numbers" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                        <li id="req-numbers" class="requirement-item">
                             <span class="icon">○</span> Al menos 1 número
                         </li>
-                        <li id="req-symbols" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                        <li id="req-symbols" class="requirement-item">
                             <span class="icon">○</span> Carácter especial
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const passwordInput = document.getElementById('password-input');
-                    const submitBtn = document.querySelector('.btn-login[type="submit"]');
-                    
-                    const requirements = {
-                        length: { element: document.getElementById('req-length'), regex: /.{8,}/ },
-                        mixed: { element: document.getElementById('req-mixed'), regex: /^(?=.*[a-z])(?=.*[A-Z]).+$/ },
-                        numbers: { element: document.getElementById('req-numbers'), regex: /(?=.*[0-9])/ },
-                        symbols: { element: document.getElementById('req-symbols'), regex: /(?=.*[\W_])/ }
-                    };
-
-                    passwordInput.addEventListener('input', function() {
-                        const val = passwordInput.value;
-                        let passedCount = 0;
-
-                        // Validar requisitos individuales
-                        Object.keys(requirements).forEach(key => {
-                            const req = requirements[key];
-                            const isPassed = req.regex.test(val);
-                            
-                            if (isPassed) {
-                                req.element.style.color = '#059669';
-                                req.element.querySelector('.icon').innerText = '✓';
-                                req.element.querySelector('.icon').style.fontWeight = 'bold';
-                                passedCount++;
-                            } else {
-                                req.element.style.color = '#9ca3af';
-                                req.element.querySelector('.icon').innerText = '○';
-                                req.element.querySelector('.icon').style.fontWeight = 'normal';
-                            }
-                        });
-
-                        // Habilitar/Deshabilitar botón
-                        if (passedCount === 4) {
-                            submitBtn.disabled = false;
-                            submitBtn.style.opacity = '1';
-                        } else {
-                            submitBtn.disabled = true;
-                            submitBtn.style.opacity = '0.7';
-                        }
-                    });
-
-                    // Inicializar botón deshabilitado
-                    submitBtn.disabled = true;
-                    submitBtn.style.opacity = '0.7';
-                    submitBtn.title = 'Completa los requisitos de seguridad para continuar';
-                });
-            </script>
-
             <div style="margin-top: 24px; display: flex; gap: 12px;">
-                <button type="submit" class="btn-login" style="flex: 1;">
+                <button type="submit" id="btn-submit" class="btn-login" style="flex: 1;">
                     Crear administrador
                 </button>
                 <a href="{{ route('admin.gestion_admin.index') }}" class="btn-login btn-cancel" style="flex: 1;">
@@ -158,4 +108,16 @@
         </form>
     </div>
 </section>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/auth/password-validation.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initPasswordValidation({
+                inputId: 'password-input',
+                submitBtnId: 'btn-submit'
+            });
+        });
+    </script>
 @endsection

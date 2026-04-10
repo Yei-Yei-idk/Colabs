@@ -3,9 +3,9 @@
 @section('title', 'Mis Reservas - COLABS')
 
 @section('content')
-<div class="mis-reservas-header">
+<div class="mis-reservas-header animate-fade-up">
     <h2>Mis Reservas</h2>
-    <p class="text-muted">Gestiona todas tus reservas, su estado, y su historial.</p>
+    <p class="text-muted text-center">Gestiona todas tus reservas, su estado, y su historial.</p>
 </div>
 
 @if(session('success'))
@@ -29,7 +29,7 @@
             $fecha_formato = \Carbon\Carbon::parse($reserva->fecha)->translatedFormat('d \d\e F, Y');
         @endphp
         
-        <div class="reserva-card-main {{ 'border-' . strtolower($reserva->estado) }}">
+        <div class="reserva-card-main {{ 'border-' . strtolower($reserva->estado) }} animate-fade-up">
             <div class="reserva-id-tag">
                 #{{ str_pad($reserva->reserva_id, 4, '0', STR_PAD_LEFT) }}
             </div>
@@ -80,7 +80,7 @@
             </div>
         </div>
     @empty
-        <div class="empty-state">
+        <div class="empty-state animate-fade-up" style="animation-delay: 0.2s;">
             <div class="empty-state-icon">🔍</div>
             <h3>¡Aún no tienes reservas!</h3>
             <p class="text-muted mb-20">Explora nuestros espacios y encuentra el lugar ideal para trabajar.</p>

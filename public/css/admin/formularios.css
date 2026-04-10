@@ -106,3 +106,13 @@
     from { opacity: 0; transform: translateY(20px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
+
+/* PASSWORD REQUIREMENTS */
+.password-strength-meter { margin-top: 10px; margin-bottom: 24px; text-align: left; }
+.password-rules { background: rgba(243, 244, 246, 0.5); padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb; }
+.password-rules p { margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 700; color: #374151; }
+.requirement-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.requirement-item { font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px; transition: color 0.3s ease; }
+.requirement-item .icon { font-family: monospace; }
+.requirement-item.passed { color: #059669 !important; font-weight: 600; }
+

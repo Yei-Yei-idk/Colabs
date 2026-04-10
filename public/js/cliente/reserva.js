@@ -354,8 +354,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalBody = document.getElementById('alternativasModalBody');
         if (!altContainer || !modalBody) return;
 
-        altContainer.innerHTML = '';
-        modalBody.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="spinner-border text-primary" role="status"></div><p class="mt-3 text-muted">Buscando alternativas disponibles...</p></div>';
+        // Estado inicial de búsqueda
+        altContainer.innerHTML = `
+            <div class="alt-alert-box" style="opacity: 0.7; pointer-events: none;">
+                <div>
+                    <strong class="alt-alert-title">🔍 Buscando opciones...</strong>
+                    <p class="alt-alert-text">Revisando disponibilidad en espacios similares para este horario.</p>
+                </div>
+            </div>
+        `;
+        
+        modalBody.innerHTML = `
+            <div class="text-center" style="padding: 60px;">
+                <div class="spin" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                <p class="mt-15 text-muted">Estamos buscando los mejores espacios libres para ti...</p>
+            </div>
+        `;
 
         try {
             const tokenActual = obtenerTokenCsrfActual();
@@ -377,26 +391,24 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (!response.ok) {
-                if (response.status === 419 || response.status === 401 || response.status === 403) {
-                    altContainer.innerHTML = '';
-                    modalBody.innerHTML = '<div class="text-center text-danger p-4"><p>Tu sesion expiro. Recarga la pagina para continuar.</p></div>';
-                    return;
-                }
-
                 altContainer.innerHTML = '';
-                modalBody.innerHTML = '<div class="text-center text-danger p-4"><p>No fue posible cargar alternativas en este momento.</p></div>';
+                if (response.status === 419 || response.status === 401 || response.status === 403) {
+                    modalBody.innerHTML = '<div class="text-center text-danger p-20"><p>Tu sesión expiró. Recarga la página para continuar.</p></div>';
+                } else {
+                    modalBody.innerHTML = '<div class="text-center text-danger p-20"><p>No fue posible cargar alternativas en este momento.</p></div>';
+                }
                 return;
             }
 
             const data = await response.json().catch(() => ({}));
             
-            if (data.success && data.alternativas.length > 0) {
+            if (data.success && data.alternativas && data.alternativas.length > 0) {
                 // Alerta con botón para abrir el pop-up
                 altContainer.innerHTML = `
-                    <div class="alt-alert-box">
+                    <div class="alt-alert-box animate-fade-up">
                         <div>
                             <strong class="alt-alert-title">🎯 ¡No pierdas tu día!</strong>
-                            <p class="alt-alert-text">Tenemos <strong>${data.alternativas.length} alternativas perfectas</strong> libres a esa hora.</p>
+                            <p class="alt-alert-text">Tenemos <strong>${data.alternativas.length} alternativas perfectas</strong> libres para este mismo horario.</p>
                         </div>
                         <button type="button" class="btn-ver-opciones" onclick="openAlternativasModal()">
                             Ver Opciones
@@ -404,44 +416,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
-                // Construir tarjetas dentro del Pop-up usando las clases del cliente.css
-                let html = '<p class="alt-subtitle">Estos locales del mismo tipo no tienen reservas cruzadas en el horario que solicitaste.</p>';
+                // Construir tarjetas dentro del Pop-up con diseño premium
+                let html = '<p class="alt-subtitle">Hemos encontrado estos espacios del mismo tipo que no tienen reservas en el horario que solicitaste.</p>';
                 html += '<div class="alt-grid">';
                 
                 data.alternativas.forEach(alt => {
+                    const altName = alt.nombre.length > 40 ? alt.nombre.substring(0,37)+'...' : alt.nombre;
                     html += `
-                        <div class="card-alt-item">
-                            <img src="${alt.imagen}" alt="${alt.nombre}" class="card-alt-img">
+                        <article class="card-alt-item">
+                            <img src="${alt.imagen}" alt="${alt.nombre}" class="card-alt-img" onerror="this.src='/uploads/OF1 .jpeg'">
                             <div class="card-alt-content">
-                                <h5 class="card-alt-title" title="${alt.nombre}">${alt.nombre.length > 30 ? alt.nombre.substring(0,30)+'...' : alt.nombre}</h5>
+                                <h5 class="card-alt-title" title="${alt.nombre}">${altName}</h5>
                                 
                                 <div class="card-alt-details">
                                     <span class="card-alt-price">
                                         $${alt.precio.toLocaleString('es-CO')} <span class="card-alt-price-unit">/ hora</span>
                                     </span>
-                                    <span class="card-alt-capacity">
-                                        👥 Capacidad: ${alt.capacidad} personas
-                                    </span>
+                                    <div class="card-alt-capacity">
+                                        <span>👥 Capacidad: <strong>${alt.capacidad} personas</strong></span>
+                                    </div>
                                 </div>
 
                                 <a href="/cliente/reservar/${alt.id}?fecha=${fecha}&h_inicio=${hInicio}&h_fin=${hFin}" class="btn-reservar-alt">
                                     Reservar Este Local ➔
                                 </a>
                             </div>
-                        </div>
+                        </article>
                     `;
                 });
                 
                 html += '</div>';
                 modalBody.innerHTML = html;
             } else {
-                altContainer.innerHTML = '';
-                modalBody.innerHTML = '<div class="text-center p-5"><h5 class="text-muted mb-3">Lo sentimos</h5><p class="text-muted">No se encontraron alternativas similares libres para este horario.</p></div>';
+                // Si no hay alternativas, mostramos un mensaje suave en lugar de dejar el hueco vacío
+                altContainer.innerHTML = `
+                    <div class="alt-alert-box" style="background: #f9fafb; border-color: #e5e7eb;">
+                        <div>
+                            <strong class="alt-alert-title" style="color: #6b7280;">⚠️ Sin alternativas directas</strong>
+                            <p class="alt-alert-text">No encontramos espacios similares libres en este bloque exacto. Intenta con otro horario.</p>
+                        </div>
+                    </div>
+                `;
+                modalBody.innerHTML = '<div class="text-center p-20"><h5 class="text-muted mb-10">Lo sentimos</h5><p class="text-muted">No se encontraron alternativas similares libres para este horario.</p></div>';
             }
         } catch (error) {
             console.error('Error al cargar alternativas:', error);
             altContainer.innerHTML = '';
-            modalBody.innerHTML = '<div class="text-center text-danger p-4"><p>Ocurrió un error de red al buscar alternativas.</p></div>';
+            modalBody.innerHTML = '<div class="text-center text-danger p-20"><p>Ocurrió un error de red al buscar alternativas.</p></div>';
         }
     }
 

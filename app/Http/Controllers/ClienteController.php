@@ -48,7 +48,6 @@ class ClienteController extends Controller
         }
 
         $espacios = $query->get();
-
         return view('cliente.buscar_espacios', compact('espacios', 'tipo', 'capacidad', 'precioMax'));
     }
 
@@ -77,6 +76,7 @@ class ClienteController extends Controller
 
     public function perfil()
     {
+        /** @var \App\Models\User $usuario */
         $usuario = Auth::user();
         
         // Verificar que el usuario esté autenticado
@@ -89,8 +89,7 @@ class ClienteController extends Controller
             return redirect()->route('verification.notice');
         }
 
-        $totalReservas = Reserva::where('user_id', (int) $usuario->id)->count();
-
+        $totalReservas = Reserva::where('user_id', Auth::id())->count();
         return view('cliente.perfil', compact('usuario', 'totalReservas'));
     }
 
