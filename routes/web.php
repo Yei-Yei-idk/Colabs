@@ -100,6 +100,7 @@ Route::prefix('admin')
         // Espacios
         Route::get('/espacios', [EspaciosController::class, 'index'])->name('espacios.index');
         Route::get('/espacios/nuevo', [EspaciosController::class, 'create'])->name('espacios.create');
+        Route::post('/espacios', [EspaciosController::class, 'store'])->name('espacios.store');
         Route::get('/espacios/{id}/editar', [EspaciosController::class, 'edit'])->name('espacios.edit');
         Route::put('/espacios/{id}', [EspaciosController::class, 'update'])->name('espacios.update');
         Route::post('/espacios/{id}/toggle', [EspaciosController::class, 'toggleStatus'])->name('espacios.toggle');

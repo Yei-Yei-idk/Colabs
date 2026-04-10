@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Espacio;
+use App\Models\Imagen;
 use Illuminate\Http\Request;
 
 class EspaciosController extends Controller
@@ -48,7 +49,56 @@ class EspaciosController extends Controller
      */
     public function create()
     {
-        return "Formulario de nuevo espacio - Próximamente (Pásame el archivo Nuevo_Espacio.php)";
+        return view('admin.espacios.create');
+    }
+
+    /**
+     * Guarda un nuevo espacio en la base de datos.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'esp_id'        => 'required|unique:espacios,espacio_id',
+            'nombre'        => 'required|string|max:255',
+            'descripcion'   => 'required|string',
+            'capacidad'     => 'required|integer|min:1',
+            'tipo_oficina'  => 'required|string',
+            'Precio_hora'   => 'required|numeric',
+            'foto'          => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'esp_id.unique' => 'El ID del espacio ya existe. Usa otro.',
+        ]);
+
+        // 1. Crear el espacio
+        $espacio = Espacio::create([
+            'espacio_id'      => $request->esp_id,
+            'esp_nombre'      => $request->nombre,
+            'esp_descripcion' => $request->descripcion,
+            'esp_capacidad'   => $request->capacidad,
+            'esp_tipo'        => $request->tipo_oficina,
+            'esp_precio_hora' => $request->Precio_hora,
+            'esp_estado'      => 'Activo',
+        ]);
+
+        // 2. Manejar la imagen
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $nombreArchivo = time() . "_" . $file->getClientOriginalName();
+            
+            // Usamos public_path para mantener consistencia con el sistema antiguo si es necesario
+            // o simplemente el disco public de Laravel. 
+            // Para seguir la lógica del usuario:
+            $file->move(public_path('uploads'), $nombreArchivo);
+            $ruta = "uploads/" . $nombreArchivo;
+
+            Imagen::create([
+                'espacio_id' => $espacio->espacio_id,
+                'foto'       => $ruta
+            ]);
+        }
+
+        return redirect()->route('admin.espacios.index')
+            ->with('status', '✔️ Espacio registrado correctamente');
     }
 
     /**

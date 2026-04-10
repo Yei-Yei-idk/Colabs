@@ -3,6 +3,10 @@
 @section('title', 'Editar Espacio')
 @section('page-title', 'Espacios')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/espacios.css') }}">
+@endsection
+
 @section('content')
     <div class="form-container">
         <div class="form-header">
