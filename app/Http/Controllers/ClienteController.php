@@ -289,6 +289,20 @@ class ClienteController extends Controller
         $hora_inicio = $request->input('hora_inicio');
         $hora_fin = $request->input('hora_fin');
 
+        // Horario operativo: inicio desde 07:00 y fin maximo 20:00
+        if (strtotime($hora_inicio) < strtotime('07:00') || strtotime($hora_inicio) >= strtotime('20:00')) {
+            return response()->json([
+                'disponible' => false,
+                'mensaje' => 'La hora de inicio debe estar entre 07:00 y 19:00.'
+            ]);
+        }
+        if (strtotime($hora_fin) > strtotime('20:00')) {
+            return response()->json([
+                'disponible' => false,
+                'mensaje' => 'La hora de fin no puede ser posterior a las 20:00.'
+            ]);
+        }
+
         // Validar hora_fin > hora_inicio
         if (strtotime($hora_fin) <= strtotime($hora_inicio)) {
             return response()->json([
@@ -448,6 +462,17 @@ class ClienteController extends Controller
      */
     public function confirmarReserva(Request $request)
     {
+        // Horario operativo: inicio desde 07:00 y fin maximo 20:00
+        if (strtotime($request->hora_inicio) < strtotime('07:00') || strtotime($request->hora_inicio) >= strtotime('20:00')) {
+            return back()->with('error', 'La hora de inicio debe estar entre 07:00 y 19:00.');
+        }
+        if (strtotime($request->hora_fin) > strtotime('20:00')) {
+            return back()->with('error', 'La hora de fin no puede ser posterior a las 20:00.');
+        }
+        if (strtotime($request->hora_fin) <= strtotime($request->hora_inicio)) {
+            return back()->with('error', 'La hora de fin debe ser posterior a la hora de inicio.');
+        }
+
         // Validar que la reserva tenga al menos 24 horas de anticipacion
         $fechaHoraInicio = \Carbon\Carbon::createFromFormat(
             'Y-m-d H:i',

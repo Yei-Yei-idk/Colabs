@@ -98,7 +98,7 @@
                                 <input type="date" id="fecha" name="fecha" class="form-input"
                                     min="{{ $hoyBogota }}" value="{{ $hoyBogota }}" required>
                             </div>
-                            <small class="text-muted">Debes reservar con minimo 24 horas de anticipacion.</small>
+                            <small class="text-muted">Debes reservar con minimo 24 horas de anticipacion (horario: 07:00 a 20:00).</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Horario de Reserva</label>

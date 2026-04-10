@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // TODAS las horas operativas del coworking
     const todasLasHoras = [
-        {value:"06:00",label:"06:00 AM"},{value:"07:00",label:"07:00 AM"},
+        {value:"07:00",label:"07:00 AM"},
         {value:"08:00",label:"08:00 AM"},{value:"09:00",label:"09:00 AM"},
         {value:"10:00",label:"10:00 AM"},{value:"11:00",label:"11:00 AM"},
         {value:"12:00",label:"12:00 PM"},{value:"13:00",label:"01:00 PM"},
@@ -78,8 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Filtra las horas si el usuario elige el día de hoy
      */
-    function getHorasDisponibles() {
-        const fechaSeleccionada = fechaInput.value;
+    function getHorasDisponibles(fechaSeleccionada = fechaInput.value) {
         if (!fechaSeleccionada) return todasLasHoras;
 
         const fechaHoraMinima = obtenerPartesFechaHoraServidor(
@@ -102,17 +101,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function sumarDiasYmd(fechaYmd, dias = 1) {
+        const [y, m, d] = fechaYmd.split('-').map(Number);
+        const fecha = new Date(Date.UTC(y, m - 1, d));
+        fecha.setUTCDate(fecha.getUTCDate() + dias);
+        return fecha.toISOString().slice(0, 10);
+    }
+
+    function obtenerHorasInicioDisponibles(fechaYmd) {
+        return getHorasDisponibles(fechaYmd).filter(h => h.value !== "20:00");
+    }
+
+    function obtenerPrimerDiaConHoras(fechaBaseYmd) {
+        let fechaCursor = fechaBaseYmd;
+        for (let i = 0; i < 14; i++) {
+            if (obtenerHorasInicioDisponibles(fechaCursor).length > 0) {
+                return fechaCursor;
+            }
+            fechaCursor = sumarDiasYmd(fechaCursor, 1);
+        }
+        return fechaBaseYmd;
+    }
+
+    function asegurarFechaConHorasDisponibles() {
+        if (!fechaInput) return;
+
+        const ahoraServidor = obtenerPartesFechaHoraServidor(obtenerAhoraServidorEpochMs());
+        const primeraFechaGlobal = obtenerPrimerDiaConHoras(ahoraServidor.fecha);
+        fechaInput.min = primeraFechaGlobal;
+
+        let fechaObjetivo = fechaInput.value || primeraFechaGlobal;
+        if (fechaObjetivo < primeraFechaGlobal) {
+            fechaObjetivo = primeraFechaGlobal;
+        }
+
+        const primeraFechaValida = obtenerPrimerDiaConHoras(fechaObjetivo);
+        if (fechaInput.value !== primeraFechaValida) {
+            fechaInput.value = primeraFechaValida;
+        }
+    }
+
     /**
      * Repuebla el selector de hora de inicio
      */
     function actualizarHorasInicio() {
         if (!selectInicio) return;
-        const horasDisponibles = getHorasDisponibles();
+        asegurarFechaConHorasDisponibles();
         const valorAnterior = selectInicio.value;
         selectInicio.innerHTML = '<option value="">Seleccionar hora</option>';
 
         // Excluir 20:00 como hora de inicio, ya que la hora máxima de fin es 20:00
-        const horasParaInicio = horasDisponibles.filter(h => h.value !== "20:00");
+        const horasParaInicio = obtenerHorasInicioDisponibles(fechaInput.value);
         horasParaInicio.forEach(hora => {
             const option = document.createElement('option');
             option.value = hora.value;
@@ -528,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
             selectFin.disabled = false;
             selectFin.innerHTML = '<option value="">Seleccionar hora</option>';
             const hNum = parseInt(this.value.split(':')[0]);
-            getHorasDisponibles().filter(hr => parseInt(hr.value.split(':')[0]) > hNum).forEach(hr => {
+            getHorasDisponibles(fechaInput.value).filter(hr => parseInt(hr.value.split(':')[0], 10) > hNum).forEach(hr => {
                 const opt = document.createElement('option');
                 opt.value = hr.value; opt.textContent = hr.label;
                 selectFin.appendChild(opt);
