@@ -66,27 +66,27 @@
             <input
                 type="password"
                 name="user_contrasena"
-                id="user_contrasena"
+                id="password-input"
                 placeholder="Contraseña"
                 class="mi-input"
                 required
             >
 
             <!-- Requisitos de contraseña -->
-            <div class="password-strength-meter" style="margin-top: 10px; margin-bottom: 20px; text-align: left;">
-                <div class="password-rules" style="background: rgba(243, 244, 246, 0.5); padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb;">
-                    <p style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 700; color: #374151;">La contraseña debe incluir:</p>
-                    <ul id="requirement-list" style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <li id="req-length" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+            <div class="password-strength-meter">
+                <div class="password-rules">
+                    <p>La contraseña debe incluir:</p>
+                    <ul class="requirement-list">
+                        <li id="req-length" class="requirement-item">
                             <span class="icon">○</span> Mín. 8 caracteres
                         </li>
-                        <li id="req-mixed" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                        <li id="req-mixed" class="requirement-item">
                             <span class="icon">○</span> Mayús. y minúsc.
                         </li>
-                        <li id="req-numbers" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                        <li id="req-numbers" class="requirement-item">
                             <span class="icon">○</span> Al menos 1 número
                         </li>
-                        <li id="req-symbols" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                        <li id="req-symbols" class="requirement-item">
                             <span class="icon">○</span> Carácter especial
                         </li>
                     </ul>
@@ -104,7 +104,7 @@
             >
             <p>Al crear la cuenta aceptas nuestros términos y condiciones.</p>
 
-            <button type="submit" name="crear" id="btn-crear-cuenta" class="btn-login" style="cursor:pointer;">Crear</button>
+            <button type="submit" name="crear" id="btn-submit" class="btn-login" style="cursor:pointer;">Crear</button>
         </form>
 
         <div class="auth-separador">
@@ -124,52 +124,21 @@
         </a>
     </div>
     </section>
+@endsection
 
+@push('scripts')
+    <script src="{{ asset('js/auth/password-validation.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Modular password validation
+            initPasswordValidation({
+                inputId: 'password-input',
+                submitBtnId: 'btn-submit'
+            });
+
+            // Specific form behavior
             const formulario = document.getElementById('form-registrarse');
-            const botonCrear = document.getElementById('btn-crear-cuenta');
-            const passwordInput = document.getElementById('user_contrasena');
-
-            const requirements = {
-                length: { element: document.getElementById('req-length'), regex: /.{8,}/ },
-                mixed: { element: document.getElementById('req-mixed'), regex: /^(?=.*[a-z])(?=.*[A-Z]).+$/ },
-                numbers: { element: document.getElementById('req-numbers'), regex: /(?=.*[0-9])/ },
-                symbols: { element: document.getElementById('req-symbols'), regex: /(?=.*[\W_])/ }
-            };
-
-            if (passwordInput) {
-                passwordInput.addEventListener('input', function() {
-                    const val = passwordInput.value;
-                    let passedCount = 0;
-
-                    Object.keys(requirements).forEach(key => {
-                        const req = requirements[key];
-                        const isPassed = req.regex.test(val);
-                        
-                        if (isPassed) {
-                            req.element.style.color = '#059669';
-                            req.element.querySelector('.icon').innerText = '✓';
-                            req.element.querySelector('.icon').style.fontWeight = 'bold';
-                            passedCount++;
-                        } else {
-                            req.element.style.color = '#9ca3af';
-                            req.element.querySelector('.icon').innerText = '○';
-                            req.element.querySelector('.icon').style.fontWeight = 'normal';
-                        }
-                    });
-
-                    // Habilitar/Deshabilitar botón
-                    if (passedCount === 4) {
-                        botonCrear.disabled = false;
-                        botonCrear.style.opacity = '1';
-                    } else {
-                        botonCrear.disabled = true;
-                        botonCrear.style.opacity = '0.7';
-                    }
-                });
-            }
-
+            const botonCrear = document.getElementById('btn-submit');
             if (formulario && botonCrear) {
                 formulario.addEventListener('submit', function () {
                     botonCrear.disabled = true;
@@ -178,13 +147,6 @@
                     botonCrear.style.cursor = 'not-allowed';
                 });
             }
-
-            // Inicializar estado del botón
-            if (botonCrear) {
-                botonCrear.disabled = true;
-                botonCrear.style.opacity = '0.7';
-            }
         });
     </script>
-@endsection
-
+@endpush

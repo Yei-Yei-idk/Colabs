@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Services\MailService;
 use App\Models\Reserva;
 use App\Models\Calificacion;
+use App\Models\Rol;
 
 class User extends Authenticatable implements MustVerifyEmail
 {

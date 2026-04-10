@@ -32,4 +32,29 @@ class Reserva extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    /**
+     * Busca y marca como 'Finalizada' toda reserva aceptada/activa cuya fecha/hora ya pasó.
+     * @return int Cantidad de reservas actualizadas.
+     */
+    public static function actualizarVencidas(): int
+    {
+        $ahora = \Carbon\Carbon::now(); // Respeta el timezone definido en config/app.php
+
+        $reservas = self::whereIn('rsva_estado', ['activa', 'Activa', 'aceptada', 'Aceptada'])
+            ->where(function ($q) use ($ahora) {
+                $q->whereDate('rsva_fecha', '<', $ahora->toDateString())
+                  ->orWhere(function ($q2) use ($ahora) {
+                      $q2->whereDate('rsva_fecha', $ahora->toDateString())
+                         ->whereTime('rsva_hora_fin', '<=', $ahora->toTimeString());
+                  });
+            })
+            ->get();
+
+        foreach ($reservas as $res) {
+            $res->rsva_estado = 'Finalizada';
+            $res->save(); // Dispara el Observer (email)
+        }
+
+        return $reservas->count();
+    }
 }

@@ -21,6 +21,8 @@ Route::get('/', [InicioController::class, 'index'])->name('inicio');
 Route::get('/nosotros', [InicioController::class, 'nosotros'])->name('nosotros');
 Route::get('/ubicacion', [InicioController::class, 'ubicacion'])->name('ubicacion');
 Route::get('/servicios', [InicioController::class, 'servicios'])->name('servicios');
+// Route::get('/buscar', [ClienteController::class, 'buscarEspacios'])->name('cliente.buscar_espacios');
+
 
 // Registro de usuarios (equivalente a registrarse.php)
 Route::get('/registrarse', [RegistrarseController::class, 'mostrar'])->name('registrarse.mostrar');
@@ -56,8 +58,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'verified', 'es.cliente', 'perfil.google.completo'])->group(function () {
-    Route::get('/', [ClienteController::class, 'index'])->name('index');
     Route::get('/buscar', [ClienteController::class, 'buscarEspacios'])->name('buscar_espacios');
+    Route::get('/', [ClienteController::class, 'index'])->name('index');
     Route::get('/reservas', [ClienteController::class, 'misReservas'])->name('mis_reservas');
     Route::get('/perfil', [ClienteController::class, 'perfil'])->name('perfil');
     Route::get('/ayuda', [ClienteController::class, 'ayuda'])->name('ayuda');

@@ -13,41 +13,17 @@ class ReservasController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | MÉTODO PRIVADO — se llama al inicio de todos los métodos de reservas
+    | MÉTODO PRIVADO (ELIMINADO Y CENTRALIZADO EN EL MODELO RESERVA)
     |--------------------------------------------------------------------------
-    | Busca en la BD todas las reservas con estado activo cuya fecha/hora
-    | de fin ya pasó y las marca como "finalizada".
-    | Usa la hora real de Colombia gracias a 'timezone' => 'America/Bogota'
-    | definido en config/app.php
+    | Ya no se ejecuta al inicio de cada página por eficiencia.
+    | Ahora se usa Reserva::actualizarVencidas() vía Cron o botón manual.
     */
-    private function actualizarVencidas(): void
-    {
-        $ahora = Carbon::now(); // America/Bogota
-
-        $vencidas = Reserva::whereIn('rsva_estado', ['activa', 'Activa', 'aceptada', 'Aceptada'])
-            ->where(function ($q) use ($ahora) {
-                $q->whereDate('rsva_fecha', '<', $ahora->toDateString())
-                  ->orWhere(function ($q2) use ($ahora) {
-                      $q2->whereDate('rsva_fecha', $ahora->toDateString())
-                         ->whereTime('rsva_hora_fin', '<=', $ahora->toTimeString());
-                  });
-            })
-            ->get();
-
-        foreach ($vencidas as $res) {
-            /** @var \App\Models\Reserva $res */
-            $res->rsva_estado = 'finalizada';
-            $res->save(); // El Observer disparará el correo de Finalizada
-        }
-    }
 
     /**
      * Calendario principal de reservas del día.
      */
     public function index(Request $request)
     {
-        $this->actualizarVencidas(); // ← actualiza DB antes de leer
-
         Carbon::setLocale('es');
         $fechaInput = $request->input('fecha', Carbon::today()->format('Y-m-d'));
         $fecha      = Carbon::parse($fechaInput)->locale('es');
@@ -77,8 +53,6 @@ class ReservasController extends Controller
      */
     public function pendientes()
     {
-        $this->actualizarVencidas(); // ← actualiza DB antes de leer
-
         Carbon::setLocale('es');
         $reservas = Reserva::with(['espacio', 'usuario'])
             ->whereIn('rsva_estado', ['Pendiente', 'pendiente'])
@@ -93,8 +67,6 @@ class ReservasController extends Controller
      */
     public function finalizadas(Request $request)
     {
-        $this->actualizarVencidas(); // ← actualiza DB antes de leer
-
         Carbon::setLocale('es');
         $fechaInput = $request->input('fecha', Carbon::today()->format('Y-m-d'));
         $fecha      = Carbon::parse($fechaInput)->locale('es');
@@ -169,8 +141,6 @@ class ReservasController extends Controller
      */
     public function reservasDelDia()
     {
-        $this->actualizarVencidas();
-
         $reservas = Reserva::with(['espacio', 'usuario'])
             ->whereDate('rsva_fecha', Carbon::today())
             ->get();
@@ -184,28 +154,12 @@ class ReservasController extends Controller
      */
     public function sincronizarEstados()
     {
-        $ahora = Carbon::now();
-
-        $vencidas = Reserva::whereIn('rsva_estado', ['activa', 'Activa', 'aceptada', 'Aceptada', 'pendiente', 'Pendiente'])
-            ->where(function ($q) use ($ahora) {
-                $q->whereDate('rsva_fecha', '<', $ahora->toDateString())
-                  ->orWhere(function ($q2) use ($ahora) {
-                      $q2->whereDate('rsva_fecha', $ahora->toDateString())
-                         ->whereTime('rsva_hora_fin', '<=', $ahora->toTimeString());
-                  });
-            })
-            ->get();
-
-        foreach ($vencidas as $res) {
-            /** @var \App\Models\Reserva $res */
-            $res->rsva_estado = 'finalizada';
-            $res->save(); // El Observer disparará el correo
-        }
+        $actualizadas = Reserva::actualizarVencidas();
 
         return response()->json([
             'ok'           => true,
-            'actualizadas' => $vencidas->count(),
-            'hora'         => $ahora->format('H:i:s'),
+            'actualizadas' => $actualizadas,
+            'hora'         => Carbon::now()->format('H:i:s'),
         ]);
     }
 }
