@@ -46,19 +46,23 @@ document.addEventListener('DOMContentLoaded', () => {
         {value:"20:00",label:"08:00 PM"},
     ];
 
-    function obtenerFechaHoraServidorBogota() {
+    function obtenerAhoraServidorEpochMs() {
         const elapsedMs = Date.now() - baseClientEpochMs;
-        const nowMs = baseServerNowEpochMs + elapsedMs;
+        return baseServerNowEpochMs + elapsedMs;
+    }
+
+    function obtenerPartesFechaHoraServidor(epochMs) {
         const formatter = new Intl.DateTimeFormat('en-US', {
             timeZone: serverTimezone || 'America/Bogota',
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
+            minute: '2-digit',
             hour12: false
         });
 
-        const parts = formatter.formatToParts(new Date(nowMs));
+        const parts = formatter.formatToParts(new Date(epochMs));
         const map = {};
         parts.forEach(({ type, value }) => {
             map[type] = value;
@@ -66,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return {
             fecha: `${map.year}-${map.month}-${map.day}`,
-            hora: parseInt(map.hour, 10)
+            hora: parseInt(map.hour, 10),
+            minuto: parseInt(map.minute, 10)
         };
     }
 
@@ -75,15 +80,25 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function getHorasDisponibles() {
         const fechaSeleccionada = fechaInput.value;
-        const ahoraServidor = obtenerFechaHoraServidorBogota();
-        const esHoy = fechaSeleccionada === ahoraServidor.fecha;
+        if (!fechaSeleccionada) return todasLasHoras;
 
-        if (!esHoy) return todasLasHoras;
+        const fechaHoraMinima = obtenerPartesFechaHoraServidor(
+            obtenerAhoraServidorEpochMs() + (24 * 60 * 60 * 1000)
+        );
 
-        const horaActual = ahoraServidor.hora;
+        if (fechaSeleccionada < fechaHoraMinima.fecha) {
+            return [];
+        }
+
+        if (fechaSeleccionada > fechaHoraMinima.fecha) {
+            return todasLasHoras;
+        }
+
         return todasLasHoras.filter(h => {
-            const horaNum = parseInt(h.value.split(':')[0]);
-            return horaNum > horaActual;
+            const horaNum = parseInt(h.value.split(':')[0], 10);
+            if (horaNum > fechaHoraMinima.hora) return true;
+            if (horaNum < fechaHoraMinima.hora) return false;
+            return fechaHoraMinima.minuto === 0;
         });
     }
 
@@ -105,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             selectInicio.appendChild(option);
         });
 
-        if (horasDisponibles.some(h => h.value === valorAnterior)) {
+        if (horasParaInicio.some(h => h.value === valorAnterior)) {
             selectInicio.value = valorAnterior;
         } else {
             selectInicio.value = '';
@@ -479,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setReserveBtn(disponible) {
         reserveBtn.disabled = !disponible;
+        reserveBtn.style.display = disponible ? '' : 'none';
         reserveBtn.style.opacity = disponible ? '1' : '0.5';
         reserveBtn.style.cursor  = disponible ? 'pointer' : 'not-allowed';
         reserveBtn.textContent   = disponible ? 'Continuar con la reserva' : 'Verificar disponibilidad';

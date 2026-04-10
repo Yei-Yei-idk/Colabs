@@ -98,6 +98,7 @@
                                 <input type="date" id="fecha" name="fecha" class="form-input"
                                     min="{{ $hoyBogota }}" value="{{ $hoyBogota }}" required>
                             </div>
+                            <small class="text-muted">Debes reservar con minimo 24 horas de anticipacion.</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Horario de Reserva</label>
@@ -151,7 +152,7 @@
                         <div class="pricing-summary" id="pricingSummary" style="display:none;">
                             <div class="pricing-line">Elija el horario de la reserva.</div>
                         </div>
-                        <button type="submit" class="reserve-button" id="reserveBtn" disabled style="opacity:0.5;cursor:not-allowed;">
+                        <button type="submit" class="reserve-button" id="reserveBtn" disabled style="display:none;opacity:0.5;cursor:not-allowed;">
                             Verificar disponibilidad
                         </button>
                     </form>

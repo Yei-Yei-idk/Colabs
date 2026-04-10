@@ -297,17 +297,18 @@ class ClienteController extends Controller
             ]);
         }
 
-        // Validar que no sea en el pasado
+        // Validar que la reserva tenga al menos 24 horas de anticipacion
         // Usar createFromFormat para respetar la timezone de la aplicación
         $fechaHoraInicio = \Carbon\Carbon::createFromFormat(
             'Y-m-d H:i',
             $fecha . ' ' . $hora_inicio,
             config('app.timezone')
         );
-        if ($fechaHoraInicio->isPast()) {
+        $fechaHoraMinima = \Carbon\Carbon::now(config('app.timezone'))->addHours(24);
+        if ($fechaHoraInicio->lt($fechaHoraMinima)) {
             return response()->json([
                 'disponible' => false,
-                'mensaje' => 'No puedes reservar en una fecha u hora que ya pasó.'
+                'mensaje' => 'Solo puedes reservar con minimo 24 horas de anticipacion.'
             ]);
         }
 
@@ -447,14 +448,15 @@ class ClienteController extends Controller
      */
     public function confirmarReserva(Request $request)
     {
-        // Validar que no sea en el pasado
+        // Validar que la reserva tenga al menos 24 horas de anticipacion
         $fechaHoraInicio = \Carbon\Carbon::createFromFormat(
             'Y-m-d H:i',
             $request->fecha . ' ' . $request->hora_inicio,
             config('app.timezone')
         );
-        if ($fechaHoraInicio->isPast()) {
-            return back()->with('error', '⚠️ No puedes realizar reservas en el pasado.');
+        $fechaHoraMinima = \Carbon\Carbon::now(config('app.timezone'))->addHours(24);
+        if ($fechaHoraInicio->lt($fechaHoraMinima)) {
+            return back()->with('error', 'Solo puedes realizar reservas con minimo 24 horas de anticipacion.');
         }
 
         // Validar capacidad en el servidor por seguridad
