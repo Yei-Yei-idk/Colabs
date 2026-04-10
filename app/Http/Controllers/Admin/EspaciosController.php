@@ -89,7 +89,7 @@ class EspaciosController extends Controller
             // o simplemente el disco public de Laravel. 
             // Para seguir la lógica del usuario:
             $file->move(public_path('uploads'), $nombreArchivo);
-            $ruta = "uploads/" . $nombreArchivo;
+            $ruta = "" . $nombreArchivo;
 
             Imagen::create([
                 'espacio_id' => $espacio->espacio_id,
