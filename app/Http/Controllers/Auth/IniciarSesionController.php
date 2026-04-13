@@ -12,8 +12,13 @@ class IniciarSesionController extends Controller
     /**
      * Muestra el formulario de inicio de sesion.
      */
-    public function mostrarFormulario()
+    public function mostrarFormulario(Request $request)
     {
+        $redirect = $this->obtenerRedirectSeguro($request->query('redirect'));
+        if ($redirect) {
+            $request->session()->put('url.intended', $redirect);
+        }
+
         return view('auth.login');
     }
 
@@ -25,6 +30,7 @@ class IniciarSesionController extends Controller
         $request->validate([
             'user' => ['required', 'string'],
             'contra' => ['required', 'string'],
+            'redirect' => ['nullable', 'string'],
         ], [
             'user.required' => 'El correo o numero de documento es obligatorio.',
             'contra.required' => 'La contrasena es obligatoria.',
@@ -55,6 +61,11 @@ class IniciarSesionController extends Controller
 
         $request->session()->regenerate();
 
+        $redirect = $this->obtenerRedirectSeguro($request->input('redirect'));
+        if ($redirect) {
+            $request->session()->put('url.intended', $redirect);
+        }
+
         if (!$usuario->hasVerifiedEmail()) {
             return redirect()
                 ->route('verification.notice')
@@ -63,7 +74,7 @@ class IniciarSesionController extends Controller
 
         switch ((int) $usuario->rol_id) {
             case 3:
-                return redirect()->route('cliente.index')->with('status', 'Bienvenido/a ' . $usuario->user_nombre . '.');
+                return redirect()->intended(route('cliente.index'))->with('status', 'Bienvenido/a ' . $usuario->user_nombre . '.');
 
             case 1:
             case 2:
@@ -75,5 +86,18 @@ class IniciarSesionController extends Controller
         return back()
             ->withInput($request->only('user'))
             ->withErrors(['user' => 'No fue posible identificar tu rol de acceso.']);
+    }
+
+    private function obtenerRedirectSeguro(?string $redirect): ?string
+    {
+        if (empty($redirect)) {
+            return null;
+        }
+
+        if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
+            return null;
+        }
+
+        return url($redirect);
     }
 }

@@ -21,6 +21,7 @@
 
             <form action="{{ route('login.autenticar') }}" method="post">
                 @csrf
+                <input type="hidden" name="redirect" value="{{ old('redirect', request('redirect')) }}">
 
                 <input
                     type="text"
@@ -60,7 +61,7 @@
                 <span>o</span>
             </div>
 
-            <a href="{{ route('google.redirect') }}" class="btn-google-auth" aria-label="Continuar con Google">
+            <a href="{{ route('google.redirect', ['redirect' => request('redirect')]) }}" class="btn-google-auth" aria-label="Continuar con Google">
                 <span class="btn-google-icon" aria-hidden="true">
                     <svg width="20" height="20" viewBox="0 0 24 24" role="img" focusable="false">
                         <path fill="#EA4335" d="M12 10.2v3.95h5.49c-.24 1.27-.96 2.34-2.02 3.06l3.27 2.54c1.9-1.75 3-4.32 3-7.37 0-.72-.06-1.41-.19-2.08H12z"/>

@@ -33,7 +33,7 @@
             {{-- Menu centrado --}}
             <ul class="menu">
                 <li><a href="{{ route('inicio') }}" class="{{ request()->routeIs('inicio') ? 'active' : '' }}">Inicio</a></li>
-                <li><a href="{{ route('cliente.buscar_espacios') }}" class="{{ request()->routeIs('cliente.buscar_espacios') ? 'active' : '' }}">Buscar espacios</a></li>
+                <li><a href="{{ route('buscar_espacios') }}" class="{{ request()->routeIs('buscar_espacios') ? 'active' : '' }}">Buscar espacios</a></li>
                 <li><a href="{{ route('nosotros') }}" class="{{ request()->routeIs('nosotros') ? 'active' : '' }}">Nosotros</a></li>
                 <li><a href="{{ route('ubicacion') }}" class="{{ request()->routeIs('ubicacion') ? 'active' : '' }}">Encuentranos</a></li>
                 <li><a href="{{ route('servicios') }}" class="{{ request()->routeIs('servicios') ? 'active' : '' }}">Servicios</a></li>

@@ -27,7 +27,7 @@
                 <p>Selecciona el tipo de oficina y la capacidad que necesitas.</p>
             </div>
 
-            <form action="{{ route('cliente.buscar_espacios') }}" method="GET" class="search-form">
+            <form action="{{ route('buscar_espacios') }}" method="GET" class="search-form">
                 <div class="search-input-group">
                     <select name="esp_tipo">
                         <option value="">¿Qué tipo de espacio buscas?</option>

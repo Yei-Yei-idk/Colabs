@@ -24,8 +24,13 @@ class GoogleAuthController extends Controller
     {
         $this->mailService = $mailService;
     }
-    public function redirect(): RedirectResponse
+    public function redirect(Request $request): RedirectResponse
     {
+        $redirect = $this->obtenerRedirectSeguro($request->query('redirect'));
+        if ($redirect) {
+            $request->session()->put('url.intended', $redirect);
+        }
+
         return Socialite::driver('google')->redirect();
     }
 
@@ -120,7 +125,7 @@ class GoogleAuthController extends Controller
                     : 'Tu cuenta ya estaba vinculada con Google. Iniciaste sesion correctamente.');
         }
 
-        return redirect()->route('cliente.index')
+        return redirect()->intended(route('cliente.index'))
             ->with('status', $esNuevoUsuario
                 ? 'Bienvenido a Colabs. Tu cuenta de Google fue creada correctamente.'
                 : 'Tu cuenta ya estaba vinculada con Google. Iniciaste sesion correctamente.');
@@ -229,6 +234,19 @@ class GoogleAuthController extends Controller
         }
 
         return redirect()->route('cliente.index');
+    }
+
+    private function obtenerRedirectSeguro(?string $redirect): ?string
+    {
+        if (empty($redirect)) {
+            return null;
+        }
+
+        if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
+            return null;
+        }
+
+        return url($redirect);
     }
 
 }

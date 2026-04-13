@@ -21,7 +21,7 @@ Route::get('/', [InicioController::class, 'index'])->name('inicio');
 Route::get('/nosotros', [InicioController::class, 'nosotros'])->name('nosotros');
 Route::get('/ubicacion', [InicioController::class, 'ubicacion'])->name('ubicacion');
 Route::get('/servicios', [InicioController::class, 'servicios'])->name('servicios');
-// Route::get('/buscar', [ClienteController::class, 'buscarEspacios'])->name('cliente.buscar_espacios');
+Route::get('/buscar', [InicioController::class, 'buscarEspaciosPublico'])->name('buscar_espacios');
 
 
 // Registro de usuarios (equivalente a registrarse.php)
