@@ -3,13 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Reserva;
 
-class ReservaStatusChanged extends Notification implements ShouldQueue
+class ReservaStatusChanged extends Notification
 {
     use Queueable, SerializesModels;
 

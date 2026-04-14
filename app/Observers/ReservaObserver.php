@@ -29,8 +29,8 @@ class ReservaObserver
      */
     public function updated(Reserva $reserva): void
     {
-        // Solo si el estado cambia (isDirty)
-        if ($reserva->isDirty('rsva_estado')) {
+        // En el evento "updated" debemos usar wasChanged para detectar cambios persistidos.
+        if ($reserva->wasChanged('rsva_estado')) {
             $nuevoEstado = $reserva->rsva_estado;
 
             // Mapeo seguro de estados para disparar notificaciones
