@@ -8,7 +8,7 @@
 
     <div class="buscar-container">
         <!-- ✅ FORMULARIO DE FILTROS -->
-        <aside class="sidebar animate-fade-up" style="animation-delay: 0.2s;">
+        <aside class="sidebar animate-fade-up" style="animation-delay: 0.2s; align-self: flex-start; position: sticky; top: 100px; height: fit-content;">
             <form method="GET" action="{{ route('cliente.buscar_espacios') }}">
                 <h3>Filtrar Espacios</h3>
 
@@ -68,10 +68,39 @@
                         <p>{{ Str::limit($espacio->esp_descripcion, 100) }}</p>
                         <p><strong>Capacidad:</strong> {{ $espacio->esp_capacidad }} personas</p>
                         <p><strong>Tipo:</strong> {{ $espacio->esp_tipo }}</p>
+
+                        @php
+                            $precioOriginal = $espacio->esp_precio_hora;
+                            $descuentoStr = '';
+                            $precioMostrar = $precioOriginal;
+                            
+                            if (request('paquete')) {
+                                $horas = (int) request('paquete');
+                                $descuento = 0;
+                                if ($horas == 4) $descuento = 0.10;
+                                elseif ($horas == 5) $descuento = 0.15;
+                                elseif ($horas == 6) $descuento = 0.20;
+                                
+                                if ($descuento > 0) {
+                                    $precioMostrar = $precioOriginal * (1 - $descuento);
+                                    $descuentoStr = ($descuento * 100) . '% OFF';
+                                }
+                            }
+                        @endphp
+                        
+                        <div style="margin-top: 10px; font-size: 1.1rem;">
+                            @if($descuentoStr)
+                                <span style="text-decoration: line-through; color: #9CA3AF; font-size: 0.85em;">${{ number_format($precioOriginal, 0, ',', '.') }}</span>
+                                <strong style="color: #059669; margin-left: 8px;">${{ number_format($precioMostrar, 0, ',', '.') }} /hora</strong>
+                                <span style="background: #FEF08A; color: #854D0E; font-size: 0.75em; padding: 3px 8px; border-radius: 6px; margin-left: 8px; font-weight: bold;">{{ $descuentoStr }}</span>
+                            @else
+                                <strong style="color: #1F2937;">${{ number_format($precioOriginal, 0, ',', '.') }} /hora</strong>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="reserva-actions-column">
-                        <a href="{{ route('cliente.reservar', $espacio->espacio_id) }}" class="btn-reservar">
+                        <a href="{{ route('cliente.reservar', $espacio->espacio_id) }}{{ request('paquete') ? '?paquete='.request('paquete') : '' }}" class="btn-reservar">
                             Reservar ahora →
                         </a>
                     </div>

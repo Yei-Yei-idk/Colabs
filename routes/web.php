@@ -23,6 +23,15 @@ Route::get('/ubicacion', [InicioController::class, 'ubicacion'])->name('ubicacio
 Route::get('/servicios', [InicioController::class, 'servicios'])->name('servicios');
 Route::get('/buscar', [InicioController::class, 'buscarEspaciosPublico'])->name('buscar_espacios');
 
+// Promociones por paquetes
+Route::get('/promociones', function () {
+    return view('promociones');
+})->name('promociones');
+
+Route::get('/reservar', function () {
+    return view('reservar');
+})->name('reservar.paquetes');
+
 
 // Registro de usuarios (equivalente a registrarse.php)
 Route::get('/registrarse', [RegistrarseController::class, 'mostrar'])->name('registrarse.mostrar');

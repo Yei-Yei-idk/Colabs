@@ -88,6 +88,12 @@
                         <span class="price-amount">${{ number_format($espacio->esp_precio_hora, 0, ',', '.') }} COP</span>
                         <span class="price-period">por hora</span>
                     </div>
+                    @if(request('paquete'))
+                    <div style="background-color: #FEF08A; color: #854D0E; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid #FDE047;">
+                        <strong>✨ Paquete de {{ request('paquete') }} horas activo</strong><br>
+                        La hora de fin se ajustará automáticamente.
+                    </div>
+                    @endif
                     <form id="bookingForm" class="booking-form">
                         @csrf
                         <input type="hidden" name="espacio_id" value="{{ $espacio->espacio_id }}">
@@ -270,6 +276,7 @@
          data-confirmar-url="{{ route('cliente.confirmar_reserva') }}"
          data-server-now-epoch-ms="{{ $serverNowEpochMs }}"
          data-server-timezone="America/Bogota"
+         data-paquete="{{ request('paquete') ?? '' }}"
          style="display:none;"></div>
     <script>
         const configElement = document.getElementById('reservaConfigData');
@@ -283,7 +290,8 @@
             alternativasUrl: configElement.getAttribute('data-alternativas-url'),
             confirmarUrl: configElement.getAttribute('data-confirmar-url'),
             serverNowEpochMs: parseInt(configElement.getAttribute('data-server-now-epoch-ms'), 10),
-            serverTimezone: configElement.getAttribute('data-server-timezone') || 'America/Bogota'
+            serverTimezone: configElement.getAttribute('data-server-timezone') || 'America/Bogota',
+            paquete: configElement.getAttribute('data-paquete')
         };
     </script>
     <script src="{{ asset('js/cliente/reserva.js?v=' . time()) }}"></script>

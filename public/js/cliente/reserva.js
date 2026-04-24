@@ -550,11 +550,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fin <= inicio) return;
 
         const horas = Math.ceil((fin - inicio) / 3600000);
-        const total = horas * precioHora;
+        const totalOriginal = horas * precioHora;
+        let totalFinal = totalOriginal;
+        let descuentoTexto = '';
+        
+        if (config.paquete) {
+            const paqueteHoras = parseInt(config.paquete, 10);
+            let descuento = 0;
+            if (paqueteHoras === 4) descuento = 0.10;
+            else if (paqueteHoras === 5) descuento = 0.15;
+            else if (paqueteHoras === 6) descuento = 0.20;
+            
+            if (descuento > 0) {
+                totalFinal = totalOriginal * (1 - descuento);
+                descuentoTexto = `<div class="pricing-line" style="color: #059669; font-weight: bold;">Descuento paquete (${descuento * 100}%): -$${(totalOriginal - totalFinal).toLocaleString('es-CO')}</div>`;
+            }
+        }
         
         document.getElementById('pricingSummary').innerHTML = `
-            <div class="pricing-line">$${precioHora.toLocaleString('es-CO')} x ${horas} hora(s)</div>
-            <div class="total-line"><span class="total-label">Total</span><span class="total-amount">$${total.toLocaleString('es-CO')} COP</span></div>`;
+            <div class="pricing-line">Precio normal: $${precioHora.toLocaleString('es-CO')} x ${horas} hora(s)</div>
+            ${descuentoTexto}
+            <div class="total-line"><span class="total-label">Total Final</span><span class="total-amount">$${totalFinal.toLocaleString('es-CO')} COP</span></div>`;
+            
+        // Variables globales para usarse en el modal de confirmación
+        window.currentTotalFinal = totalFinal;
+        window.currentDescuentoMonto = totalOriginal - totalFinal;
+        window.currentDescuentoPorcentaje = config.paquete ? (
+            parseInt(config.paquete, 10) === 4 ? 10 : (parseInt(config.paquete, 10) === 5 ? 15 : (parseInt(config.paquete, 10) === 6 ? 20 : 0))
+        ) : 0;
     }
 
     /* ==== EVENTOS ==== */
@@ -573,6 +596,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectFin.appendChild(opt);
             });
             selectFin.value = '';
+
+            // === NUEVA LÓGICA DE PAQUETE (MOLDE) ===
+            if (config.paquete) {
+                const paqueteHoras = parseInt(config.paquete, 10);
+                const targetHour = hNum + paqueteHoras;
+                const targetHourStr = targetHour.toString().padStart(2, '0') + ':00';
+                
+                const optionExists = Array.from(selectFin.options).some(opt => opt.value === targetHourStr);
+                
+                if (optionExists) {
+                    selectFin.value = targetHourStr;
+                    selectFin.disabled = true; // Bloquear para que no pueda romper el molde
+                } else {
+                    alert(`El paquete de ${paqueteHoras} horas excede el horario de cierre (20:00) si inicias a las ${this.options[this.selectedIndex].text}. Selecciona una hora de inicio más temprana.`);
+                    this.value = '';
+                    selectFin.innerHTML = '<option value="">Primero selecciona hora de inicio</option>';
+                    selectFin.disabled = true;
+                    return; // Detener aquí
+                }
+            }
         }
         verificarDisponibilidadPorHora();
     });
@@ -611,9 +654,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const inv = document.getElementById('num_invitados').value;
         document.getElementById('confirmInvitados').textContent = `${inv} persona${inv > 1 ? 's' : ''}`;
         
-        const total = duracion * precioHora;
-        document.getElementById('confirmPrecio').innerHTML = `<span class="font-500">$${precioHora.toLocaleString('es-CO')} x ${duracion} hora${duracion > 1 ? 's' : ''}</span>`;
-        document.getElementById('confirmTotal').textContent = `$${total.toLocaleString('es-CO')} COP`;
+        const totalOriginal = duracion * precioHora;
+        const totalFinal = window.currentTotalFinal || totalOriginal;
+        const descuentoMonto = window.currentDescuentoMonto || 0;
+        const descuentoPorcentaje = window.currentDescuentoPorcentaje || 0;
+        
+        let precioHtml = `<span class="font-500">Precio Base: $${precioHora.toLocaleString('es-CO')} x ${duracion} hora${duracion > 1 ? 's' : ''} = $${totalOriginal.toLocaleString('es-CO')}</span>`;
+        if (descuentoMonto > 0) {
+            precioHtml += `<br><span style="color: #059669; font-weight: bold; font-size: 0.9em;">Ahorro de paquete (${descuentoPorcentaje}%): -$${descuentoMonto.toLocaleString('es-CO')}</span>`;
+        }
+        
+        document.getElementById('confirmPrecio').innerHTML = precioHtml;
+        document.getElementById('confirmTotal').textContent = `$${totalFinal.toLocaleString('es-CO')} COP`;
         
         document.getElementById('confirmBookingPopup').classList.remove('modal-hidden');
         document.body.style.overflow = 'hidden';
@@ -639,6 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'num_invitados': document.getElementById('num_invitados').value,
             'descripcion': document.querySelector('textarea[name="descripcion"]').value
         };
+
+        if (window.currentDescuentoMonto && window.currentDescuentoMonto > 0) {
+            campos.descripcion += `\n\n[INFO PAQUETE: Se aplicó un descuento del ${window.currentDescuentoPorcentaje}% por el paquete de ${config.paquete} horas. El precio real a cobrar es de $${window.currentTotalFinal.toLocaleString('es-CO')} COP.]`;
+        }
 
         Object.entries(campos).forEach(([k, v]) => {
             const inp = document.createElement('input');
