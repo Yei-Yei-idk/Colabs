@@ -157,6 +157,40 @@
 
     @yield('scripts')
 
+    {{-- ===== PROTECCIÓN ANTI-DOBLE CLICK (GLOBAL) ===== --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /**
+             * Deshabilita el botón submit de cualquier formulario al ser enviado,
+             * para evitar envíos duplicados por doble clic.
+             */
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                // Buscar el botón que disparó el submit (o el primero disponible)
+                const btn = form.querySelector('[type="submit"]:not([data-no-disable])');
+                if (btn && !btn.disabled) {
+                    btn.disabled = true;
+                    btn.dataset.originalText = btn.innerHTML;
+                    btn.innerHTML = '<span style="opacity:.7">Procesando...</span>';
+                }
+            });
+
+            /**
+             * Protege el botón de confirmación del modal de logout (que llama 
+             * form.submit() directamente en lugar de usar type="submit").
+             */
+            const btnConfirmarLogout = document.querySelector(
+                '#logout-modal button[onclick*="logout-form-admin"]'
+            );
+            if (btnConfirmarLogout) {
+                btnConfirmarLogout.addEventListener('click', function () {
+                    this.disabled = true;
+                    this.innerHTML = '<span style="opacity:.7">Cerrando...</span>';
+                });
+            }
+        });
+    </script>
+
     {{-- ===== AUTO-SINCRONIZACIÓN DE ESTADOS DE RESERVAS ===== --}}
     {{-- Llama al servidor cada 60 s para marcar como "finalizada" las reservas vencidas --}}
     <script>

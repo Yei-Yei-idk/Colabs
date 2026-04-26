@@ -191,5 +191,38 @@
     });
 </script>
 @yield('scripts')
+
+    {{-- ===== PROTECCIÓN ANTI-DOBLE CLICK (GLOBAL) ===== --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /**
+             * Deshabilita el botón submit de cualquier formulario al ser enviado,
+             * para evitar envíos duplicados por doble clic.
+             */
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                const btn = form.querySelector('[type="submit"]:not([data-no-disable])');
+                if (btn && !btn.disabled) {
+                    btn.disabled = true;
+                    btn.dataset.originalText = btn.innerHTML;
+                    btn.innerHTML = '<span style="opacity:.7">Procesando...</span>';
+                }
+            });
+
+            /**
+             * Protege el botón de confirmación del popup de logout del cliente
+             * (llama al form.submit() mediante onclick inline).
+             */
+            const btnConfirmarLogout = document.querySelector(
+                '.logout-btn[onclick*="logout-form-cliente"]'
+            );
+            if (btnConfirmarLogout) {
+                btnConfirmarLogout.addEventListener('click', function () {
+                    this.disabled = true;
+                    this.innerHTML = '<span style="opacity:.7">Cerrando...</span>';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

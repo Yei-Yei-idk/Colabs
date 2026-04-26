@@ -104,5 +104,24 @@
     <script src="{{ asset('js/global.js') }}"></script>
 
     @stack('scripts')
+
+    {{-- ===== PROTECCIÓN ANTI-DOBLE CLICK (GLOBAL) ===== --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /**
+             * Deshabilita el botón submit de cualquier formulario al ser enviado,
+             * para evitar envíos duplicados por doble clic.
+             */
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                const btn = form.querySelector('[type="submit"]:not([data-no-disable])');
+                if (btn && !btn.disabled) {
+                    btn.disabled = true;
+                    btn.dataset.originalText = btn.innerHTML;
+                    btn.innerHTML = '<span style="opacity:.7">Procesando...</span>';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
