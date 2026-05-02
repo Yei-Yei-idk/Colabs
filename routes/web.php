@@ -107,6 +107,7 @@ Route::prefix('admin')
 
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/toggle-promociones', [DashboardController::class, 'togglePromociones'])->name('toggle_promociones');
 
         // Espacios
         Route::get('/espacios', [EspaciosController::class, 'index'])->name('espacios.index');

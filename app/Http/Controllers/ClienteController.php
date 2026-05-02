@@ -66,7 +66,8 @@ class ClienteController extends Controller
                 'reserva.rsva_fecha as fecha',
                 'reserva.rsva_hora_inicio as hora_inicio',
                 'reserva.rsva_hora_fin as hora_fin',
-                'reserva.rsva_estado as estado'
+                'reserva.rsva_estado as estado',
+                'reserva.rsva_descripcion as descripcion'
             )
             ->orderBy('reserva.rsva_fecha', 'DESC')
             ->get();

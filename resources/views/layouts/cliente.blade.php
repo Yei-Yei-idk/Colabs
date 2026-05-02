@@ -28,7 +28,12 @@
       <li><a href="{{ route('cliente.index') }}" class="{{ request()->routeIs('cliente.index') ? 'active' : '' }}">Inicio</a></li>
       <li><a href="{{ route('cliente.buscar_espacios') }}" class="{{ request()->routeIs('cliente.buscar_espacios', 'cliente.reservar') ? 'active' : '' }}">Buscar espacios</a></li>
       <li><a href="{{ route('cliente.mis_reservas') }}" class="{{ request()->routeIs('cliente.mis_reservas', 'cliente.detalles_reserva') ? 'active' : '' }}">Mis reservas</a></li>
+      @php
+          $__settings = \App\Http\Controllers\Admin\DashboardController::getSettings();
+      @endphp
+      @if($__settings['promociones_visible'] ?? true)
       <li><a href="{{ route('promociones') }}" class="{{ request()->routeIs('promociones') ? 'active' : '' }}">Promociones</a></li>
+      @endif
     </ul>
 
     <div class="nav-right">

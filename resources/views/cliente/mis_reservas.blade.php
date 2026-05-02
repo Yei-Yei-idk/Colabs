@@ -27,6 +27,22 @@
             $diferencia_horas = $horaFin->diffInHours($horaInicio);
             $total_estimado = $diferencia_horas * $reserva->esp_precio_hora;
             $fecha_formato = \Carbon\Carbon::parse($reserva->fecha)->translatedFormat('d \d\e F, Y');
+
+            // Detectar si tiene descuento de paquete
+            $descuentoPorcentaje = 0;
+            $paqueteHoras = 0;
+            $tieneDescuento = false;
+            if (!empty($reserva->descripcion) && str_contains($reserva->descripcion, '[INFO PAQUETE:')) {
+                preg_match('/descuento del (\d+)%/', $reserva->descripcion, $matchPct);
+                preg_match('/paquete de (\d+) horas/', $reserva->descripcion, $matchHrs);
+                if (!empty($matchPct[1])) {
+                    $descuentoPorcentaje = (int) $matchPct[1];
+                    $paqueteHoras = (int) ($matchHrs[1] ?? 0);
+                    $tieneDescuento = true;
+                    // Calcular total con descuento
+                    $total_estimado = $total_estimado * (1 - $descuentoPorcentaje / 100);
+                }
+            }
         @endphp
         
         <div class="reserva-card-main {{ 'border-' . strtolower($reserva->estado) }} animate-fade-up">
@@ -49,12 +65,29 @@
                     <div>📅 <strong>{{ $fecha_formato }}</strong></div>
                     <div>🕒 <strong>{{ \Carbon\Carbon::parse($reserva->hora_inicio)->format('h:i A') }} - {{ \Carbon\Carbon::parse($reserva->hora_fin)->format('h:i A') }}</strong> ({{ $diferencia_horas }}h)</div>
                 </div>
+
+                {{-- Badge de descuento --}}
+                @if($tieneDescuento)
+                    <div style="margin-top: 10px;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; border: 1px solid #6ee7b7; box-shadow: 0 1px 4px rgba(16,185,129,0.15);">
+                            🎁 {{ $descuentoPorcentaje }}% OFF · Paquete {{ $paqueteHoras }}h
+                        </span>
+                    </div>
+                @endif
             </div>
 
             <div class="reserva-actions-column">
                 <div class="reserva-total-box">
-                    <div class="reserva-total-label">Total:</div>
-                    <div class="reserva-total-amount">${{ number_format($total_estimado, 0, ',', '.') }}</div>
+                    <div class="reserva-total-label">
+                        @if($tieneDescuento)
+                            Total <span style="font-size:0.7rem; color:#059669; font-weight:700;">(con desc.)</span>:
+                        @else
+                            Total:
+                        @endif
+                    </div>
+                    <div class="reserva-total-amount" style="{{ $tieneDescuento ? 'color: #059669;' : '' }}">
+                        ${{ number_format($total_estimado, 0, ',', '.') }}
+                    </div>
                 </div>
 
                 <div class="reserva-badge {{ 'badge-' . strtolower($reserva->estado) }}">
