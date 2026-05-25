@@ -1,59 +1,132 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Co-Labs — PGAEE
+### Sistema de Gestión de Espacios para Coworking
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
+[![Google OAuth](https://img.shields.io/badge/Google_OAuth-2.0-4285F4?style=flat-square&logo=google&logoColor=white)](https://console.cloud.google.com)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**PGAEE (Plataforma de Gestión para Alquiler de Espacios Empresariales)** es una solución tecnológica de nivel corporativo diseñada a medida para **Co-Labs**, orientada a digitalizar, automatizar y optimizar por completo el ecosistema de reservas de espacios de trabajo compartido. La plataforma permite administrar en tiempo real oficinas privadas, aulas de capacitación y salas de reuniones dinámicas, garantizando una experiencia fluida, intuitiva y segura para todos los miembros.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Desarrollada bajo rigurosos estándares de arquitectura de software en Laravel, la aplicación integra un robusto control de acceso basado en múltiples roles, autenticación segura de terceros (Google OAuth), un sistema automatizado de notificaciones transaccionales por correo electrónico y un panel de control analítico administrativo enfocado en la toma de decisiones y la eficiencia operativa de espacios de coworking reales.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+</div>
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Características del Sistema
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Módulo | Descripción |
+| :--- | :--- |
+| **Autenticación** | Registro, inicio de sesión, verificación de correo electrónico y recuperación de contraseña mediante tokens de expiración temporal. |
+| **Google OAuth** | Integración nativa con Google a través de Laravel Socialite, incluyendo un flujo dinámico para completar el perfil del usuario en su primer registro. |
+| **Control de Acceso** | Arquitectura de roles estructurada (Super-Admin, Administrador y Cliente) protegida por middlewares específicos. |
+| **Gestión de Espacios** | Administración completa (CRUD) de oficinas, aulas y salas de reuniones, con control de disponibilidad y estados. |
+| **Motor de Reservas** | Búsqueda inteligente por disponibilidad horaria, proceso de confirmación/cancelación y tareas programadas para la expiración de reservas. |
+| **Panel de Control** | Dashboard administrativo con métricas clave, control de reservas, gestión de personal, copias de seguridad del sistema y logs. |
+| **Calificaciones** | Sistema de feedback que permite a los clientes valorar y dejar comentarios sobre los espacios utilizados una vez concluida su reserva. |
+| **Notificaciones** | Envío automatizado de correos electrónicos transaccionales para cada evento clave en el ciclo de vida de la reserva. |
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Stack Tecnológico
 
-### Premium Partners
+*   **Backend:** PHP 8.2+ y Laravel 12
+*   **Frontend:** Blade Templates y CSS nativo estructurado
+*   **Base de Datos:** MySQL 8.0
+*   **Autenticación Externa:** Google OAuth 2.0 (Laravel Socialite)
+*   **Autenticación Local:** Laravel Breeze
+*   **Servicio de Correo:** Gmail SMTP con cifrado TLS (Puerto 587)
+*   **Sesiones y Caché:** Driver de base de datos para máxima consistencia
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## Instalación y Despliegue Rápido
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> [!IMPORTANT]
+> Asegúrese de contar con **PHP 8.2+**, **Composer** y **MySQL** instalados y configurados en su entorno global antes de proceder.
 
-## Code of Conduct
+Ejecute la siguiente secuencia de comandos en su terminal para inicializar el proyecto:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/Yei-Yei-idk/Colabs
+cd Colabs
 
-## Security Vulnerabilities
+# 2. Configurar el archivo de entorno
+copy .env.example .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 3. Instalar las dependencias de PHP
+composer install
 
-## License
+# 4. Generar la clave única de la aplicación
+php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 5. Ejecutar las migraciones y seeders
+php artisan migrate:fresh --seed
+
+# 6. Iniciar el servidor local de desarrollo
+php artisan serve
+```
+
+La aplicación estará operativa de inmediato en: `http://127.0.0.1:8000`
+
+
+---
+
+## Modelo de Datos y Relaciones
+
+El esquema de la base de datos está diseñado para mantener la integridad referencial del flujo de reservas:
+
+```
+usuarios          ── (User)         id, nombre, correo, google_id, telefono, rol_id, estado
+espacios          ── (Espacio)      espacio_id, nombre, descripcion, capacidad, tipo, precio_hora, activo
+reservas          ── (Reserva)      reserva_id, user_id, espacio_id, fecha, hora_inicio, hora_fin, estado
+calificaciones    ── (Calificacion) user_id, espacio_id, reserva_id, puntuacion, comentario, fecha
+imagenes          ── (Imagen)       imagen_id, espacio_id, ruta_archivo
+roles             ── (Rol)          rol_id, nombre_rol
+```
+
+
+---
+
+## Correos Transaccionales Implementados
+
+| Evento del Sistema | Canal | Propósito |
+| :--- | :--- | :--- |
+| **Registro de Usuario** | `BienvenidaCuentaCreadaMail` | Envío de bienvenida con credenciales y guías de inicio al cliente. |
+| **Verificación de Email** | `VerifyEmailCustom` | Enlace temporal firmado para validar la dirección de correo (Expira en 1 hora). |
+| **Recuperación de Acceso**| `RestablecerContrasenaMail` | Enlace seguro y temporal para redefinir la clave de acceso local. |
+| **Cambios en Reservas**   | `ReservaStatusChanged` | Notificación inmediata al cliente si su reserva pasa a Aceptada, Rechazada o Finalizada. |
+| **Alta de Personal**      | `NuevoAdminRegistradoMail` | Notificación del sistema al Super-Admin cuando se da de alta un nuevo administrador. |
+
+---
+
+## Control de Roles y Permisos
+
+| Nivel de Rol | Identificador (`rol_id`) | Alcance y Permisos |
+| :--- | :---: | :--- |
+| **Super-Admin** | `1` | Acceso global irrestricto, configuración del sistema y administración de cuentas de personal administrativo. |
+| **Administrador** | `2` | Gestión y control del catálogo de espacios, auditoría de reservas activas y descarga de copias de seguridad del sistema. |
+| **Cliente** | `3` | Búsqueda de disponibilidad, creación de reservas, visualización del historial propio y calificación de espacios consumidos. |
+
+> [!NOTE]
+> **Usuarios con Google Sign-In:** Al autenticarse por primera vez mediante Google, la cuenta se crea de forma automática bajo el rol de **Cliente**. Para garantizar la seguridad del servicio, el middleware `VerificarPerfilGoogleCompleto` redirige al usuario a completar su número telefónico y documento de identidad antes de permitirle realizar reservas en la plataforma.
+
+---
+
+## Estado del Proyecto y Proyección Comercial
+
+Este sistema fue concebido inicialmente en un entorno estrictamente académico con el fin de validar metodologías de desarrollo, seguridad y arquitectura de software en Laravel. 
+
+No obstante, debido a su viabilidad técnica, alto nivel de personalización y desempeño, **el equipo de desarrollo se encuentra actualmente en diálogos y negociaciones activas con la administración de Co-Labs** para evaluar su despliegue comercial en el mercado real, proyectando una fase piloto para convertirlo en la plataforma oficial de gestión y reservas de la empresa.
+
+---
+
+<div align="center">
+
+Desarrollado para la optimización de espacios de coworking en **Co-Labs** • 2026
+
+</div>
