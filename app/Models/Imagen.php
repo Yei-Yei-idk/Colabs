@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Imagen extends Model
 {
     protected $table = 'imagenes';
+
     protected $primaryKey = 'img_id';
+
     public $timestamps = false;
 
     protected $fillable = [
         'espacio_id',
-        'foto'
+        'foto',
     ];
 
     public function espacio()

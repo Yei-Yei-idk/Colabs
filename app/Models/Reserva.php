@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Reserva extends Model
 {
     protected $table = 'reserva';
+
     protected $primaryKey = 'reserva_id';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -34,19 +36,20 @@ class Reserva extends Model
 
     /**
      * Busca y marca como 'Finalizada' toda reserva aceptada/activa cuya fecha/hora ya pasó.
+     *
      * @return int Cantidad de reservas actualizadas.
      */
     public static function actualizarVencidas(): int
     {
-        $ahora = \Carbon\Carbon::now(); // Respeta el timezone definido en config/app.php
+        $ahora = Carbon::now(); // Respeta el timezone definido en config/app.php
 
         $reservas = self::whereIn('rsva_estado', ['activa', 'Activa', 'aceptada', 'Aceptada'])
             ->where(function ($q) use ($ahora) {
                 $q->whereDate('rsva_fecha', '<', $ahora->toDateString())
-                  ->orWhere(function ($q2) use ($ahora) {
-                      $q2->whereDate('rsva_fecha', $ahora->toDateString())
-                         ->whereTime('rsva_hora_fin', '<=', $ahora->toTimeString());
-                  });
+                    ->orWhere(function ($q2) use ($ahora) {
+                        $q2->whereDate('rsva_fecha', $ahora->toDateString())
+                            ->whereTime('rsva_hora_fin', '<=', $ahora->toTimeString());
+                    });
             })
             ->get();
 

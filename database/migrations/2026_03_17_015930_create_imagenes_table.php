@@ -6,21 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('imagenes', function (Blueprint $table) {
             $table->integer('img_id', true);
             $table->integer('espacio_id')->index('espacio_id');
             $table->binary('foto');
+
+            $table->foreign('espacio_id', 'espacio_id')
+                ->references('espacio_id')
+                ->on('espacios')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('imagenes');

@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Calificacion extends Model
 {
     protected $table = 'calificaciones';
+
     protected $primaryKey = 'calif_id';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,7 +22,7 @@ class Calificacion extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function espacio()

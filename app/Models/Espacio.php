@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Espacio extends Model
 {
     protected $table = 'espacios';
+
     protected $primaryKey = 'espacio_id';
+
     public $incrementing = false;
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -18,7 +21,7 @@ class Espacio extends Model
         'esp_capacidad',
         'esp_tipo',
         'esp_precio_hora',
-        'esp_estado'
+        'esp_estado',
     ];
 
     public function imagen()
