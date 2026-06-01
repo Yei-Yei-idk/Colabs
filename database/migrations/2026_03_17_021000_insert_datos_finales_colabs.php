@@ -7,23 +7,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::table('rol')->insert([
+        DB::table('rol')->insertOrIgnore([
             ['rol_id' => 1, 'rol_nombre' => 'Super_admin'],
             ['rol_id' => 2, 'rol_nombre' => 'Admin'],
             ['rol_id' => 3, 'rol_nombre' => 'Usuario'],
         ]);
 
-        DB::table('usuarios')->insert($this->usuarios());
-        DB::table('espacios')->insert($this->espacios());
-        DB::table('imagenes')->insert($this->imagenes());
-        DB::table('reserva')->insert($this->reservas());
-        DB::table('calificaciones')->insert($this->calificaciones());
+        DB::table('usuarios')->insertOrIgnore($this->usuarios());
+        DB::table('espacios')->insertOrIgnore($this->espacios());
+        DB::table('imagenes')->insertOrIgnore($this->imagenes());
+        DB::table('reserva')->insertOrIgnore($this->reservas());
+        DB::table('calificaciones')->insertOrIgnore($this->calificaciones());
     }
 
     public function down(): void
     {
-        DB::table('calificaciones')->whereBetween('calif_id', [1, 20])->delete();
-        DB::table('reserva')->whereBetween('reserva_id', [1, 35])->delete();
+        DB::table('calificaciones')->whereBetween('calif_id', [1, 10])->delete();
+        DB::table('reserva')->whereBetween('reserva_id', [1, 22])->delete();
         DB::table('imagenes')->whereBetween('img_id', [1, 10])->delete();
         DB::table('espacios')->whereIn('espacio_id', range(101, 110))->delete();
         DB::table('usuarios')->whereIn('id', [1, 3, 4, 5, 6, 7])->delete();
@@ -255,45 +255,62 @@ return new class extends Migration
             'Trabajo individual concentrado para preparar una presentación.',
         ];
 
+        // 1. Crear 10 reservas finalizadas (1 por espacio)
         foreach ($espacios as $indice => $espacioId) {
-            for ($resena = 0; $resena < 2; $resena++) {
-                $horaInicio = $resena === 0 ? 8 : 14;
-                $reservas[] = $this->reserva(
-                    $reservaId++,
-                    $clientes[($indice + $resena) % count($clientes)],
-                    $espacioId,
-                    now()->copy()->subDays(50 - ($indice * 2) - $resena)->toDateString(),
-                    $horaInicio,
-                    'Finalizada',
-                    $descripcionesFinalizadas[($indice + $resena) % count($descripcionesFinalizadas)],
-                    2 + $resena + ($indice % 4)
-                );
-            }
+            $reservas[] = $this->reserva(
+                $reservaId++,
+                $clientes[$indice % count($clientes)],
+                $espacioId,
+                now()->copy()->subDays(14 - $indice)->toDateString(),
+                9, // 9:00 AM
+                'Finalizada',
+                $descripcionesFinalizadas[$indice % count($descripcionesFinalizadas)],
+                2 + ($indice % 3)
+            );
         }
 
+        // 2. Crear 12 reservas de prueba con estados válidos (sin 'Activa')
         $planes = [
-            ['Pendiente', false, [2, 5, 8], 'Solicitud pendiente para validar disponibilidad del equipo.'],
-            ['Aceptada', false, [3, 7, 11], 'Reserva aceptada para una sesión confirmada con invitados.'],
-            ['Activa', false, [1, 4, 10], 'Reserva activa para trabajo colaborativo ya coordinado.'],
-            ['Cancelada', true, [9, 14, 22], 'Reserva cancelada por cambio de agenda del usuario.'],
-            ['Rechazada', true, [7, 16, 25], 'Solicitud rechazada por cruce con otra actividad prioritaria.'],
+            ['Pendiente', false, [7, 8, 9, 10, 11]], // 5 pendientes (una para cada cliente la próxima semana)
+            ['Aceptada', false, [3, 6, 9]],          // 3 aceptadas (en el futuro)
+            ['Cancelada', true, [4, 12]],            // 2 canceladas (en el pasado)
+            ['Rechazada', true, [7, 15]],            // 2 rechazadas (en el pasado)
         ];
 
-        foreach ($planes as $indicePlan => [$estado, $pasada, $diasReservas, $descripcion]) {
+        $descripcionesClientes = [
+            'Reunión de planeación trimestral para definir objetivos de venta.',
+            'Sesión de co-working colaborativo con socios estratégicos.',
+            'Taller práctico de diseño de experiencia de usuario.',
+            'Entrevistas presenciales para selección de nuevos desarrolladores.',
+            'Presentación de propuesta comercial a cliente potencial.',
+            'Jornada de ideación y lluvia de ideas para el nuevo producto.',
+            'Reunión de revisión de arquitectura de software.',
+            'Trabajo individual enfocado en el desarrollo de la API.',
+            'Capacitación presencial en herramientas de análisis de datos.',
+            'Prueba técnica y mentoría con equipo junior de ingeniería.',
+            'Sesión de fotos y grabación de video corporativo.',
+            'Reunión de kickoff para el proyecto de migración en la nube.',
+        ];
+
+        $contadorDesc = 0;
+        foreach ($planes as $indicePlan => [$estado, $pasada, $diasReservas]) {
             foreach ($diasReservas as $indice => $dias) {
                 $espacioId = $espacios[($indicePlan * 3 + $indice) % count($espacios)];
                 $fecha = $pasada
                     ? now()->copy()->subDays($dias)->toDateString()
                     : now()->copy()->addDays($dias)->toDateString();
 
+                $descripcionCliente = $descripcionesClientes[$contadorDesc % count($descripcionesClientes)];
+                $contadorDesc++;
+
                 $reservas[] = $this->reserva(
                     $reservaId++,
                     $clientes[($indicePlan + $indice) % count($clientes)],
                     $espacioId,
                     $fecha,
-                    [9, 11, 15][$indice],
+                    [9, 11, 15][$indice % 3],
                     $estado,
-                    $descripcion,
+                    $descripcionCliente,
                     2 + $indicePlan + $indice
                 );
             }
@@ -322,21 +339,17 @@ return new class extends Migration
         $calificaciones = [];
         $calificacionId = 1;
         $reservaId = 1;
-        $contador = 0;
 
+        // 1 calificación por espacio, ligada a la reserva finalizada correspondiente
         foreach ($espacios as $indice => $espacioId) {
-            for ($resena = 0; $resena < 2; $resena++) {
-                $calificaciones[] = [
-                    'calif_id' => $calificacionId++,
-                    'calif_txt' => $comentarios[$contador % count($comentarios)],
-                    'calif_puntuacion' => $puntuaciones[$contador % count($puntuaciones)],
-                    'user_id' => $clientes[($indice + $resena) % count($clientes)],
-                    'espacio_id' => $espacioId,
-                    'reserva_id' => $reservaId++,
-                ];
-
-                $contador++;
-            }
+            $calificaciones[] = [
+                'calif_id' => $calificacionId++,
+                'calif_txt' => $comentarios[$indice % count($comentarios)],
+                'calif_puntuacion' => $puntuaciones[$indice % count($puntuaciones)],
+                'user_id' => $clientes[$indice % count($clientes)],
+                'espacio_id' => $espacioId,
+                'reserva_id' => $reservaId++,
+            ];
         }
 
         return $calificaciones;

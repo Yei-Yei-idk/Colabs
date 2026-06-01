@@ -567,6 +567,7 @@ footer a:hover { text-decoration: underline; }
 
 /* LANDING SEARCH CARD */
 .hero-main-container { text-align: center; background: transparent; padding-top: 0; border:none; box-shadow:none; }
+.hero-main-container:hover { transform: none; box-shadow: none; }
 .hero-title          { font-size: 3rem; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
 .hero-subtitle       { max-width: 700px; margin: 0 auto; font-size: 1.15rem; color: #4b5563; line-height: 1.6; }
 
