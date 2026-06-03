@@ -1,20 +1,214 @@
-.sede-info { padding: 60px 20px; text-align: center; background: #fff; }
-.sede-info p { max-width: 800px; margin: 20px auto; }
+/* ─── Variables locales ─── */
+:root {
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --y-glow: rgba(250, 204, 21, 0.28);
+}
 
-.ubicacion-grid { display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; justify-content: center; }
-.columna-mapa, .columna-info { flex: 1; min-width: 350px; max-width: 600px; }
-.columna-info img { width: 100%; border-radius: 10px; margin: 20px auto 0; display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-.redes { padding: 40px; text-align: center; background: #f4f4f4; }
-.red-item { margin: 20px 0; }
-.red-item img { height: 200px; object-fit: cover; border-radius: 10px; margin: 0 auto; display: block; }
+/* ─── Sección hero de la sede ─── */
+.sede-info {
+  padding: 80px 5% 60px;
+  text-align: center;
+  background: #fff;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 
+.sede-info h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+  margin-bottom: 0;
+  line-height: 1.15;
+}
+
+.sede-info h1:first-child::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: #facc15;
+  border-radius: 99px;
+  margin: 12px auto 20px;
+}
+
+.sede-info p {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* ─── Título de ubicación ─── */
+.ubicacion-titulo {
+  text-align: center;
+  margin-top: 40px;
+}
+
+h2[style*="text-align: center"] {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+/* ─── Grid principal ─── */
+.ubicacion-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 40px 5%;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.columna-mapa,
+.columna-info {
+  flex: 1;
+  min-width: 320px;
+  max-width: 560px;
+}
+
+/* ─── Mapa ─── */
+.columna-mapa iframe {
+  border-radius: 16px !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.columna-mapa iframe:hover {
+  box-shadow: 0 14px 40px rgba(0,0,0,0.15);
+}
+
+.columna-mapa h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 24px 0 10px;
+  letter-spacing: -0.01em;
+}
+
+.columna-mapa p {
+  font-size: 0.97rem;
+  color: #555;
+  line-height: 1.75;
+}
+
+/* ─── Info de sede ─── */
+.columna-info h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.columna-info p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.columna-info img {
+  width: 100%;
+  border-radius: 16px;
+  margin: 20px auto 0;
+  display: block;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+  transition: transform 0.4s ease, box-shadow 0.35s ease;
+}
+
+.columna-info img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 16px 44px rgba(0,0,0,0.14);
+}
+
+/* ─── Sección de redes ─── */
+.redes {
+  padding: 60px 5%;
+  text-align: center;
+  background: #f4f4f2;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.redes h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #111;
+  margin-bottom: 36px;
+  position: relative;
+  display: inline-block;
+}
+
+.redes h2::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 3px;
+  background: #facc15;
+  border-radius: 99px;
+  margin: 8px auto 0;
+}
+
+.red-item {
+  margin: 28px 0;
+}
+
+.red-item h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #111;
+  margin-bottom: 14px;
+}
+
+.red-item img {
+  height: 220px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin: 0 auto;
+  display: block;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.red-item img:hover {
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+.red-item a {
+  display: inline-block;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  width: 50%;
+  margin: 24px auto;
+}
+
+/* ─── Responsive ─── */
 @media (max-width: 768px) {
-    .ubicacion-grid {
-        flex-direction: column;
-        padding: 20px;
-    }
-    .columna-mapa, .columna-info {
-        min-width: 100%;
-    }
+  .ubicacion-grid {
+    flex-direction: column;
+    padding: 24px 5%;
+  }
+  .columna-mapa,
+  .columna-info {
+    min-width: 100%;
+  }
+  .sede-info h1 { font-size: 1.7rem; }
 }

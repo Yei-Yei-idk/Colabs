@@ -37,11 +37,15 @@ class DashboardController extends Controller
         $reservas             = Reserva::where('rsva_estado', 'Aceptada')->count();
         $solicitudesPendientes = Reserva::where('rsva_estado', 'Pendiente')->count();
         $ultimasReservas      = Reserva::with(['usuario', 'espacio'])->latest('rsva_fecha')->get();
-
-        $settings = self::getSettings();
-        $promocionesVisible = $settings['promociones_visible'] ?? true;
+        
         /*Hacer condicional para que solo se muestren las últimas 10 reservas*/
         $ultimasReservas = $ultimasReservas->take(10);
+        
+        $settings = self::getSettings();
+        $promocionesVisible = $settings['promociones_visible'] ?? true;
+
+       
+
         return view('admin.dashboard', compact(
             'espaciosDisponibles',
             'reservas',
