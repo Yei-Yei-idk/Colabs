@@ -2,14 +2,14 @@
 
 .auth-registrarse .formulario {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: var(--border-radius-lg, 14px);
     padding: 30px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0,0,0,0.05));
     border: 1px solid rgba(226,232,240,.9);
     color: #111827;
     margin: 20px auto;
     max-width: 500px;
-    animation: slideInForm 0.45s ease forwards;
+    animation: slideInForm 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .auth-registrarse h1 {
@@ -32,19 +32,19 @@
     margin-top: 16px;
     border-radius: 999px;
     background: #f9fafb;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color, #d1d5db);
     color: #111827;
     padding: 0 20px;
     font-size: .95rem;
     outline: none;
-    transition: all .2s ease;
+    transition: var(--transition-spring);
 }
 
 .auth-registrarse .mi-input:focus {
     border-color: #facc15;
-    box-shadow: 0 0 0 1px rgba(250,204,21,.35);
+    box-shadow: 0 0 0 3px var(--primary-glow);
     background: #ffffff;
-    transform: translateY(-1px);
+    transform: translateY(-2.5px);
 }
 
 .auth-registrarse .btn-login {
@@ -57,8 +57,8 @@
     border: none;
     color: #000;
     cursor: pointer;
-    box-shadow: 0 10px 22px rgba(250,204,21,.3);
-    transition: all .2s ease;
+    box-shadow: 0 6px 15px rgba(250, 204, 21, 0.25);
+    transition: var(--transition-spring);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,20 +66,30 @@
 }
 
 .auth-registrarse .btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 30px rgba(250,204,21,.4);
+    transform: translateY(-3.5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(250, 204, 21, 0.35);
     filter: brightness(1.05);
+}
+
+.auth-registrarse .btn-login:active {
+    transform: translateY(-1px) scale(0.96);
 }
 
 .auth-registrarse .btn-cancel {
     background: #e5e7eb;
     color: #1e293b;
     box-shadow: none;
+    transition: var(--transition-spring);
 }
 
 .auth-registrarse .btn-cancel:hover {
     background: #d1d5db;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transform: translateY(-3.5px) scale(1.02);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+}
+
+.auth-registrarse .btn-cancel:active {
+    transform: translateY(-1px) scale(0.96);
 }
 
 .auth-registrarse .errores {

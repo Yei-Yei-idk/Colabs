@@ -31,11 +31,11 @@
 /* Tarjeta de Reserva */
 .reserva-card {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: var(--border-radius-lg, 14px);
     padding: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #f3f4f6;
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.05));
+    transition: var(--transition-smooth, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+    border: 1px solid #f1f5f9;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -44,9 +44,9 @@
 
 /* Efecto hover general para la tarjeta */
 .reserva-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    border-color: #facc15; /* Color de acento unificado */
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.08));
+    border-color: var(--primary-color, #facc15);
 }
 
 .reserva-header {
@@ -159,11 +159,12 @@
 
 .btn-action {
     padding: 10px 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius-md, 10px);
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+    transition: var(--transition-smooth, all 0.25s ease);
     border: none;
     display: flex;
     align-items: center;
@@ -177,7 +178,12 @@
 
 .btn-aceptar:hover {
     background: #059669;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-aceptar:active {
+    transform: translateY(1px) scale(0.97);
 }
 
 .btn-rechazar {
@@ -189,6 +195,12 @@
 .btn-rechazar:hover {
     background: #fef2f2;
     border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(239, 68, 68, 0.08);
+}
+
+.btn-rechazar:active {
+    transform: translateY(1px) scale(0.97);
 }
 
 /* Estado Vacío / Mensajes */

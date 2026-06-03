@@ -4,9 +4,10 @@
   max-width: 800px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg, 14px);
   padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.05));
+  border: 1px solid #f1f5f9;
 }
 
 .form-header {
@@ -31,8 +32,8 @@
   gap: 30px;
   margin-bottom: 30px;
   padding: 20px;
-  border: 2px solid #3b82f6;
-  border-radius: 8px;
+  border: 1.5px solid #3b82f6;
+  border-radius: var(--border-radius-md, 10px);
 }
 
 .form-section {
@@ -62,18 +63,18 @@
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--border-radius-md);
   font-size: 14px;
   outline: none;
-  transition: 0.2s;
+  transition: var(--transition-spring);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .form-group textarea {
@@ -90,17 +91,20 @@
 .radio-option {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-spring);
 }
 
 .radio-option:hover {
-  background: #f8f9fa;
+  background: #f8fafc;
   border-color: #3b82f6;
+  transform: translateY(-3.5px) scale(1.015);
+  box-shadow: var(--shadow-md);
 }
 
 .radio-option input[type="radio"] {
@@ -154,18 +158,24 @@
   display: block;
   width: 200px;
   margin: 0 auto;
-  padding: 15px 30px;
-  background: #facc15;
+  padding: 14px 30px;
+  background: var(--primary-color);
   color: #000;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-spring);
 }
 
 .btn-crear:hover {
-  background: #eab308;
-  transform: scale(1.02);
+  background: var(--primary-hover);
+  transform: translateY(-2.5px) scale(1.03);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.btn-crear:active {
+  transform: translateY(1px) scale(0.96);
 }

@@ -40,7 +40,8 @@ class DashboardController extends Controller
 
         $settings = self::getSettings();
         $promocionesVisible = $settings['promociones_visible'] ?? true;
-
+        /*Hacer condicional para que solo se muestren las últimas 10 reservas*/
+        $ultimasReservas = $ultimasReservas->take(10);
         return view('admin.dashboard', compact(
             'espaciosDisponibles',
             'reservas',

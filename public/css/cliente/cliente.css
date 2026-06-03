@@ -2162,11 +2162,18 @@ nav img {
   animation: fadeIn 0.3s ease;
 }
 
-.alert-success {
-  background: #d4edda;
-  color: #155724;
-  border-color: #28a745;
+.alert-success { 
+    margin: 0 auto;
+    padding-left: 50%;
+    background: #d4edda;
+    height: 30px;
+    width: 65%;
+    display: flex;
+    color: #155724;
+    border-color: #28a745;
+    align-items: center;
 }
+
 
 .alert-error {
   background: #f8d7da;
