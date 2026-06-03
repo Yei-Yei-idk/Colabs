@@ -94,7 +94,7 @@
                 // Pequeño delay para asegurar que el submit del formulario se dispare antes de deshabilitar
                 setTimeout(() => {
                     btn.disabled = true;
-                    btn.innerHTML = '⌛ Procesando...';
+                    btn.innerHTML = 'Procesando...';
                     btn.style.opacity = '0.7';
                     btn.style.cursor = 'not-allowed';
                 }, 10);
