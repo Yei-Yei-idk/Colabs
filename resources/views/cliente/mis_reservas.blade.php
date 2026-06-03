@@ -14,7 +14,7 @@
     </div>
 @endif
 
-<div class="mis-reservas-toolbar mis-reservas-list">
+<div class="mis-reservas-toolbar mis-reservas-list animate-fade-up" style="animation-delay: 0.1s;">
     <span class="mis-reservas-toolbar-label">Ordenar por</span>
     <div class="mis-reservas-sort"
          data-active="{{ ($orden ?? 'recientes') === 'prioridad' ? 'prioridad' : 'recientes' }}"
@@ -31,7 +31,7 @@
 </div>
 
 <div id="reservasListado" class="espacios-listado mis-reservas-list">
-    @forelse($reservas as $reserva)
+    @forelse($reservas as $index => $reserva)
         @php
             // Obtener imagen del espacio
             $imagen = \App\Models\Imagen::where('espacio_id', $reserva->espacio_id)->first();
@@ -61,7 +61,7 @@
             }
         @endphp
         
-        <div class="reserva-card-main {{ 'border-' . strtolower($reserva->estado) }} animate-fade-up">
+        <div class="reserva-card-main {{ 'border-' . strtolower($reserva->estado) }} animate-fade-up" style="animation-delay: {{ 0.15 + ($index * 0.05) }}s;">
             <div class="reserva-id-tag">
                 #{{ str_pad($reserva->reserva_id, 4, '0', STR_PAD_LEFT) }}
             </div>
