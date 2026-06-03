@@ -11,7 +11,6 @@ use App\Models\Reserva;
 use App\Models\Calificacion;
 use App\Models\Imagen;
 use Illuminate\Validation\Rules\Password;
-// use App\Notifications\ReservaStatusChanged; (Quitado: ahora se usa el Observer)
 
 class ClienteController extends Controller
 {
@@ -19,9 +18,9 @@ class ClienteController extends Controller
     {
         // Eloquent: Obtener 5 espacios activos ordenados por nombre (espacios destacados)
         $espacios = Espacio::where('esp_estado', 'Activo')
-                        ->orderBy('esp_nombre')
-                        ->limit(5)
-                        ->get();
+                            ->orderBy('esp_nombre')
+                            ->limit(5)
+                            ->get();
 
         return view('cliente.index', compact('espacios'));
     }
@@ -51,9 +50,14 @@ class ClienteController extends Controller
         return view('cliente.buscar_espacios', compact('espacios', 'tipo', 'capacidad', 'precioMax'));
     }
 
-    public function misReservas()
+    public function misReservas(Request $request)
     {
         $user_id = Auth::id(); // Usar el ID del usuario autenticado
+        $orden = $request->query('orden', 'recientes');
+
+        if (!in_array($orden, ['recientes', 'prioridad'], true)) {
+            $orden = 'recientes';
+        }
 
         $reservas = Reserva::where('user_id', $user_id)
             ->join('espacios', 'reserva.espacio_id', '=', 'espacios.espacio_id')
@@ -68,11 +72,56 @@ class ClienteController extends Controller
                 'reserva.rsva_hora_fin as hora_fin',
                 'reserva.rsva_estado as estado',
                 'reserva.rsva_descripcion as descripcion'
-            )
+            );
+
+        if ($orden === 'prioridad') {
+            $reservas->orderByRaw("
+                CASE LOWER(reserva.rsva_estado)
+                    WHEN 'pendiente' THEN 1
+                    WHEN 'aceptada' THEN 2
+                    WHEN 'finalizada' THEN 3
+                    WHEN 'rechazada' THEN 4
+                    WHEN 'cancelada' THEN 5
+                    ELSE 6
+                END
+            ");
+        }
+
+        $reservas = $reservas
             ->orderBy('reserva.rsva_fecha', 'DESC')
+            ->orderBy('reserva.rsva_hora_inicio', 'DESC')
+            ->orderBy('reserva.reserva_id', 'DESC')
             ->get();
 
-        return view('cliente.mis_reservas', compact('reservas'));
+        // Respuesta JSON liviana para peticiones AJAX (slider de orden)
+        if ($request->ajax()) {
+            $espacioIds   = $reservas->pluck('espacio_id')->unique()->values();
+            $imagenes     = Imagen::whereIn('espacio_id', $espacioIds)->get()->keyBy('espacio_id');
+            $reservaIds   = $reservas->pluck('reserva_id');
+            $calificadas  = Calificacion::whereIn('reserva_id', $reservaIds)->pluck('reserva_id')->flip();
+
+            $data = $reservas->map(function ($r) use ($imagenes, $calificadas) {
+                $imagen = $imagenes->get($r->espacio_id);
+                return [
+                    'reserva_id'      => $r->reserva_id,
+                    'espacio_id'      => $r->espacio_id,
+                    'esp_nombre'      => $r->esp_nombre,
+                    'esp_descripcion' => $r->esp_descripcion,
+                    'esp_precio_hora' => (float) $r->esp_precio_hora,
+                    'fecha'           => $r->fecha,
+                    'hora_inicio'     => substr($r->hora_inicio, 0, 5),
+                    'hora_fin'        => substr($r->hora_fin, 0, 5),
+                    'estado'          => $r->estado,
+                    'descripcion'     => $r->descripcion ?? '',
+                    'img_src'         => $imagen ? asset('uploads/' . $imagen->foto) : asset('uploads/OF1 .jpeg'),
+                    'ya_calificado'   => $calificadas->has($r->reserva_id),
+                ];
+            });
+
+            return response()->json(['reservas' => $data]);
+        }
+
+        return view('cliente.mis_reservas', compact('reservas', 'orden'));
     }
 
     public function perfil()

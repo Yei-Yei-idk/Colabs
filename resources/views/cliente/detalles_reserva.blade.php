@@ -14,7 +14,7 @@
         $fecha_formato = \Carbon\Carbon::parse($reserva->fecha)->translatedFormat('d \d\e F, Y');
         $horaInicio = \Carbon\Carbon::parse($reserva->hora_inicio);
         $horaFin = \Carbon\Carbon::parse($reserva->hora_fin);
-        $diferencia_horas = $horaFin->diffInHours($horaInicio);
+        $diferencia_horas = max(0, $horaInicio->diffInMinutes($horaFin) / 60);
         $hora_inicio_formato = $horaInicio->format('h:i A');
         $hora_fin_formato = $horaFin->format('h:i A');
         $total_estimado = $diferencia_horas * $reserva->esp_precio_hora;

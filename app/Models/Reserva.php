@@ -43,7 +43,7 @@ class Reserva extends Model
     {
         $ahora = Carbon::now(); // Respeta el timezone definido en config/app.php
 
-        $reservas = self::whereIn('rsva_estado', ['activa', 'Activa', 'aceptada', 'Aceptada'])
+        $reservas = self::query()->whereIn('rsva_estado', ['activa', 'Activa', 'aceptada', 'Aceptada'])
             ->where(function ($q) use ($ahora) {
                 $q->whereDate('rsva_fecha', '<', $ahora->toDateString())
                     ->orWhere(function ($q2) use ($ahora) {

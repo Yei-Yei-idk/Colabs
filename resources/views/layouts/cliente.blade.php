@@ -165,7 +165,7 @@
             bar.classList.remove("show");
         }, 3500);
     }
-    const sessionStatus = json(session('status') ?? session('success') ?? session('error'));
+    const sessionStatus = @json(session('status') ?? session('success') ?? session('error'));
     if (sessionStatus) { snack(sessionStatus); }
 
     function openLogoutPopup() { document.getElementById('logoutPopup').style.display = 'flex'; }

@@ -2326,6 +2326,87 @@ nav img {
   box-shadow: var(--shadow-md);
 }
 
+.mis-reservas-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.mis-reservas-toolbar-label {
+  color: #4b5563;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.mis-reservas-sort {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(132px, 1fr));
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mis-reservas-sort::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 12px) / 2);
+  border-radius: 6px;
+  background: #111827;
+  box-shadow: 0 3px 10px rgba(17, 24, 39, 0.16);
+  transition: left 0.24s ease;
+}
+
+.mis-reservas-sort[data-active="prioridad"]::before {
+  left: calc(50% + 2px);
+}
+
+.mis-reservas-sort-option {
+  position: relative;
+  z-index: 1;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.mis-reservas-sort-option:not(.active):hover {
+  background: #ffffff;
+  color: #111827;
+}
+
+.mis-reservas-sort-option.active {
+  color: #ffffff;
+}
+
+.mis-reservas-sort.is-loading {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mis-reservas-sort::before {
+    transition: none !important;
+  }
+}
+
 .reserva-card-main img {
   width: 140px;
   height: 140px;
@@ -3129,6 +3210,20 @@ nav img {
   }
   .hero-text h2 {
     font-size: 28px;
+  }
+  .mis-reservas-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mis-reservas-sort {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  .mis-reservas-sort-option {
+    padding: 0 10px;
+    text-align: center;
   }
 }
 
