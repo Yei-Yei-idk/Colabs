@@ -935,7 +935,7 @@ nav img {
 .review-card {
   display: flex;
   gap: 12px;
-  margin-bottom: 2px;
+  margin-bottom: 14px;
   align-items: flex-start;
 }
 
@@ -985,13 +985,15 @@ nav img {
 .review-stars {
   color: #FFD700;
   font-size: 14px;
-  margin-bottom: 8px;
+  line-height: 1;
+  margin-bottom: 10px;
 }
 
 .review-text {
   color: #333;
   font-size: 14px;
   line-height: 1.4;
+  margin: 0;
 }
 
 /* ── Barra lateral de reserva ── */
@@ -1709,6 +1711,47 @@ nav img {
 .modal-total-reviews {
   color: #666;
   font-size: 14px;
+}
+
+#reviewsModal .modal-container {
+  max-width: 560px;
+}
+
+#reviewsModal .modal-header {
+  padding: 18px 24px 14px;
+}
+
+#reviewsModal .modal-content {
+  padding: 18px 24px;
+}
+
+#reviewsModal .modal-review {
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+#reviewsModal .modal-review-avatar {
+  width: 42px;
+  height: 42px;
+  font-size: 16px;
+}
+
+#reviewsModal .modal-reviewer-info {
+  margin-bottom: 4px;
+}
+
+#reviewsModal .modal-review-stars {
+  justify-content: flex-start;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+#reviewsModal .modal-review-text {
+  margin: 0;
+}
+
+#reviewsModal .modal-footer {
+  padding: 14px 24px 18px;
 }
 
 /* ── Sistema de Estrellas ── */

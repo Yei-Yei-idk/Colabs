@@ -22,8 +22,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        DB::table('calificaciones')->whereBetween('calif_id', [1, 10])->delete();
-        DB::table('reserva')->whereBetween('reserva_id', [1, 22])->delete();
+        DB::table('calificaciones')->whereBetween('calif_id', [1, 20])->delete();
+        DB::table('reserva')->whereBetween('reserva_id', [1, 51])->delete();
         DB::table('imagenes')->whereBetween('img_id', [1, 10])->delete();
         DB::table('espacios')->whereIn('espacio_id', range(101, 110))->delete();
         DB::table('usuarios')->whereIn('id', [1, 3, 4, 5, 6, 7])->delete();
@@ -245,6 +245,127 @@ return new class extends Migration
         $reservas = [];
         $reservaId = 1;
         $clientes = [3, 4, 5, 6, 7];
+        $planesDemo = [
+            ['Finalizada', [-8, -7, -6, -5, -4], [8, 9, 10, 11, 12], [101, 102, 103, 104, 105]],
+            ['Pendiente', [1, 2, 3, 4, 5], [8, 9, 10, 11, 12], [106, 107, 108, 109, 110]],
+            ['Aceptada', [2, 3, 4, 5, 1], [14, 15, 16, 17, 18], [101, 102, 103, 104, 105]],
+            ['Rechazada', [-7, -6, -5, -4, -3], [13, 14, 15, 16, 17], [106, 107, 108, 109, 110]],
+            ['Cancelada', [-6, -5, -4, -3, -2], [15, 16, 17, 18, 19], [101, 102, 103, 104, 105]],
+        ];
+
+        $descripcionesDemo = [
+            'Finalizada' => [
+                'Uso la sala para cerrar una propuesta comercial con dos socios externos y revisar el presupuesto final.',
+                'Reserve el espacio para una sesion de trabajo enfocada en preparar entregables de diseno para un cliente.',
+                'Necesite el aula para dictar una capacitacion corta sobre herramientas internas del equipo.',
+                'Use la oficina para entrevistas presenciales y revision de portafolios de candidatos.',
+                'Reserve el espacio para una reunion de producto donde validamos tareas del sprint y proximos responsables.',
+            ],
+            'Pendiente' => [
+                'Solicito el espacio para presentar una propuesta de servicios a un cliente nuevo con apoyo audiovisual.',
+                'Necesito una oficina privada para una sesion de planeacion financiera con mi equipo de trabajo.',
+                'Quiero usar el aula para un taller practico de onboarding con colaboradores recien vinculados.',
+                'Solicito la sala para una reunion de arquitectura y definicion tecnica del proyecto.',
+                'Necesito el espacio para una jornada de ideacion con mi equipo antes de entregar el prototipo.',
+            ],
+            'Aceptada' => 'Reserva aceptada programada para la demostracion del calendario.',
+            'Rechazada' => 'Solicitud rechazada disponible para mostrar el estado al cliente.',
+            'Cancelada' => 'Reserva cancelada disponible para mostrar el historial del cliente.',
+        ];
+
+        foreach ($planesDemo as [$estado, $diasPorCliente, $horasInicio, $espaciosDemo]) {
+            foreach ($clientes as $indice => $clienteId) {
+                $reservas[] = $this->reserva(
+                    $reservaId++,
+                    $clienteId,
+                    $espaciosDemo[$indice],
+                    now()->copy()->addDays($diasPorCliente[$indice])->toDateString(),
+                    $horasInicio[$indice],
+                    $estado,
+                    is_array($descripcionesDemo[$estado])
+                        ? $descripcionesDemo[$estado][$indice]
+                        : $descripcionesDemo[$estado],
+                    2 + $indice
+                );
+            }
+        }
+
+        $clientesResenas = [3, 4, 5, 7];
+        $espaciosResenas = array_keys($this->capacidades());
+        $diasResenasPorCliente = [
+            3 => [5, 4, 3, 2, 0],
+            4 => [8, 4, 3, 2, 0],
+            5 => [8, 7, 3, 2, 0],
+            7 => [8, 7, 6, 5, 1],
+        ];
+        $contadorResenasPorCliente = array_fill_keys($clientesResenas, 0);
+        $descripcionesFinalizadasResenas = [
+            'Use este espacio para una revision de contrato con proveedores y cierre de acuerdos pendientes.',
+            'Reserve la oficina para grabar una presentacion comercial y coordinar los ultimos ajustes con el equipo.',
+            'Utilice el aula para practicar una charla tecnica y revisar las diapositivas con mis companeros.',
+            'Trabajamos en una sesion de analisis de datos para preparar el informe mensual del area.',
+            'Reserve la sala para una reunion de seguimiento con clientes y definicion de compromisos.',
+            'Use el espacio para una jornada de concentracion en la documentacion de procesos internos.',
+            'Realizamos una mesa de trabajo para organizar el cronograma de lanzamiento de una campana.',
+            'Aprovechamos la sala para resolver pendientes de soporte y coordinar respuestas con el equipo.',
+            'Reserve el espacio para revisar indicadores de ventas y preparar acciones para la siguiente semana.',
+            'Use la oficina para llamadas con aliados externos y revision privada de documentos sensibles.',
+            'Realizamos una sesion de pruebas de una demo antes de presentarla a los interesados.',
+            'Reserve el aula para capacitar a dos personas nuevas en el flujo operativo del negocio.',
+            'Use este espacio para una reunion creativa de contenido y planificacion de publicaciones.',
+            'Trabajamos en la preparacion de una propuesta tecnica para una licitacion cercana.',
+            'Reserve la sala para alinear prioridades del proyecto y distribuir tareas del equipo.',
+            'Utilice la oficina para preparar entrevistas, revisar hojas de vida y tomar notas de seleccion.',
+            'Hicimos una revision presencial de prototipos y ajustes de experiencia de usuario.',
+            'Reserve el espacio para una sesion de seguimiento financiero y organizacion de soportes.',
+            'Use la sala para validar avances con el cliente y acordar cambios menores de alcance.',
+            'Realizamos una jornada corta de planeacion estrategica para definir metas de la proxima entrega.',
+        ];
+
+        foreach ($espaciosResenas as $indiceEspacio => $espacioId) {
+            for ($resena = 0; $resena < 2; $resena++) {
+                $indiceCliente = (($indiceEspacio * 2) + $resena) % count($clientesResenas);
+                $clienteId = $clientesResenas[$indiceCliente];
+                $indiceResenaCliente = $contadorResenasPorCliente[$clienteId]++;
+                $diasAtras = $diasResenasPorCliente[$clienteId][$indiceResenaCliente];
+
+                $reservas[] = $this->reserva(
+                    $reservaId++,
+                    $clienteId,
+                    $espacioId,
+                    now()->copy()->subDays($diasAtras)->toDateString(),
+                    8 + $resena + ($indiceEspacio % 4),
+                    'Finalizada',
+                    $descripcionesFinalizadasResenas[($indiceEspacio * 2) + $resena],
+                    2 + (($indiceEspacio + $resena) % 4)
+                );
+            }
+        }
+
+        $reservasCalendario = [
+            ['Aceptada', 1, 107, 16, 5],
+            ['Aceptada', 2, 109, 12, 5],
+            ['Aceptada', 3, 110, 13, 7],
+            ['Aceptada', 4, 103, 15, 4],
+            ['Aceptada', 5, 105, 10, 3],
+            ['Aceptada', 5, 107, 14, 5],
+        ];
+
+        foreach ($reservasCalendario as [$estado, $diasDesdeHoy, $espacioId, $horaInicio, $clienteId]) {
+            $reservas[] = $this->reserva(
+                $reservaId++,
+                $clienteId,
+                $espacioId,
+                now()->copy()->addDays($diasDesdeHoy)->toDateString(),
+                $horaInicio,
+                $estado,
+                'Reserva de calendario para mostrar ocupacion realista en la agenda administrativa.',
+                3 + ($reservaId % 4)
+            );
+        }
+
+        return $reservas;
+
         $espacios = array_keys($this->capacidades());
         $descripcionesFinalizadas = [
             'Jornada de trabajo con cierre de pendientes del equipo comercial.',
@@ -256,7 +377,7 @@ return new class extends Migration
         ];
 
         // 1. Crear 10 reservas finalizadas (1 por espacio)
-        foreach ($espacios as $indice => $espacioId) {
+        foreach (array_slice($espacios, 0, 5) as $indice => $espacioId) {
             $reservas[] = $this->reserva(
                 $reservaId++,
                 $clientes[$indice % count($clientes)],
@@ -334,22 +455,26 @@ return new class extends Migration
             'La experiencia fue positiva, especialmente por la tranquilidad del espacio.',
         ];
         $puntuaciones = [5, 4, 5, 4, 5, 3, 4, 5, 4, 5];
-        $clientes = [3, 4, 5, 6, 7];
+        $clientes = [3, 4, 5, 7];
         $espacios = array_keys($this->capacidades());
         $calificaciones = [];
         $calificacionId = 1;
-        $reservaId = 1;
+        $reservaId = 26;
 
-        // 1 calificación por espacio, ligada a la reserva finalizada correspondiente
-        foreach ($espacios as $indice => $espacioId) {
-            $calificaciones[] = [
-                'calif_id' => $calificacionId++,
-                'calif_txt' => $comentarios[$indice % count($comentarios)],
-                'calif_puntuacion' => $puntuaciones[$indice % count($puntuaciones)],
-                'user_id' => $clientes[$indice % count($clientes)],
-                'espacio_id' => $espacioId,
-                'reserva_id' => $reservaId++,
-            ];
+        // 2 calificaciones por espacio, ligadas a reservas finalizadas sin usar a Yeiner.
+        foreach ($espacios as $indiceEspacio => $espacioId) {
+            for ($resena = 0; $resena < 2; $resena++) {
+                $indice = ($indiceEspacio * 2) + $resena;
+
+                $calificaciones[] = [
+                    'calif_id' => $calificacionId++,
+                    'calif_txt' => $comentarios[$indice % count($comentarios)],
+                    'calif_puntuacion' => $puntuaciones[$indice % count($puntuaciones)],
+                    'user_id' => $clientes[$indice % count($clientes)],
+                    'espacio_id' => $espacioId,
+                    'reserva_id' => $reservaId++,
+                ];
+            }
         }
 
         return $calificaciones;
