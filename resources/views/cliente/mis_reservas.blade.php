@@ -9,9 +9,11 @@
 </div>
 
 @if(session('success'))
+<div class="contenedor-alerta">
     <div class="alert alert-success mis-reservas-list">
         {{ session('success') }}
     </div>
+</div>
 @endif
 
 <div class="mis-reservas-toolbar mis-reservas-list animate-fade-up" style="animation-delay: 0.1s;">

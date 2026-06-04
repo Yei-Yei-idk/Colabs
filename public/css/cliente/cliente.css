@@ -2205,16 +2205,23 @@ nav img {
   animation: fadeIn 0.3s ease;
 }
 
-.alert-success { 
-    margin: 0 auto;
-    padding-left: 50%;
+ .contenedor-alerta {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.alert-success {
+    margin: 20px auto;
     background: #d4edda;
     height: 30px;
-    width: 65%;
+    width: 50%;
     display: flex;
-    color: #155724;
-    border-color: #28a745;
+    justify-content: center;
     align-items: center;
+    color: #155724;
+    border: 1px solid #28a745;
+    border-radius: 5px;
 }
 
 
