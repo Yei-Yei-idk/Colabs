@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Espacio;
 use App\Models\Reserva;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
@@ -33,25 +35,49 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $espaciosDisponibles  = Espacio::where('esp_estado', 'Activo')->count();
-        $reservas             = Reserva::where('rsva_estado', 'Aceptada')->count();
+        // --- KPIs básicos existentes ---
+        $espaciosDisponibles   = Espacio::where('esp_estado', 'Activo')->count();
+        $reservas              = Reserva::where('rsva_estado', 'Aceptada')->count();
         $solicitudesPendientes = Reserva::where('rsva_estado', 'Pendiente')->count();
-        $ultimasReservas      = Reserva::with(['usuario', 'espacio'])->latest('rsva_fecha')->get();
-        
-        /*Hacer condicional para que solo se muestren las últimas 10 reservas*/
-        $ultimasReservas = $ultimasReservas->take(10);
-        
+        $ultimasReservas       = Reserva::with(['usuario', 'espacio'])
+            ->latest('rsva_fecha')->take(10)->get();
+
+        // --- KPIs en tiempo real ---
+        $hoy = now()->toDateString();
+
+        $reservasActivasHoy = Reserva::whereDate('rsva_fecha', $hoy)
+            ->whereIn('rsva_estado', ['Aceptada', 'Activa'])
+            ->count();
+
+        $ingresosDelMes = DB::table('reserva')
+            ->join('espacios', 'reserva.espacio_id', '=', 'espacios.espacio_id')
+            ->whereIn('rsva_estado', ['Aceptada', 'Finalizada'])
+            ->whereYear('rsva_fecha', now()->year)
+            ->whereMonth('rsva_fecha', now()->month)
+            ->sum(DB::raw('TIMESTAMPDIFF(HOUR, rsva_hora_inicio, rsva_hora_fin) * esp_precio_hora'));
+
+        $usuariosRegistrados = User::where('rol_id', 3)->count();
+
+        // --- Datos para el Gantt del día ---
+        $reservasDelDia = Reserva::with(['espacio', 'usuario'])
+            ->whereDate('rsva_fecha', $hoy)
+            ->whereIn('rsva_estado', ['Aceptada', 'Activa', 'Pendiente'])
+            ->orderBy('rsva_hora_inicio')
+            ->get();
+
         $settings = self::getSettings();
         $promocionesVisible = $settings['promociones_visible'] ?? true;
-
-       
 
         return view('admin.dashboard', compact(
             'espaciosDisponibles',
             'reservas',
             'solicitudesPendientes',
             'ultimasReservas',
-            'promocionesVisible'
+            'promocionesVisible',
+            'reservasActivasHoy',
+            'ingresosDelMes',
+            'usuariosRegistrados',
+            'reservasDelDia'
         ));
     }
 

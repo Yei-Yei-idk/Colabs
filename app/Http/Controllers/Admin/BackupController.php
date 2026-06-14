@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BackupLog;
 use Illuminate\Http\Request;
 
 class BackupController extends Controller
@@ -67,6 +68,13 @@ class BackupController extends Controller
     public function menu() {
         return view('admin.copia_seguridad.menu');
     }
+
+    /**
+     * Muestra el historial de backups registrados en backup_logs.
+     */
+    public function logs()
+    {
+        $logs = BackupLog::orderByDesc('created_at')->paginate(20);
+        return view('admin.copia_seguridad.logs', compact('logs'));
+    }
 }
-
-
