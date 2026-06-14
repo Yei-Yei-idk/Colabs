@@ -15,11 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\SanearSesionLegacyUsuario::class,
+            \App\Http\Middleware\RegistrarActividad::class,
         ]);
 
         $middleware->alias([
-            'es.administrador' => \App\Http\Middleware\EsAdministrador::class,
-            'es.cliente'       => \App\Http\Middleware\EsCliente::class,
+            'es.administrador'       => \App\Http\Middleware\EsAdministrador::class,
+            'es.cliente'             => \App\Http\Middleware\EsCliente::class,
             'perfil.google.completo' => \App\Http\Middleware\VerificarPerfilGoogleCompleto::class,
         ]);
     })

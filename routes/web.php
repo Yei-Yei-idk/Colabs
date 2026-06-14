@@ -13,6 +13,9 @@ use App\Http\Controllers\Admin\EspaciosController;
 use App\Http\Controllers\Admin\ReservasController;
 use App\Http\Controllers\Admin\AdministradoresController;
 use App\Http\Controllers\Admin\BackupController;
+use App\Http\Controllers\Admin\AnaliticaController;
+use App\Http\Controllers\Admin\ReportesEspaciosController;
+use App\Http\Controllers\Admin\ReportesPagosController;
 use Illuminate\Http\Request;
 
 // ===================== RUTAS =====================
@@ -136,4 +139,15 @@ Route::prefix('admin')
         Route::get('/gestion_admin/{id}/editar', [AdministradoresController::class, 'edit'])->name('gestion_admin.edit');
         Route::put('/gestion_admin/{id}', [AdministradoresController::class, 'update'])->name('gestion_admin.update');
         Route::delete('/gestion_admin/{id}', [AdministradoresController::class, 'destroy'])->name('gestion_admin.destroy');
+
+        // ===================== ANALÍTICA =====================
+        Route::get('/analitica', [AnaliticaController::class, 'index'])->name('analitica');
+
+        // ===================== REPORTES =====================
+        Route::get('/reportes/espacios', [ReportesEspaciosController::class, 'index'])->name('reportes.espacios');
+        Route::get('/reportes/pagos', [ReportesPagosController::class, 'index'])->name('reportes.pagos');
+        Route::get('/reportes/pagos/pdf', [ReportesPagosController::class, 'exportarPdf'])->name('reportes.pagos.pdf');
+
+        // ===================== HISTORIAL BACKUPS =====================
+        Route::get('/backup/logs', [BackupController::class, 'logs'])->name('backup.logs');
     });

@@ -55,8 +55,39 @@
                     </details>
                 </li>
 
-                <li class="{{ request()->routeIs('admin.copias') ? 'active' : '' }}">
-                    <a href="{{ route('admin.copias') }}">Copias de seguridad</a>
+                {{-- Analítica --}}
+                <li class="{{ request()->routeIs('admin.analitica') ? 'active' : '' }}">
+                    <a href="{{ route('admin.analitica') }}">Analítica</a>
+                </li>
+
+                {{-- Reportes --}}
+                <li>
+                    <details {{ request()->routeIs('admin.reportes.*') ? 'open' : '' }}>
+                        <summary>Reportes</summary>
+                        <ul>
+                            <li class="{{ request()->routeIs('admin.reportes.espacios') ? 'active' : '' }}">
+                                <a href="{{ route('admin.reportes.espacios') }}">Espacios</a>
+                            </li>
+                            <li class="{{ request()->routeIs('admin.reportes.pagos') ? 'active' : '' }}">
+                                <a href="{{ route('admin.reportes.pagos') }}">Ingresos</a>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+
+                {{-- Copias de seguridad --}}
+                <li>
+                    <details {{ request()->routeIs('admin.copias', 'admin.backup.logs') ? 'open' : '' }}>
+                        <summary>Copias de seguridad</summary>
+                        <ul>
+                            <li class="{{ request()->routeIs('admin.copias') ? 'active' : '' }}">
+                                <a href="{{ route('admin.copias') }}">Gestionar</a>
+                            </li>
+                            <li class="{{ request()->routeIs('admin.backup.logs') ? 'active' : '' }}">
+                                <a href="{{ route('admin.backup.logs') }}">Historial</a>
+                            </li>
+                        </ul>
+                    </details>
                 </li>
 
                 {{-- Solo visible para SuperAdmin (rol_id = 1) --}}
@@ -67,6 +98,7 @@
                 @endif
             </ul>
         </nav>
+
     </aside>
 
     {{-- ===================== CONTENEDOR PRINCIPAL ===================== --}}

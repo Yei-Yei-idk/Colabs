@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +61,16 @@ class IniciarSesionController extends Controller
         }
 
         $request->session()->regenerate();
+
+        // Registrar evento de login en activity_logs
+        ActivityLog::create([
+            'user_id'    => $usuario->id,
+            'event'      => 'login',
+            'url'        => $request->fullUrl(),
+            'ip'         => $request->ip(),
+            'user_agent' => substr($request->userAgent() ?? '', 0, 500),
+            'created_at' => now(),
+        ]);
 
         $redirect = $this->obtenerRedirectSeguro($request->input('redirect'));
         if ($redirect) {
