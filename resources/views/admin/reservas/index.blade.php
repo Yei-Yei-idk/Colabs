@@ -14,7 +14,7 @@
     <a href="{{ route('admin.reservas.index', ['fecha' => $fechaAnterior]) }}"
        class="btn-nav">⬅ Día anterior</a>
 
-    <form method="get" action="{{ route('admin.reservas.index') }}" style="display:inline;">
+    <form method="get" action="{{ route('admin.reservas.index') }}" class="form-inline">
         <input type="date"
                class="input-fecha"
                name="fecha"
@@ -30,7 +30,7 @@
 {{-- ── CALENDARIO DEL DÍA ──────────────────────────────────── --}}
 <h2>Calendario del día {{ $fecha->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}</h2>
 
-<div style="overflow-x:auto;">
+<div class="overflow-x-auto">
 <table class="tabla-reservas">
     <thead>
         <tr>
@@ -133,16 +133,16 @@
 </table>
 
 {{-- MODAL PARA CAMBIAR HORA DE FIN --}}
-<div id="modal-hora" class="modal-overlay" style="display:none;">
+<div id="modal-hora" class="modal-overlay">
     <div class="modal-content animate-pop">
-        <h3 style="margin-top:0;">Actualizar Fin de Reserva</h3>
+        <h3>Actualizar Fin de Reserva</h3>
         <p>¿A qué hora deseas que finalice esta reserva?</p>
         <form action="{{ route('admin.reservas.actualizar_hora') }}" method="POST">
             @csrf
             <input type="hidden" name="reserva_id" id="modal-reserva-id">
             <input type="time" name="nueva_hora_fin" id="modal-hora-fin" class="input-hora-grande" min="06:00" max="20:00" required>
             
-            <div class="modal-actions" style="margin-top: 20px; display:flex; gap:10px; justify-content:center;">
+            <div class="modal-actions">
                 <button type="button" class="btn-cancel" onclick="cerrarModalHora()">Cancelar</button>
                 <button type="submit" class="btn-save">Guardar Cambio</button>
             </div>

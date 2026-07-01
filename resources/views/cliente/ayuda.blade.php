@@ -66,8 +66,8 @@
             <a href="mailto:colabsbq@gmail.com" class="btn-contacto">Contactar a Soporte</a>
         </div>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="{{ route('cliente.index') }}" style="color: #666; font-size: 0.9rem;">← Volver al inicio</a>
+        <div class="ayuda-footer">
+            <a href="{{ route('cliente.index') }}" class="ayuda-volver">← Volver al inicio</a>
         </div>
     </div>
 @endsection

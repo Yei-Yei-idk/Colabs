@@ -3293,3 +3293,297 @@ nav img {
         padding: 0 15px;
     }
 }
+
+/* ─────────────── LAYOUT: NOTIFICACIONES ─────────────── */
+.notificaciones-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notif-indicator {
+    display: none;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+.notif-strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notif-strong-success { color: #22c55e; }
+.notif-strong-error { color: #ef4444; }
+.notif-strong-warning { color: #eab308; }
+
+.notif-icon-inline {
+    vertical-align: middle;
+}
+
+/* ─────────────── LAYOUT: AVATAR ─────────────── */
+.avatar-btn-img {
+    margin-right: 15px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4285F4;
+}
+
+.avatar-btn-letter {
+    margin-right: 15px;
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+/* ─────────────── LAYOUT: LOGOUT POPUP ─────────────── */
+.popup-overlay {
+    display: none;
+}
+
+.logout-form-cliente {
+    display: none;
+}
+
+.btn-processing {
+    opacity: 0.7;
+}
+
+/* ─────────────── CLIENTE INDEX ─────────────── */
+.delay-200 { animation-delay: 0.2s; }
+.delay-400 { animation-delay: 0.4s; }
+
+/* ─────────────── BUSCAR ESPACIOS (CLIENTE) ─────────────── */
+.sidebar-sticky {
+    align-self: flex-start;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.btn-aplicar-filtros {
+    width: 100%;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.price-block {
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #9CA3AF;
+    font-size: 0.85em;
+}
+
+.price-new {
+    color: #059669;
+    margin-left: 8px;
+}
+
+.price-discount-badge {
+    background: #FEF08A;
+    color: #854D0E;
+    font-size: 0.75em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.price-regular {
+    color: #1F2937;
+}
+
+/* ─────────────── RESERVAR ─────────────── */
+.paquete-badge {
+    background-color: #FEF08A;
+    color: #854D0E;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #FDE047;
+}
+
+.svg-inline {
+    vertical-align: middle;
+}
+
+.services-list li {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.booking-popup-header .booking-popup-icon svg {
+    vertical-align: middle;
+}
+
+.warning-icon-inline {
+    vertical-align: middle;
+    color: #f59e0b;
+}
+
+.success-icon-inline {
+    color: #22c55e;
+    vertical-align: middle;
+}
+
+.guests-icon svg {
+    vertical-align: middle;
+}
+
+.alt-modal-title-icon svg {
+    vertical-align: middle;
+}
+
+/* ─────────────── MIS RESERVAS ─────────────── */
+.delay-100 { animation-delay: 0.1s; }
+
+.reserva-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.desc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1px solid #6ee7b7;
+    box-shadow: 0 1px 4px rgba(16,185,129,0.15);
+}
+
+.desc-badge svg {
+    vertical-align: middle;
+}
+
+.total-desc-label {
+    font-size: 0.7rem;
+    color: #059669;
+    font-weight: 700;
+}
+
+.total-amount-desc {
+    color: #059669;
+}
+
+/* ─────────────── DETALLES RESERVA ─────────────── */
+.info-value-capitalize {
+    text-transform: capitalize;
+}
+
+.estado-aceptada {
+    color: orange;
+    font-weight: bold;
+}
+
+.estado-cancelada {
+    color: red;
+    font-weight: bold;
+}
+
+.estado-other {
+    color: gray;
+}
+
+/* ─────────────── PERFIL ─────────────── */
+.security-note-google {
+    margin-top: 16px;
+    border-left-color: #4285F4;
+}
+
+.security-note-google-no-margin {
+    border-left-color: #4285F4;
+}
+
+.password-reqs {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.password-reqs-inner {
+    background: rgba(243, 244, 246, 0.5);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.password-reqs-title {
+    margin: 0 0 12px 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #374151;
+}
+
+.req-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.req-item {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ─────────────── AYUDA ─────────────── */
+.ayuda-volver {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.ayuda-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* ─────────────── RESERVAR: H4 SECTIONS ─────────────── */
+.booking-section-h4 {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.booking-section-h4 .svg-icon-success { color: #22c55e; }
+.booking-section-h4 .svg-icon-warning { color: #f59e0b; }
+
+/* ─────────────── MARGIN UTILITIES ─────────────── */
+.mt-10 { margin-top: 10px; }
+
+/* ─────────────── JS TOGGLED HIDDEN ─────────────── */
+.js-hidden { display: none; }

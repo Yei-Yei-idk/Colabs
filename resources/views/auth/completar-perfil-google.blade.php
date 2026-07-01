@@ -7,7 +7,7 @@
     <div class="formulario">
         <h1>Completa tu perfil</h1>
 
-        <p class="instrucciones" style="margin-bottom: 16px; text-align: left;">
+        <p class="instrucciones">
             Para finalizar tu registro con Google, completa estos datos obligatorios.
         </p>
 

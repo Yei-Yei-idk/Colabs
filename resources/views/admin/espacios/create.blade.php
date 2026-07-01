@@ -16,8 +16,8 @@
 
         {{-- Errores de validación --}}
         @if ($errors->any())
-            <div style="background: #fee2e2; color: #b91c1c; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <ul style="margin: 0;">
+            <div class="form-error-alert">
+                <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="form-group">
-                        <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 15px;">Tipo de oficina</h4>
+                        <h4 class="tipo-heading">Tipo de oficina</h4>
                         <div class="radio-group">
                             @php
                                 $tipos = [

@@ -89,7 +89,7 @@
                         <span class="price-period">por hora</span>
                     </div>
                     @if(request('paquete'))
-                    <div style="background-color: #FEF08A; color: #854D0E; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid #FDE047;">
+                    <div class="paquete-badge">
                         <strong>✨ Paquete de {{ request('paquete') }} horas activo</strong><br>
                         La hora de fin se ajustará automáticamente.
                     </div>
@@ -124,7 +124,7 @@
                                         <select id="hora_fin" name="hora_fin" class="time-select" required disabled>
                                             <option value="">Primero selecciona hora de inicio</option>
                                         </select>
-                                        <span class="clock-icon">🕘</span>
+                                        <span class="clock-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-inline"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
                                     </div>
                                 </div>
                             </div>
@@ -137,10 +137,10 @@
                             </div>
                         </div>
                         <!-- Secciones ocultas hasta que haya disponibilidad confirmada -->
-                        <div class="form-group" id="guestsSection" style="display:none;">
+                        <div class="form-group js-hidden" id="guestsSection">
                             <div class="guests-header">
                                 <label class="form-label">Número de invitados</label>
-                                <span class="guests-icon">👥</span>
+                                <span class="guests-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                             </div>
                             <div class="guests-selector">
                                 <button type="button" class="guest-btn minus" onclick="changeGuests(-1)">-</button>
@@ -150,15 +150,15 @@
                             </div>
                             <small class="text-muted">Capacidad máxima: {{ $espacio->esp_capacidad }} personas</small>
                         </div>
-                        <div class="form-group" id="descriptionSection" style="display:none;">
+                        <div class="form-group js-hidden" id="descriptionSection">
                             <label class="form-label">Descripción de la reserva (Obligatorio)</label>
                             <textarea name="descripcion" class="form-textarea" required
                                 placeholder="Describe la actividad que realizarás en el espacio."></textarea>
                         </div>
-                        <div class="pricing-summary" id="pricingSummary" style="display:none;">
+                        <div class="pricing-summary js-hidden" id="pricingSummary">
                             <div class="pricing-line">Elija el horario de la reserva.</div>
                         </div>
-                        <button type="submit" class="reserve-button" id="reserveBtn" disabled style="display:none;opacity:0.5;cursor:not-allowed;">
+                        <button type="submit" class="reserve-button js-hidden" id="reserveBtn" disabled>
                             Verificar disponibilidad
                         </button>
                     </form>
@@ -208,7 +208,7 @@
     <div id="confirmBookingPopup" class="popup-overlay modal-hidden">
         <div class="booking-popup">
             <div class="booking-popup-header">
-                <div class="booking-popup-icon">📋</div>
+                <div class="booking-popup-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
                 <h3>Confirmar reserva de espacio</h3>
                 <p class="booking-popup-subtitle">Revisa los detalles antes de confirmar tu reserva</p>
             </div>
@@ -223,15 +223,15 @@
                     <div class="booking-detail"><span class="booking-label">Invitados:</span><span class="booking-value" id="confirmInvitados"></span></div>
                 </div>
                 <div class="booking-services">
-                    <h4>✅ Servicios incluidos</h4>
+                    <h4 class="booking-section-h4"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon-success"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Servicios incluidos</h4>
                     <ul class="services-list">
-                        <li>📶 WiFi de alta velocidad</li>
-                        <li>☕ Café y refrigerios</li>
-                        <li>🔒 Seguridad 24/7</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> WiFi de alta velocidad</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Café y refrigerios</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Seguridad 24/7</li>
                     </ul>
                 </div>
                 <div class="booking-important">
-                    <h4>⚠️ Importante</h4>
+                    <h4 class="booking-section-h4"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon-warning"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Importante</h4>
                     <p>Recibirás un email de confirmación si el espacio es aprobado. La reserva puede ser rechazada o confirmada según disponibilidad.</p>
                 </div>
                 <div class="booking-total">
@@ -277,7 +277,7 @@
          data-server-now-epoch-ms="{{ $serverNowEpochMs }}"
          data-server-timezone="America/Bogota"
          data-paquete="{{ request('paquete') ?? '' }}"
-         style="display:none;"></div>
+         class="js-hidden"></div>
     <script>
         const configElement = document.getElementById('reservaConfigData');
         window.reservaConfig = {

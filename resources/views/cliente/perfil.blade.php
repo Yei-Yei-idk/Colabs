@@ -26,7 +26,7 @@
                 <div class="id-tag">Miembro de Co-Labs</div>
 
                 @if($esCuentaGoogle)
-                    <div class="security-note" style="margin-top: 16px; border-left-color: #4285F4;">
+                    <div class="security-note security-note-google">
                         Cuenta vinculada con Google.
                     </div>
                 @endif
@@ -91,7 +91,7 @@
                                 <span class="icon">Seguridad</span>
                                 <h3>Cuenta de Google</h3>
                             </div>
-                            <div class="security-note" style="border-left-color: #4285F4;">
+                            <div class="security-note security-note-google-no-margin">
                                 Esta cuenta se autentica con Google. El cambio de contraseña se gestiona desde tu cuenta de Google.
                             </div>
                         </div>
@@ -114,20 +114,20 @@
                             </div>
 
                             <!-- Requisitos de contraseña -->
-                            <div id="password-requirements-profile" style="display: none; margin-top: 10px; margin-bottom: 20px;">
-                                <div class="password-rules" style="background: rgba(243, 244, 246, 0.5); padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                                    <p style="margin: 0 0 12px 0; font-size: 0.85rem; font-weight: 700; color: #374151;">La nueva contraseña debe incluir:</p>
-                                    <ul id="requirement-list" style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                                        <li id="req-length" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                            <div id="password-requirements-profile" class="password-reqs">
+                                <div class="password-reqs-inner">
+                                    <p class="password-reqs-title">La nueva contraseña debe incluir:</p>
+                                    <ul id="requirement-list" class="req-list">
+                                        <li id="req-length" class="req-item">
                                             <span class="icon">○</span> Mín. 8 caracteres
                                         </li>
-                                        <li id="req-mixed" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                                        <li id="req-mixed" class="req-item">
                                             <span class="icon">○</span> Mayús. y minúsc.
                                         </li>
-                                        <li id="req-numbers" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                                        <li id="req-numbers" class="req-item">
                                             <span class="icon">○</span> Al menos 1 número
                                         </li>
-                                        <li id="req-symbols" style="font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px;">
+                                        <li id="req-symbols" class="req-item">
                                             <span class="icon">○</span> Carácter especial
                                         </li>
                                     </ul>

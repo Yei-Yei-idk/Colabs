@@ -19,7 +19,7 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>Rol</th>
-            <th style="text-align: center;">Acciones</th>
+            <th class="th-actions-center">Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -29,111 +29,23 @@
                 <td>{{ $u->user_correo }}</td>
                 <td>{{ $u->rol->rol_nombre ?? 'Administrador' }}</td>
                 <td>
-                    <div style="display: flex; gap: 8px; justify-content: center;">
-                        <a href="{{ route('admin.gestion_admin.edit', $u->id) }}" class="accion-btn">✏️</a>
+                    <div class="actions-flex">
+                        <a href="{{ route('admin.gestion_admin.edit', $u->id) }}" class="accion-btn" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></a>
                         
                         <form action="{{ route('admin.gestion_admin.destroy', $u->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="accion-btn">❌</button>
+                            <button type="submit" class="accion-btn" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
                         </form>
                     </div>
                 </td>
             </tr>
         @empty
             <tr>
-                <td colspan="4" style="text-align: center; padding: 20px; color: #6b7280;">No hay administradores registrados</td>
+                <td colspan="4" class="empty-cell">No hay administradores registrados</td>
             </tr>
         @endforelse
     </tbody>
 </table>
 
-@endsection
-
-@section('styles')
-<style>
-    .usuarios-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .usuarios-header h2 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: #111827;
-    }
-
-    .usuarios-header p {
-        margin: 4px 0 0 0;
-        color: #6b7280;
-    }
-
-    .btn-agregar-admin {
-        background-color: #1a1a2e;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: background-color 0.2s;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-agregar-admin:hover {
-        background-color: #2e2e4a;
-    }
-
-    .us {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Sombra más suave */
-    }
-
-    .us th {
-        background: #f9fafb;
-        padding: 12px 16px; /* Padding más compacto */
-        text-align: left;
-        font-weight: 600;
-        color: #374151;
-        border-bottom: 1px solid #e5e7eb;
-        font-size: 0.9rem;
-    }
-
-    .us td {
-        padding: 12px 16px; /* Padding más compacto */
-        border-bottom: 1px solid #f3f4f6;
-        color: #4b5563;
-        font-size: 0.9rem;
-    }
-
-    .us tr:last-child td {
-        border-bottom: none;
-    }
-
-    .accion-btn {
-        background: #f3f4f6;
-        border: none;
-        padding: 8px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        font-size: 1rem;
-    }
-
-    .accion-btn:hover {
-        background: #e5e7eb;
-    }
-</style>
 @endsection

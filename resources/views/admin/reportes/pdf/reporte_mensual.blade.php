@@ -106,7 +106,7 @@
 
     {{-- TABLA DE INGRESOS POR ESPACIO --}}
     <div class="section">
-        <div class="section-title">📊 Ingresos por espacio — {{ $nombreMes }}</div>
+        <div class="section-title">Ingresos por espacio — {{ $nombreMes }}</div>
         @if($ingresosPorEspacio->isEmpty())
             <p style="color:#9ca3af; padding:12px 0;">No hay reservas productivas en este mes.</p>
         @else
@@ -144,7 +144,7 @@
 
     {{-- NOTA METODOLÓGICA --}}
     <div class="section">
-        <div class="section-title">ℹ️ Nota metodológica</div>
+        <div class="section-title">Nota metodológica</div>
         <p style="font-size:10px; color:#6b7280; line-height:1.6;">
             Los <strong>ingresos estimados</strong> se calculan multiplicando el precio por hora de cada espacio
             por la duración en horas de cada reserva con estado <strong>Aceptada</strong> o <strong>Finalizada</strong>.

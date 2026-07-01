@@ -124,6 +124,9 @@ Route::prefix('admin')
         Route::get('/copias', [BackupController::class, 'menu'])->name('copias');
         Route::post('/backup/create', [BackupController::class, 'backup'])->name('backup.create');
         Route::post('/backup/restore', [BackupController::class, 'restore'])->name('backup.restore');
+        Route::get('/backup/download/{id}', [BackupController::class, 'download'])->name('backup.download');
+        Route::post('/backup/restore-history/{id}', [BackupController::class, 'restoreFromHistory'])->name('backup.restoreHistory');
+        Route::delete('/backup/{id}', [BackupController::class, 'delete'])->name('backup.delete');
 
         // Los siguientes controladores se irán creando en las próximas migraciones:
         Route::get('/reservas',             [ReservasController::class, 'index'])->name('reservas.index');
@@ -140,14 +143,8 @@ Route::prefix('admin')
         Route::put('/gestion_admin/{id}', [AdministradoresController::class, 'update'])->name('gestion_admin.update');
         Route::delete('/gestion_admin/{id}', [AdministradoresController::class, 'destroy'])->name('gestion_admin.destroy');
 
-        // ===================== ANALÍTICA =====================
-        Route::get('/analitica', [AnaliticaController::class, 'index'])->name('analitica');
-
         // ===================== REPORTES =====================
         Route::get('/reportes/espacios', [ReportesEspaciosController::class, 'index'])->name('reportes.espacios');
         Route::get('/reportes/pagos', [ReportesPagosController::class, 'index'])->name('reportes.pagos');
         Route::get('/reportes/pagos/pdf', [ReportesPagosController::class, 'exportarPdf'])->name('reportes.pagos.pdf');
-
-        // ===================== HISTORIAL BACKUPS =====================
-        Route::get('/backup/logs', [BackupController::class, 'logs'])->name('backup.logs');
     });

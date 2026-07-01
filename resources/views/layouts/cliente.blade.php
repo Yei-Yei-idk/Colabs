@@ -39,9 +39,9 @@
     <div class="nav-right">
       <!-- Botón de notificaciones -->
       <div class="notificaciones-dropdown">
-        <button class="notificaciones-btn" id="btnNotificaciones" style="position: relative;">
-            🔔
-            <span id="notif-indicator" style="display:none; position:absolute; top:2px; right:2px; width:8px; height:8px; background-color:red; border-radius:50%; border:1px solid white;"></span>
+        <button class="notificaciones-btn" id="btnNotificaciones">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notif-icon-inline"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span id="notif-indicator" class="notif-indicator"></span>
         </button>
         <div class="notificaciones-menu" id="notificacionesMenu">
           @php
@@ -50,10 +50,10 @@
           @endphp
           @forelse($notificaciones as $reserva)
               <div class="notificacion {{ $reserva->rsva_estado }}">
-                  @if ($reserva->rsva_estado == 'Aceptada') <strong>✅ ¡Reserva confirmada!</strong>
-                  @elseif ($reserva->rsva_estado == 'Rechazada' || $reserva->rsva_estado == 'Cancelada') <strong class="alert-error">❌ Reserva {{ strtolower($reserva->rsva_estado) }}</strong>
-                  @elseif ($reserva->rsva_estado == 'Pendiente') <strong class="alert-warning">⏳ Reserva en proceso</strong>
-                  @elseif ($reserva->rsva_estado == 'Finalizada') <strong>🌟 Reserva completada</strong> @endif
+                  @if ($reserva->rsva_estado == 'Aceptada') <strong class="notif-strong notif-strong-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ¡Reserva confirmada!</strong>
+                  @elseif ($reserva->rsva_estado == 'Rechazada' || $reserva->rsva_estado == 'Cancelada') <strong class="alert-error notif-strong notif-strong-error"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Reserva {{ strtolower($reserva->rsva_estado) }}</strong>
+                  @elseif ($reserva->rsva_estado == 'Pendiente') <strong class="alert-warning notif-strong notif-strong-warning"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Reserva en proceso</strong>
+                  @elseif ($reserva->rsva_estado == 'Finalizada') <strong class="notif-strong"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Reserva completada</strong> @endif
                   <p>Espacio: {{ $reserva->espacio->esp_nombre ?? 'N/D' }}</p>
                   <p class="notification-time">{{ \Carbon\Carbon::parse($reserva->rsva_fecha)->format('d M') }} de {{ \Carbon\Carbon::parse($reserva->rsva_hora_inicio)->format('g:i A') }} a {{ \Carbon\Carbon::parse($reserva->rsva_hora_fin)->format('g:i A') }}</p>
                   @if ($reserva->rsva_estado == 'Aceptada' || $reserva->rsva_estado == 'Pendiente')
@@ -74,9 +74,9 @@
       <div class="perfil-dropdown">
         <button class="perfil-btn" onclick="document.getElementById('menuPerfil').classList.toggle('show')">
           @if(!empty(auth()->user()->google_id) && !empty(auth()->user()->avatar))
-            <img src="{{ auth()->user()->avatar }}" alt="Avatar" style="margin-right: 15px; width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #4285F4;">
+            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="avatar-btn-img">
           @else
-            <div class="review-avatar {{ auth()->user()->avatar_color }}" style="margin-right: 15px; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; font-size: 1.05rem; flex-shrink: 0;">{{ auth()->user()->avatar_initial ?? 'U' }}</div>
+            <div class="review-avatar {{ auth()->user()->avatar_color }} avatar-btn-letter">{{ auth()->user()->avatar_initial ?? 'U' }}</div>
           @endif
           <span>{{ auth()->user()->first_name ?? auth()->user()->user_nombre }}</span>
         </button>
@@ -92,7 +92,7 @@
 </header>
 
 <!-- POPUP DE CERRAR SESIÓN -->
-<div id="logoutPopup" class="popup-overlay" style="display: none;">
+<div id="logoutPopup" class="popup-overlay">
   <div class="popup">
     <div class="popup-icon">
       <img src="{{ asset('/ASSETS/logout.svg') }}" alt="logout icon">
@@ -105,7 +105,7 @@
     </div>
   </div>
 </div>
-<form id="logout-form-cliente" action="{{ route('logout') }}" method="POST" style="display:none;">
+<form id="logout-form-cliente" action="{{ route('logout') }}" method="POST" class="logout-form-cliente">
   @csrf
 </form>
 
@@ -210,7 +210,7 @@
                 if (btn && !btn.disabled) {
                     btn.disabled = true;
                     btn.dataset.originalText = btn.innerHTML;
-                    btn.innerHTML = '<span style="opacity:.7">Procesando...</span>';
+                    btn.innerHTML = '<span class="btn-processing">Procesando...</span>';
                 }
             });
 
@@ -224,7 +224,7 @@
             if (btnConfirmarLogout) {
                 btnConfirmarLogout.addEventListener('click', function () {
                     this.disabled = true;
-                    this.innerHTML = '<span style="opacity:.7">Cerrando...</span>';
+                    this.innerHTML = '<span class="btn-processing">Cerrando...</span>';
                 });
             }
         });

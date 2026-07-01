@@ -32,7 +32,15 @@ class BackupController extends Controller
             return back()->with('error', 'Error al crear la copia de seguridad. Asegúrate de que MySQL/MariaDB esté activo y las credenciales sean correctas.');
         }
 
-        return response()->download($path)->deleteFileAfterSend(true);
+        $fileSize = filesize($path);
+        BackupLog::create([
+            'filename' => $filename,
+            'file_size' => $fileSize,
+            'status' => 'success',
+            'error_message' => null
+        ]);
+
+        return back()->with('success', 'Copia de seguridad creada y guardada correctamente.');
     }
 
     public function restore(Request $request) 
@@ -66,15 +74,61 @@ class BackupController extends Controller
     }
 
     public function menu() {
-        return view('admin.copia_seguridad.menu');
+        $logs = BackupLog::orderByDesc('created_at')->paginate(20);
+        return view('admin.copia_seguridad.menu', compact('logs'));
     }
 
-    /**
-     * Muestra el historial de backups registrados en backup_logs.
-     */
-    public function logs()
+
+
+    public function download($id)
     {
-        $logs = BackupLog::orderByDesc('created_at')->paginate(20);
-        return view('admin.copia_seguridad.logs', compact('logs'));
+        $log = BackupLog::findOrFail($id);
+        $path = storage_path('app/backups/' . $log->filename);
+
+        if (!file_exists($path)) {
+            return back()->with('error', 'El archivo no existe en el servidor.');
+        }
+
+        return response()->download($path);
+    }
+
+    public function restoreFromHistory($id)
+    {
+        $log = BackupLog::findOrFail($id);
+        $path = storage_path('app/backups/' . $log->filename);
+
+        if (!file_exists($path)) {
+            return back()->with('error', 'El archivo no existe en el servidor.');
+        }
+
+        $password = env('DB_PASSWORD');
+        $passwordFlag = !empty($password) ? " --password=\"$password\"" : "";
+
+        $command = "\"C:\\xampp\\mysql\\bin\\mysql.exe\" --user=\"" . env('DB_USERNAME') . "\"" . 
+        $passwordFlag . 
+        " --host=\"" . env("DB_HOST") . "\" " . 
+        env('DB_DATABASE') . " < \"$path\" 2>&1";
+
+        exec($command, $output, $returnVar);
+
+        if ($returnVar !== 0) {
+            return back()->with('error', 'Error al restaurar la base de datos.');
+        }
+
+        return back()->with('success', 'Base de datos restaurada correctamente desde el historial.');
+    }
+
+    public function delete($id)
+    {
+        $log = BackupLog::findOrFail($id);
+        $path = storage_path('app/backups/' . $log->filename);
+
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
+        $log->delete();
+
+        return back()->with('success', 'Copia de seguridad eliminada correctamente.');
     }
 }

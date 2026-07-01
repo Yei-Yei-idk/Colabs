@@ -604,3 +604,20 @@ footer a:hover { text-decoration: underline; }
 #snackbar.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (max-width: 768px) { .search-form { grid-template-columns: 1fr; } }
+
+/* ─────────────── AUTH: PASSWORD MATCH ─────────────── */
+#password-match-status {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: none;
+}
+
+/* ─────────────── GOOGLE PROFILE: INSTRUCCIONES ─────────────── */
+.auth-completar .instrucciones {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.btn-processing {
+    opacity: 0.7;
+}

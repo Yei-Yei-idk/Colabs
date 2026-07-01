@@ -62,7 +62,7 @@
                     class="mi-input"
                     required
                 >
-                <div id="password-match-status" style="font-size: 0.8rem; margin-top: 4px; display: none;"></div>
+                <div id="password-match-status"></div>
                 <br><br>
 
                 <button type="submit" id="btn-submit" class="btn-login">

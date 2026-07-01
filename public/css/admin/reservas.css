@@ -262,3 +262,17 @@
         transform: translateY(0);
     }
 }
+
+/* ─────────── PENDIENTES: INLINE ─────────── */
+.user-phone {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.icon-inline {
+    margin-right: 4px;
+    vertical-align: middle;
+}

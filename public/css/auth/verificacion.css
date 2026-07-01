@@ -260,6 +260,11 @@
     font-weight: 700;
 }
 
+/* ─────────────── SVG ICON COLORS ─────────────── */
+.svg-icon-danger { color: #ef4444; }
+.svg-icon-warning { color: #eab308; }
+.svg-icon-success { color: #22c55e; }
+
 .btn-change-email {
     display: inline-flex;
     align-items: center;
@@ -281,3 +286,70 @@
     color: #475569;
     background: #f8fafc;
 }
+
+/* ─────────────── VERIFICACIÓN: ALERT TEXT ─────────────── */
+.alert-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ─────────────── VERIFICACIÓN: BTN DISABLED ─────────────── */
+.btn-gold-pill:disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+}
+
+/* ─────────────── VERIFICACIÓN: LIMIT MSG ─────────────── */
+.limit-msg {
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+/* ─────────────── VERIFICACIÓN: CHANGE EMAIL ─────────────── */
+.btn-change-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ─────────────── VERIFICACIÓN: SVG INLINE ─────────────── */
+.icon-inline {
+    vertical-align: middle;
+}
+
+/* ─────────────── VERIFICACIÓN: FOOTER TEXT ─────────────── */
+.verify-footer {
+    margin-top: 32px;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+.verify-footer strong {
+    font-weight: 700;
+}
+
+/* ─────────────── CAMBIAR CORREO ─────────────── */
+.form-button-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+}
+
+.form-footer strong {
+    font-weight: 700;
+}
+
+/* ─────────────── SVG ICON COLORS ─────────────── */
+.svg-icon-danger { color: #ef4444; }
+.svg-icon-warning { color: #eab308; }
+.svg-icon-success { color: #22c55e; }

@@ -8,11 +8,11 @@
 @endsection
 
 @section('content')
-<section class="auth-registrarse" style="min-height: auto; background: transparent; padding: 0; display: block;">
+<section class="auth-registrarse admin-form-section">
     <div class="formulario">
         <h1>Editar administrador</h1>
 
-        <p class="instrucciones" style="margin-bottom: 24px; color: #6b7280; font-size: 0.95rem;">
+        <p class="instrucciones edit-instrucciones">
             Administrador: <strong>{{ $usuario->user_nombre }}</strong> ({{ $usuario->numero_documento }})
         </p>
 
@@ -30,7 +30,7 @@
             @csrf
             @method('PUT')
 
-            <label style="font-size: 0.85rem; font-weight: 700; color: #374151; margin-left: 15px; display: block;">Correo electrónico</label>
+            <label class="edit-label">Correo electrónico</label>
             <input 
                 type="email" 
                 name="correo" 
@@ -40,11 +40,11 @@
                 required
             >
 
-            <div style="margin-top: 24px; display: flex; gap: 12px;">
-                <button type="submit" class="btn-login" style="flex: 1;">
+            <div class="admin-form-actions">
+                <button type="submit" class="btn-login">
                     Guardar cambios
                 </button>
-                <a href="{{ route('admin.gestion_admin.index') }}" class="btn-login btn-cancel" style="flex: 1;">
+                <a href="{{ route('admin.gestion_admin.index') }}" class="btn-login btn-cancel">
                     Cancelar
                 </a>
             </div>

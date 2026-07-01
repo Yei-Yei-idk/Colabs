@@ -27,9 +27,9 @@
         <div class="hero-img"></div>
     </div>
     
-    <h2 id="subtitulo_espacios" class="mis-reservas-header mt-20 mb-20 animate-fade-up" style="animation-delay: 0.2s;">Espacios Destacados</h2>
+    <h2 id="subtitulo_espacios" class="mis-reservas-header mt-20 mb-20 animate-fade-up delay-200">Espacios Destacados</h2>
     
-    <div class="slider-container animate-fade-up" style="animation-delay: 0.4s;">
+    <div class="slider-container animate-fade-up delay-400">
         <button class="prev">‹</button>
         <div class="slider-wrapper">
             <div class="slider">

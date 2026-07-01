@@ -118,7 +118,7 @@
                 if (btn && !btn.disabled) {
                     btn.disabled = true;
                     btn.dataset.originalText = btn.innerHTML;
-                    btn.innerHTML = '<span style="opacity:.7">Procesando...</span>';
+                    btn.innerHTML = '<span class="btn-processing">Procesando...</span>';
                 }
             });
         });

@@ -18,14 +18,14 @@
     <h1>| Unétenos |</h1>
 </div>
 
-<h2 style="text-align: center; margin-top: 40px;">Ubicación De Nuestra Sede</h2>
+<h2 class="ubicacion-subtitle">Ubicación De Nuestra Sede</h2>
 
 <div class="ubicacion-grid">
     <!-- Columna izquierda: Mapa -->
     <div class="columna-mapa">
         <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d489.55124333187763!2d-74.80165236599272!3d11.007837464815433!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef42d98f0a452cb%3A0x227b4d2ce9658001!2sColabs%20Coworking%20Spaces!5e0!3m2!1ses-419!2sco!4v1758286282455!5m2!1ses-419!2sco"
-            width="100%" height="300" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy">
+            width="100%" height="300" allowfullscreen="" loading="lazy">
         </iframe>
         <h3>¡Ven y Búscanos!</h3>
         <p>
@@ -56,7 +56,7 @@
         </a>
     </div>
     
-    <hr style="width: 50%; margin: 20px auto;">
+    <hr class="ubicacion-divider">
     
     <div class="red-item">
         <h3>| TikTok |</h3>

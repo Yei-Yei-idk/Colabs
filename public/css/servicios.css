@@ -213,3 +213,13 @@ center h2::after,
   .extras-grid { gap: 20px; }
   .extra-item { min-width: 100%; }
 }
+
+/* ─────────────── SERVICIOS: EXTRAS ─────────────── */
+.extras-title {
+    text-align: center;
+    color: #FFD600;
+}
+
+.extra-item-highlight {
+    color: #FFD600;
+}

@@ -104,7 +104,7 @@
             >
             <p>Al crear la cuenta aceptas nuestros términos y condiciones.</p>
 
-            <button type="submit" name="crear" id="btn-submit" class="btn-login" style="cursor:pointer;">Crear</button>
+            <button type="submit" name="crear" id="btn-submit" class="btn-login">Crear</button>
         </form>
 
         <div class="auth-separador">

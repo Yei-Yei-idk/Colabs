@@ -40,7 +40,7 @@
                 <div class="booking-info">
                     <div class="info-row">
                         <span class="info-label">Fecha:</span>
-                        <span class="info-value" style="text-transform: capitalize;">{{ $fecha_formato }}</span>
+                        <span class="info-value info-value-capitalize">{{ $fecha_formato }}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Horario:</span>
@@ -80,7 +80,7 @@
                     </form>
 
                 @elseif($reserva->estado === 'Aceptada')
-                    <p style="color:orange; font-weight:bold;">Esta reserva ya fue aceptada. No puedes cancelarla.</p>
+                    <p class="estado-aceptada">Esta reserva ya fue aceptada. No puedes cancelarla.</p>
 
                 @elseif($reserva->estado === 'Finalizada')
                     <div class="reserva-finalizada-info">
@@ -89,7 +89,7 @@
                     
                     @if(!$tiene_calificacion)
                         <button type="button" data-espacio-id="{{ $reserva->espacio_id }}" data-reserva-id="{{ $reserva->reserva_id }}" onclick="openReviewModal(this.getAttribute('data-espacio-id'), this.getAttribute('data-reserva-id'))"
-                           class="btn-resena btn-calificar mt-15 w-full-btn" style="padding: 12px; border-radius:8px; font-weight:bold; cursor:pointer;">
+                           class="btn-resena btn-calificar mt-15 w-full-btn">
                             ⭐ Califica tu experiencia
                         </button>
                     @else
@@ -99,10 +99,10 @@
                     @endif
 
                 @elseif($reserva->estado === 'Cancelada')
-                    <p style="color:red; font-weight:bold;">Esta reserva ya fue cancelada.</p>
+                    <p class="estado-cancelada">Esta reserva ya fue cancelada.</p>
 
                 @else
-                    <p style="color:gray;">Esta reserva no puede cancelarse (estado: {{ $reserva->estado }}).</p>
+                    <p class="estado-other">Esta reserva no puede cancelarse (estado: {{ $reserva->estado }}).</p>
                 @endif
             </div>
     </div>

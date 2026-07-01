@@ -21,7 +21,7 @@
                 @if ($errors->any())
                     <div class="alert-box alert-error">
                         <p class="alert-text">
-                            ❌ <strong>Error:</strong> {{ $errors->first() }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon-danger"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> <strong>Error:</strong> {{ $errors->first() }}
                         </p>
                     </div>
                 @endif
@@ -67,7 +67,7 @@
                     <!-- Botones -->
                     <div class="form-buttons">
                         <button type="submit" class="form-button-submit">
-                            ✅ Actualizar Correo
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Actualizar Correo
                         </button>
                         <a href="{{ route('verification.notice') }}" class="form-button-back">
                             ← Volver
@@ -76,7 +76,7 @@
                 </form>
 
                 <p class="form-footer">
-                    © {{ date('Y') }} <span style="font-weight:700;">Co-Labs</span> · Acceso seguro
+                    © {{ date('Y') }} <strong>Co-Labs</strong> · Acceso seguro
                 </p>
             </div>
         </div>

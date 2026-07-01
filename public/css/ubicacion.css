@@ -212,3 +212,19 @@ hr {
   }
   .sede-info h1 { font-size: 1.7rem; }
 }
+
+/* ─────────────── UBICACION: INLINE ─────────────── */
+.ubicacion-subtitle {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.ubicacion-mapa iframe {
+    border: 0;
+    border-radius: 10px;
+}
+
+.ubicacion-divider {
+    width: 50%;
+    margin: 20px auto;
+}

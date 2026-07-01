@@ -39,7 +39,7 @@
 </div>
 
 <div class="container-benef">
-    <h2 style="text-align: center; color: #FFD600;">| SERVICIOS EXTRAS |</h2>
+    <h2 class="extras-title">| SERVICIOS EXTRAS |</h2>
     
     <div class="extras-grid">
         <div class="extra-item">
@@ -47,7 +47,7 @@
             <img src="{{ asset('ASSETS/espacios descanso.png') }}">
         </div>
         <div class="extra-item">
-            <h3 style="color: #FFD600;">Limpieza Diaria</h3>
+            <h3 class="extra-item-highlight">Limpieza Diaria</h3>
             <img src="{{ asset('ASSETS/limpieza.jpg') }}">
         </div>
         <div class="extra-item">

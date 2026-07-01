@@ -7,12 +7,12 @@
     <h2 class="mis-reservas-header mt-20 mb-20 animate-fade-up">Buscar Espacios</h2>
 
     <div class="buscar-container">
-        <!-- ✅ FORMULARIO DE FILTROS -->
-        <aside class="sidebar animate-fade-up" style="animation-delay: 0.2s; align-self: flex-start; position: sticky; top: 100px; height: fit-content;">
+        <!-- FORMULARIO DE FILTROS -->
+        <aside class="sidebar animate-fade-up sidebar-sticky">
             <form method="GET" action="{{ route('cliente.buscar_espacios') }}">
                 <h3>Filtrar Espacios</h3>
 
-                <!-- 🔹 FILTRO TIPO -->
+                <!-- FILTRO TIPO -->
                 <div class="filtro">
                     <label for="tipo">Tipo de espacio:</label>
                     <select name="esp_tipo" id="tipo">
@@ -48,7 +48,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn-principal aplicar-filtros" style="width: 100%; border: none; padding: 12px; border-radius: 8px;">Aplicar Filtros</button>
+                <button type="submit" class="btn-principal aplicar-filtros">Aplicar Filtros</button>
             </form>
         </aside>
 
@@ -88,13 +88,13 @@
                             }
                         @endphp
                         
-                        <div style="margin-top: 10px; font-size: 1.1rem;">
+                        <div class="price-block">
                             @if($descuentoStr)
-                                <span style="text-decoration: line-through; color: #9CA3AF; font-size: 0.85em;">${{ number_format($precioOriginal, 0, ',', '.') }}</span>
-                                <strong style="color: #059669; margin-left: 8px;">${{ number_format($precioMostrar, 0, ',', '.') }} /hora</strong>
-                                <span style="background: #FEF08A; color: #854D0E; font-size: 0.75em; padding: 3px 8px; border-radius: 6px; margin-left: 8px; font-weight: bold;">{{ $descuentoStr }}</span>
+                                <span class="price-old">${{ number_format($precioOriginal, 0, ',', '.') }}</span>
+                                <strong class="price-new">${{ number_format($precioMostrar, 0, ',', '.') }} /hora</strong>
+                                <span class="price-discount-badge">{{ $descuentoStr }}</span>
                             @else
-                                <strong style="color: #1F2937;">${{ number_format($precioOriginal, 0, ',', '.') }} /hora</strong>
+                                <strong class="price-regular">${{ number_format($precioOriginal, 0, ',', '.') }} /hora</strong>
                             @endif
                         </div>
                     </div>

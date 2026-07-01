@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-<section class="auth-registrarse" style="min-height: auto; background: transparent; padding: 0; display: block;">
+<section class="auth-registrarse admin-form-section">
     <div class="formulario">
         <h1>Registrar administrador</h1>
 
@@ -97,11 +97,11 @@
                 </div>
             </div>
 
-            <div style="margin-top: 24px; display: flex; gap: 12px;">
-                <button type="submit" id="btn-submit" class="btn-login" style="flex: 1;">
+            <div class="admin-form-actions">
+                <button type="submit" id="btn-submit" class="btn-login">
                     Crear administrador
                 </button>
-                <a href="{{ route('admin.gestion_admin.index') }}" class="btn-login btn-cancel" style="flex: 1;">
+                <a href="{{ route('admin.gestion_admin.index') }}" class="btn-login btn-cancel">
                     Cancelar
                 </a>
             </div>

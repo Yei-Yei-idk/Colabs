@@ -16,7 +16,7 @@
 </div>
 @endif
 
-<div class="mis-reservas-toolbar mis-reservas-list animate-fade-up" style="animation-delay: 0.1s;">
+<div class="mis-reservas-toolbar mis-reservas-list animate-fade-up delay-100">
     <span class="mis-reservas-toolbar-label">Ordenar por</span>
     <div class="mis-reservas-sort"
          data-active="{{ ($orden ?? 'recientes') === 'prioridad' ? 'prioridad' : 'recientes' }}"
@@ -80,15 +80,15 @@
                 <p>{{ Str::limit($reserva->esp_descripcion, 80) }}</p>
                 
                 <div class="reserva-meta">
-                    <div>📅 <strong>{{ $fecha_formato }}</strong></div>
-                    <div>🕒 <strong>{{ \Carbon\Carbon::parse($reserva->hora_inicio)->format('h:i A') }} - {{ \Carbon\Carbon::parse($reserva->hora_fin)->format('h:i A') }}</strong> ({{ $diferencia_horas }}h)</div>
+                    <div class="reserva-meta-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <strong>{{ $fecha_formato }}</strong></div>
+                    <div class="reserva-meta-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <strong>{{ \Carbon\Carbon::parse($reserva->hora_inicio)->format('h:i A') }} - {{ \Carbon\Carbon::parse($reserva->hora_fin)->format('h:i A') }}</strong> ({{ $diferencia_horas }}h)</div>
                 </div>
 
                 {{-- Badge de descuento --}}
                 @if($tieneDescuento)
-                    <div style="margin-top: 10px;">
-                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; border: 1px solid #6ee7b7; box-shadow: 0 1px 4px rgba(16,185,129,0.15);">
-                            🎁 {{ $descuentoPorcentaje }}% OFF · Paquete {{ $paqueteHoras }}h
+                    <div class="mt-10">
+                        <span class="desc-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> {{ $descuentoPorcentaje }}% OFF · Paquete {{ $paqueteHoras }}h
                         </span>
                     </div>
                 @endif
@@ -98,12 +98,12 @@
                 <div class="reserva-total-box">
                     <div class="reserva-total-label">
                         @if($tieneDescuento)
-                            Total <span style="font-size:0.7rem; color:#059669; font-weight:700;">(con desc.)</span>:
+                            Total <span class="total-desc-label">(con desc.)</span>:
                         @else
                             Total:
                         @endif
                     </div>
-                    <div class="reserva-total-amount" style="{{ $tieneDescuento ? 'color: #059669;' : '' }}">
+                    <div class="reserva-total-amount {{ $tieneDescuento ? 'total-amount-desc' : '' }}">
                         ${{ number_format($total_estimado, 0, ',', '.') }}
                     </div>
                 </div>
@@ -131,7 +131,7 @@
             </div>
         </div>
     @empty
-        <div class="empty-state animate-fade-up" style="animation-delay: 0.2s;">
+        <div class="empty-state animate-fade-up delay-200">
             <div class="empty-state-icon">🔍</div>
             <h3>¡Aún no tienes reservas!</h3>
             <p class="text-muted mb-20">Explora nuestros espacios y encuentra el lugar ideal para trabajar.</p>
@@ -213,7 +213,7 @@
             const descBadge = descuento ? `
                 <div style="margin-top:10px;">
                     <span style="display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46;padding:.3rem .75rem;border-radius:999px;font-size:.78rem;font-weight:700;border:1px solid #6ee7b7;box-shadow:0 1px 4px rgba(16,185,129,.15);">
-                        🎁 ${descuento.pct}% OFF · Paquete ${descuento.hrs}h
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> ${descuento.pct}% OFF · Paquete ${descuento.hrs}h
                     </span>
                 </div>` : '';
 
@@ -224,7 +224,7 @@
             const calificarBtn = (r.estado === 'Finalizada' && !r.ya_calificado) ? `
                 <button type="button" data-espacio-id="${r.espacio_id}" data-reserva-id="${r.reserva_id}"
                         onclick="openReviewModal(this.dataset.espacioId, this.dataset.reservaId)"
-                        class="btn-reservar btn-calificar">⭐ Calificar</button>` : '';
+                        <span style="display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Calificar</span></button>` : '';
 
             return `
                 <div class="reserva-card-main border-${estadoLow}">
@@ -235,8 +235,8 @@
                         <h3>${r.esp_nombre}</h3>
                         <p>${descCorta}</p>
                         <div class="reserva-meta">
-                            <div>📅 <strong>${formatFecha(r.fecha)}</strong></div>
-                            <div>🕒 <strong>${formatHora(r.hora_inicio)} - ${formatHora(r.hora_fin)}</strong> (${horas}h)</div>
+                            <div style="display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <strong>${formatFecha(r.fecha)}</strong></div>
+                            <div style="display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <strong>${formatHora(r.hora_inicio)} - ${formatHora(r.hora_fin)}</strong> (${horas}h)</div>
                         </div>
                         ${descBadge}
                     </div>

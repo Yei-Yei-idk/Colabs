@@ -55,10 +55,6 @@
                     </details>
                 </li>
 
-                {{-- Analítica --}}
-                <li class="{{ request()->routeIs('admin.analitica') ? 'active' : '' }}">
-                    <a href="{{ route('admin.analitica') }}">Analítica</a>
-                </li>
 
                 {{-- Reportes --}}
                 <li>
@@ -76,19 +72,10 @@
                 </li>
 
                 {{-- Copias de seguridad --}}
-                <li>
-                    <details {{ request()->routeIs('admin.copias', 'admin.backup.logs') ? 'open' : '' }}>
-                        <summary>Copias de seguridad</summary>
-                        <ul>
-                            <li class="{{ request()->routeIs('admin.copias') ? 'active' : '' }}">
-                                <a href="{{ route('admin.copias') }}">Gestionar</a>
-                            </li>
-                            <li class="{{ request()->routeIs('admin.backup.logs') ? 'active' : '' }}">
-                                <a href="{{ route('admin.backup.logs') }}">Historial</a>
-                            </li>
-                        </ul>
-                    </details>
+                <li class="{{ request()->routeIs('admin.copias') ? 'active' : '' }}">
+                    <a href="{{ route('admin.copias') }}">Copias de seguridad</a>
                 </li>
+
 
                 {{-- Solo visible para SuperAdmin (rol_id = 1) --}}
                 @if(auth()->user()->rol_id == 1)
@@ -122,49 +109,21 @@
     </div>{{-- /.main-wrapper --}}
 
     {{-- ===== MODAL CONFIRMAR CIERRE DE SESIÓN ===== --}}
-    <div id="logout-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:#fff; border-radius:16px; padding:2rem 2.5rem; max-width:380px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.18); text-align:center; animation:fadeInUp .2s ease;">
-            <div style="font-size:2.5rem; margin-bottom:.5rem;">🔒</div>
-            <h3 style="margin:0 0 .5rem; font-size:1.2rem; color:#1a1a2e;">¿Cerrar sesión?</h3>
-            <p style="margin:0 0 1.5rem; color:#6b7280; font-size:.95rem;">¿Estás seguro de que deseas cerrar tu sesión como administrador?</p>
-            <div style="display:flex; gap:.75rem; justify-content:center;">
-                <button
-                    onclick="document.getElementById('logout-modal').style.display='none'"
-                    style="padding:.6rem 1.4rem; border-radius:8px; border:none; background:#9ca3af; color:#fff; font-size:.95rem; cursor:pointer; font-weight:600; transition:background .2s;"
-                    onmouseover="this.style.background='#6b7280'" onmouseout="this.style.background='#9ca3af'">
-                    Cancelar
-                </button>
-                <button
-                    onclick="document.getElementById('logout-form-admin').submit()"
-                    style="padding:.6rem 1.4rem; border-radius:8px; border:none; background:#ef4444; color:#fff; font-size:.95rem; cursor:pointer; font-weight:600; transition:background .2s;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#ef4444'">
-                    Sí, cerrar sesión
-                </button>
+    <div id="logout-modal" class="logout-modal">
+        <div class="logout-modal-content">
+            <div class="logout-modal-icon">🔒</div>
+            <h3 class="logout-modal-title">¿Cerrar sesión?</h3>
+            <p class="logout-modal-text">¿Estás seguro de que deseas cerrar tu sesión como administrador?</p>
+            <div class="logout-modal-actions">
+                <button onclick="document.getElementById('logout-modal').style.display='none'" class="logout-btn-cancel">Cancelar</button>
+                <button onclick="document.getElementById('logout-form-admin').submit()" class="logout-btn-confirm">Sí, cerrar sesión</button>
             </div>
         </div>
     </div>
 
-    <form id="logout-form-admin" action="{{ route('logout') }}" method="POST" style="display:none;">
+    <form id="logout-form-admin" action="{{ route('logout') }}" method="POST" class="logout-form">
         @csrf
     </form>
-
-    <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        #logout-modal {
-            backdrop-filter: blur(3px);
-        }
-    </style>
 
     <div id="snackbar"></div>
 
@@ -203,7 +162,7 @@
                 if (btn && !btn.disabled) {
                     btn.disabled = true;
                     btn.dataset.originalText = btn.innerHTML;
-                    btn.innerHTML = '<span style="opacity:.7">Procesando...</span>';
+                    btn.innerHTML = '<span class="btn-processing">Procesando...</span>';
                 }
             });
 
@@ -217,7 +176,7 @@
             if (btnConfirmarLogout) {
                 btnConfirmarLogout.addEventListener('click', function () {
                     this.disabled = true;
-                    this.innerHTML = '<span style="opacity:.7">Cerrando...</span>';
+                    this.innerHTML = '<span class="btn-processing">Cerrando...</span>';
                 });
             }
         });

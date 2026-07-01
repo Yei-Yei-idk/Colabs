@@ -8,26 +8,3 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-/*
-|--------------------------------------------------------------------------
-| Schedule: Actualización automática de reservas finalizadas
-|--------------------------------------------------------------------------
-| Ejecuta el command cada minuto para detectar reservas cuya fecha/hora
-| de fin ya pasó y marcarlas como "finalizada" automáticamente.
-|
-| Para activarlo en producción, agregar al cron del servidor:
-|   * * * * * php /ruta/del/proyecto/artisan schedule:run >> /dev/null 2>&1
-*/
-Schedule::command('reservas:actualizar-estado')->everyMinute();
-
-/*
-|--------------------------------------------------------------------------
-| Schedule: Backup automático de base de datos (diario a las 2:00 AM)
-|--------------------------------------------------------------------------
-| Ejecuta mysqldump y registra el resultado en la tabla backup_logs.
-|
-| Para activarlo en producción, agregar al cron del servidor:
-|   * * * * * php /ruta/del/proyecto/artisan schedule:run >> /dev/null 2>&1
-*/
-Schedule::command('backup:database')->dailyAt('02:00');
-

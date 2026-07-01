@@ -15,7 +15,7 @@
         </div>
 
         @if ($errors->any())
-            <div style="background: #fee2e2; color: #b91c1c; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <div class="form-error-alert">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="form-group">
-                        <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 15px;">Tipo de oficina</h4>
+                        <h4 class="tipo-heading">Tipo de oficina</h4>
                         <div class="radio-group">
                             @php
                                 $tipos = [
@@ -93,7 +93,7 @@
                     <div class="form-group">
                         <label for="foto">Imagen del espacio (Opcional)</label>
                         <input type="file" name="foto" id="foto" accept="image/*">
-                        <p style="font-size: 12px; color: #666; margin-top: 5px;">Deja en blanco para mantener la imagen actual.</p>
+                        <p class="foto-hint">Deja en blanco para mantener la imagen actual.</p>
                     </div>
                 </div>
             </div>
