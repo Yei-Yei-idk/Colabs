@@ -1,6 +1,6 @@
 <div align="center">
 
-# Co-Labs — PGAEE
+# Co-Labs — GRAE
 ### Sistema de Gestión de Espacios para Coworking
 
 [![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
@@ -8,7 +8,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
 [![Google OAuth](https://img.shields.io/badge/Google_OAuth-2.0-4285F4?style=flat-square&logo=google&logoColor=white)](https://console.cloud.google.com)
 
-**PGAEE (Plataforma de Gestión para Alquiler de Espacios Empresariales)** es una solución tecnológica de nivel corporativo diseñada a medida para **Co-Labs**, orientada a digitalizar, automatizar y optimizar por completo el ecosistema de reservas de espacios de trabajo compartido. La plataforma permite administrar en tiempo real oficinas privadas, aulas de capacitación y salas de reuniones dinámicas, garantizando una experiencia fluida, intuitiva y segura para todos los miembros.
+**GRAE (Gestión y Reservas de Espacios Empresariales)** es una solución tecnológica de nivel corporativo diseñada a medida para **Co-Labs**, orientada a digitalizar, automatizar y optimizar por completo el ecosistema de reservas de espacios de trabajo compartido. La plataforma permite administrar en tiempo real oficinas privadas, aulas de capacitación y salas de reuniones dinámicas, garantizando una experiencia fluida, intuitiva y segura para todos los miembros.
 
 Desarrollada bajo rigurosos estándares de arquitectura de software en Laravel, la aplicación integra un robusto control de acceso basado en múltiples roles, autenticación segura de terceros (Google OAuth), un sistema automatizado de notificaciones transaccionales por correo electrónico y un panel de control analítico administrativo enfocado en la toma de decisiones y la eficiencia operativa de espacios de coworking reales.
 
